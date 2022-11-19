@@ -1,3 +1,4 @@
+import { MantineProvider } from '@mantine/core';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
@@ -13,8 +14,16 @@ export function App() {
 
 export function WrappedApp() {
   return (
-    <HashRouter>
-      <App />
-    </HashRouter>
+    <MantineProvider
+      withCSSVariables
+      withNormalizeCSS
+      theme={{
+        colorScheme: 'dark',
+      }}
+    >
+      <HashRouter>
+        <App />
+      </HashRouter>
+    </MantineProvider>
   );
 }
