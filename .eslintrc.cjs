@@ -10,6 +10,8 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
+    'plugin:jest-dom/recommended',
+    'plugin:testing-library/react',
   ],
   overrides: [],
   parser: '@typescript-eslint/parser',
@@ -18,7 +20,13 @@ module.exports = {
     sourceType: 'module',
     project: './tsconfig.json',
   },
-  plugins: ['react', '@typescript-eslint', 'prettier'],
+  plugins: [
+    'react',
+    '@typescript-eslint',
+    'prettier',
+    'jest-dom',
+    'testing-library',
+  ],
   rules: {
     'react/react-in-jsx-scope': 0,
   },
