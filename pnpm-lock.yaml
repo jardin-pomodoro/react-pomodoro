@@ -12,10 +12,10 @@ specifiers:
   '@testing-library/react': ^13.4.0
   '@types/react': ^18.0.25
   '@types/react-dom': ^18.0.9
+  '@types/testing-library__jest-dom': ^5.14.5
   '@typescript-eslint/eslint-plugin': ^5.43.0
   '@typescript-eslint/parser': ^5.43.0
   '@vitejs/plugin-react': ^2.2.0
-  dayjs: ^1.11.6
   eslint: ^8.27.0
   eslint-config-airbnb: ^19.0.4
   eslint-config-airbnb-typescript: ^17.0.0
@@ -41,12 +41,11 @@ specifiers:
 dependencies:
   '@emotion/react': 11.10.5_fan5qbzahqtxlm5dzefqlqx5ia
   '@mantine/core': 5.8.0_oropdu55clxolwu5c7qygkf2pm
-  '@mantine/dates': 5.8.0_hjyugwpbjpzxrb6rj2z2izxfsu
+  '@mantine/dates': 5.8.0_6dodjup76aaydz6cwwne4t3okq
   '@mantine/form': 5.8.0_react@18.2.0
   '@mantine/hooks': 5.8.0_react@18.2.0
   '@mantine/modals': 5.8.0_ewvkjm4ajyqza72j4kh4rch33a
   '@mantine/notifications': 5.8.0_ewvkjm4ajyqza72j4kh4rch33a
-  dayjs: 1.11.6
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-router-dom: 6.4.3_biqbaboplfbrettd7655fr4n2y
@@ -58,6 +57,7 @@ devDependencies:
   '@testing-library/react': 13.4.0_biqbaboplfbrettd7655fr4n2y
   '@types/react': 18.0.25
   '@types/react-dom': 18.0.9
+  '@types/testing-library__jest-dom': 5.14.5
   '@typescript-eslint/eslint-plugin': 5.43.0_wze2rj5tow7zwqpgbdx2buoy3m
   '@typescript-eslint/parser': 5.43.0_e3uo4sehh4zr4i6m57mkkxxv7y
   '@vitejs/plugin-react': 2.2.0_vite@3.2.4
@@ -636,7 +636,7 @@ packages:
       - '@types/react'
     dev: false
 
-  /@mantine/dates/5.8.0_hjyugwpbjpzxrb6rj2z2izxfsu:
+  /@mantine/dates/5.8.0_6dodjup76aaydz6cwwne4t3okq:
     resolution: {integrity: sha512-w8pc/cCUXiITBnAi9hy3My8ML9/Y/ANDTHkJpPsiMLMSt+JbC1eqcytXMv3CGGLhWdkwRy5E43J7yv1rAs89fQ==}
     peerDependencies:
       '@mantine/core': 5.8.0
@@ -647,7 +647,6 @@ packages:
       '@mantine/core': 5.8.0_oropdu55clxolwu5c7qygkf2pm
       '@mantine/hooks': 5.8.0_react@18.2.0
       '@mantine/utils': 5.8.0_react@18.2.0
-      dayjs: 1.11.6
       react: 18.2.0
     dev: false
 
@@ -1535,10 +1534,6 @@ packages:
       whatwg-mimetype: 3.0.0
       whatwg-url: 11.0.0
     dev: true
-
-  /dayjs/1.11.6:
-    resolution: {integrity: sha512-zZbY5giJAinCG+7AGaw0wIhNZ6J8AhWuSXKvuc1KAyMiRsvGQWqh4L+MomvhdAYjN+lqvVCMq1I41e3YHvXkyQ==}
-    dev: false
 
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
