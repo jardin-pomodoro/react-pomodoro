@@ -18,7 +18,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
       - uses: pnpm/action-setup@v2
         name: Install pnpm
@@ -43,10 +43,9 @@ jobs:
       - run: mv .env.example .env
       - name: Install dependencies
         run: pnpm install
-      - name: Build and tests
-        run: pnpm build
-        run: pnpm test
-        run: pnpm lint
-        run: pnpm check-format
-        run: pnpm check-types
+      - run: pnpm build
+      - run: pnpm test
+      - run: pnpm lint
+      - run: pnpm check-format
+      - run: pnpm check-types
 
