@@ -7,6 +7,7 @@ import {
   Text,
   Container,
   createStyles,
+  Title,
 } from '@mantine/core';
 
 const useStyle = createStyles((_theme, _param, _getRef) => ({
@@ -29,7 +30,9 @@ function Home() {
         </Card.Section>
 
         <Group position="apart" mt="md" mb="xs">
-          <Text weight={500}>Norway Fjord Adventures</Text>
+          <Title order={1} weight={500}>
+            Hello World
+          </Title>
           <Badge color="pink" variant="light">
             On Sale
           </Badge>
