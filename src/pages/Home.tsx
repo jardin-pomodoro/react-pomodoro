@@ -10,7 +10,7 @@ import {
   Title,
 } from '@mantine/core';
 
-const useStyle = createStyles((_theme, _param, _getRef) => ({
+const useStyle = createStyles(() => ({
   main: {
     margin: '2rem',
   },
