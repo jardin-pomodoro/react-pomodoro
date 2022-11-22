@@ -17,8 +17,8 @@ jobs:
           node-version: '18.12'
       - run: mv .env.example .env
       - run: npm install
-      - run: npm build
-      - run: npm test
-      - run: npm lint
-      - run: npm check-format
-      - run: npm check-types
+      - run: npm run build
+      - run: npm run test
+      - run: npm run lint
+      - run: npm run check-format
+      - run: npm run check-types
