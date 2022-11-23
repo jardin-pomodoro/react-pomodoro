@@ -23,5 +23,6 @@
     ".eslintrc.cjs",
     "src"
   ],
+  "exclude": ["dist"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
