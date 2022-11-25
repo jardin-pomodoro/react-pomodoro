@@ -8,6 +8,7 @@ specifiers:
   '@mantine/hooks': ^5.8.0
   '@mantine/modals': ^5.8.0
   '@mantine/notifications': ^5.8.0
+  '@rive-app/react-canvas': ^3.0.33
   '@testing-library/jest-dom': ^5.16.5
   '@testing-library/react': ^13.4.0
   '@types/react': ^18.0.25
@@ -46,6 +47,7 @@ dependencies:
   '@mantine/hooks': 5.8.0_react@18.2.0
   '@mantine/modals': 5.8.0_ewvkjm4ajyqza72j4kh4rch33a
   '@mantine/notifications': 5.8.0_ewvkjm4ajyqza72j4kh4rch33a
+  '@rive-app/react-canvas': 3.0.33_react@18.2.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-router-dom: 6.4.3_biqbaboplfbrettd7655fr4n2y
@@ -857,6 +859,19 @@ packages:
   /@remix-run/router/1.0.3:
     resolution: {integrity: sha512-ceuyTSs7PZ/tQqi19YZNBc5X7kj1f8p+4DIyrcIYFY9h+hd1OKm4RqtiWldR9eGEvIiJfsqwM4BsuCtRIuEw6Q==}
     engines: {node: '>=14'}
+    dev: false
+
+  /@rive-app/canvas/1.0.95:
+    resolution: {integrity: sha512-fpUz4zWtGkEvjbfCk1qydk1tpg/pHLeib21ugJYlm3fV3zwOvZiHbcS46ukBxaXKEVmjdBOrwqUZEKzwy6bN6g==}
+    dev: false
+
+  /@rive-app/react-canvas/3.0.33_react@18.2.0:
+    resolution: {integrity: sha512-V5r1qmZVpewGAtpsa/et6RQT64DAcx2ZpgAXJYa6O9wWgAxjJgsQIaL/xW+tA6ODikcsaB9gJrouJNGvow59zw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@rive-app/canvas': 1.0.95
+      react: 18.2.0
     dev: false
 
   /@sinclair/typebox/0.24.51:
