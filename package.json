@@ -3,19 +3,26 @@
   "version": "0.0.1",
   "description": "A pomodoro app with NFT in the blockchain (WTH ???)",
   "main": "index.js",
-  "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
-    "hardhat": "^2.12.3"
-  },
-  "scripts": {
-    "test": "chai"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jardin-pomodoro/react-pomodoro.git"
   },
   "author": "Noé Larrieu-Lacoste, Pierre Ebrahim, Swann Herrera, Remy Machavoine",
   "license": "MIT",
+  "scripts": {
+    "test": "hardhat test",
+    "compile": "hardhat compile",
+    "deploy": "hardhat run scripts/deploy.ts",
+    "deploy:mumbai": "hardhat run scripts/deploy.ts --network mumbai",
+    "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
+    "localhost-node": "hardhat node"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "dotenv": "^16.0.3",
+    "hardhat": "^2.12.3",
+    "prettier": "^2.8.0"
+  },
   "bugs": {
     "url": "https://github.com/jardin-pomodoro/react-pomodoro/issues"
   },
