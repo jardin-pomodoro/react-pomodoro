@@ -1,0 +1,23 @@
+{
+  "name": "blockchain-garden",
+  "version": "0.0.1",
+  "description": "A pomodoro app with NFT in the blockchain (WTH ???)",
+  "main": "index.js",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "hardhat": "^2.12.3"
+  },
+  "scripts": {
+    "test": "chai"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jardin-pomodoro/react-pomodoro.git"
+  },
+  "author": "Noé Larrieu-Lacoste, Pierre Ebrahim, Swann Herrera, Remy Machavoine",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jardin-pomodoro/react-pomodoro/issues"
+  },
+  "homepage": "https://github.com/jardin-pomodoro/react-pomodoro#readme"
+}
