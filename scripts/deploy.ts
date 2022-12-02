@@ -1,23 +1,44 @@
-import { ethers } from "hardhat";
+import { artifacts, ethers } from 'hardhat';
+import { Contract } from '@ethersproject/contracts';
+import * as fs from 'fs';
+import * as path from 'path';
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
+  const [deployer] = await ethers.getSigners();
 
-  const lockedAmount = ethers.utils.parseEther("1");
+  console.log('Deploying contracts with the account:', deployer.address);
+  console.log('Account balance:', (await deployer.getBalance()).toString());
 
-  const Lock = await ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+  const contractFactory = await ethers.getContractFactory('GardenToken');
+  const gardenTokenContract = await contractFactory.deploy();
 
-  await lock.deployed();
+  console.log('Garden Token address:', gardenTokenContract.address);
 
-  console.log(`Lock with 1 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`);
+  saveFrontendDeploymentInfo(gardenTokenContract);
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+function saveFrontendDeploymentInfo(contract: Contract) {
+  const frontendDir = __dirname + '../frontend/src/contracts';
+
+  if (!fs.existsSync(frontendDir)) {
+    fs.mkdirSync(frontendDir);
+  }
+
+  fs.writeFileSync(
+    path.join(frontendDir, 'contract-address.json'),
+    JSON.stringify({ Token: contract.address }, undefined, 2),
+  );
+
+  const contractArtifact = artifacts.readArtifactSync('GardenToken');
+  fs.writeFileSync(
+    path.join(frontendDir, 'GardenToken.json'),
+    JSON.stringify(contractArtifact, null, 2),
+  );
+}
+
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
