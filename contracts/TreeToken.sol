@@ -27,8 +27,8 @@ contract TreeToken is ERC1155, Ownable, ERC1155Burnable {
         _mint(msg.sender, tokenId, 1, "");
     }
 
-    function setURI(string memory newuri) public onlyOwner {
-        _setURI(newuri);
+    function setURI(string memory newUri) public onlyOwner {
+        _setURI(newUri);
     }
 
     function uri(uint256 _tokenId) override public view returns (string memory) {
