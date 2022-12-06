@@ -48,4 +48,4 @@ jobs:
       - run: mv .env.example .env
       - name: Install dependencies
         run: pnpm install
-      - run: pnpm ${{ script }}
+      - run: pnpm ${{ matrix.script }}
