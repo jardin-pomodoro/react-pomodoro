@@ -8,14 +8,12 @@ on:
     branches:
       - main
 jobs:
-  check-frontend:
+  cache-and-install:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./frontend
-    strategy:
-      matrix:
-        script: ["lint", "test", "build",  "check-format", "check-types"]
+        working-directory: frontend
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -48,4 +46,8 @@ jobs:
       - run: mv .env.example .env
       - name: Install dependencies
         run: pnpm install
-      - run: pnpm ${{ script }}
+      - run: pnpm build
+      - run: pnpm test
+      - run: pnpm lint
+      - run: pnpm check-format
+      - run: pnpm check-types
