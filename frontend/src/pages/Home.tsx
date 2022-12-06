@@ -8,6 +8,7 @@ function Home() {
   const levelInput = useStateMachineInput(rive);
   return (
     <>
+      <h1>Hello World !</h1>
       <RiveComponentPlayback height="80vh" />
       <button
         type="button"
