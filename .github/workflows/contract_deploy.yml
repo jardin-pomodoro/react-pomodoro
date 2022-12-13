@@ -5,8 +5,6 @@ on:
     branches:
       - main
       - feature/ci
-  tags:
-    - v*
 
 jobs:
   contract:
