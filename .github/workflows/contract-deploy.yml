@@ -1,0 +1,89 @@
+name: Contract Deploy
+on:
+  push:
+    branches:
+      - main
+      - feature/ci
+  tags:
+    - v*
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Test
+        env:
+          ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
+          OWNER_PRIVATE_KEY: ${{ secrets.OWNER_PRIVATE_KEY }}
+        run: npm run test
+
+      - name: Deploy on mumbai testnet
+        env:
+          ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
+          OWNER_PRIVATE_KEY: ${{ secrets.OWNER_PRIVATE_KEY }}
+        run: npm run deploy:mumbai
+
+      - name: Set CONTRACT_ADDRESS and GARDEN_TOKEN from output
+        run: |
+          echo "CONTRACT_ADDRESS=$(cat frontend/src/contracts/contract-address.json)" >> $GITHUB_ENV
+          echo "GARDEN_TOKEN=$(cat frontend/src/contracts/GardenToken.json)" >> $GITHUB_ENV
+
+      - name: Update repo CONTRACT_ADDRESS secret
+        uses: gliech/create-github-secret-action@v1
+        with:
+          secret: CONTRACT_ADDRESS
+          value: ${{ env.CONTRACT_ADDRESS }}
+          pa_token: ${{ secrets.PA_TOKEN }}
+
+      - name: Update repo GARDEN_TOKEN secret
+        uses: gliech/create-github-secret-action@v1
+        with:
+          secret: CONTRACT_ADDRESS
+          value: ${{ env.GARDEN_TOKEN }}
+          pa_token: ${{ secrets.GARDEN_TOKEN }}
+
+  frontend:
+    runs-on: ubuntu-latest
+    depends-on: contract
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Create contract address file from secret
+        run: |
+          echo mkdir -p src/contracts
+          echo ${{ secrets.CONTRACT_ADDRESS }} > src/contracts/contract-address.json
+          echo ${{ secrets.GARDEN_TOKEN }} > src/contracts/GardenToken.json
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
