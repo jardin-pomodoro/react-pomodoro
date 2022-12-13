@@ -55,7 +55,7 @@ jobs:
 
   frontend:
     runs-on: ubuntu-latest
-    depends-on: contract
+    needs: contract
 
     defaults:
       run:
