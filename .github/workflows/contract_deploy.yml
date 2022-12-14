@@ -112,17 +112,23 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
+      - name: ECHO
+        run: echo "GARDEN_TOKEN=${{ secrets.CONTRACT_ADDRESS }}" >> $GITHUB_ENV
+
       - name: Create contract address files from secret
         run: |
           mkdir -p src/contracts
           echo ${{ secrets.CONTRACT_ADDRESS }} | jq -c . > src/contracts/contract-address.json
           echo ${{ secrets.GARDEN_TOKEN }} | jq -c . > src/contracts/GardenToken.json
 
+      - name: Install Dependencies
+        run: pnpm install
+
       - name: Lint
         run: pnpm lint
 
       - name: Test
-        run: pnpm install
+        run: pnpm test
 
   frontend-deploy:
     name: Deploy frontend to github pages
