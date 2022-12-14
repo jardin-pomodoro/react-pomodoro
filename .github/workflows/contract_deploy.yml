@@ -53,8 +53,8 @@ jobs:
 
       - name: Set CONTRACT_ADDRESS and GARDEN_TOKEN from output
         run: |
-          echo "CONTRACT_ADDRESS=$(cat frontend/src/contracts/contract-address.json)" >> $GITHUB_ENV
-          echo "GARDEN_TOKEN=$(cat frontend/src/contracts/GardenToken.json)" >> $GITHUB_ENV
+          echo "CONTRACT_ADDRESS=$(cat frontend/src/contracts/contract-address.json | jq -r .)" >> $GITHUB_ENV
+          echo "GARDEN_TOKEN=$(cat frontend/src/contracts/GardenToken.json | jq -r .)" >> $GITHUB_ENV
 
       - name: Update repo CONTRACT_ADDRESS secret
         uses: gliech/create-github-secret-action@v1
