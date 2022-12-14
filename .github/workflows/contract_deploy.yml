@@ -59,14 +59,14 @@ jobs:
       - name: Update repo CONTRACT_ADDRESS secret
         uses: gliech/create-github-secret-action@v1
         with:
-          secret: CONTRACT_ADDRESS
+          name: CONTRACT_ADDRESS
           value: ${{ env.CONTRACT_ADDRESS }}
           pa_token: ${{ secrets.PA_TOKEN }}
 
       - name: Update repo GARDEN_TOKEN secret
         uses: gliech/create-github-secret-action@v1
         with:
-          secret: CONTRACT_ADDRESS
+          name: CONTRACT_ADDRESS
           value: ${{ env.GARDEN_TOKEN }}
           pa_token: ${{ secrets.GARDEN_TOKEN }}
 
