@@ -53,8 +53,8 @@ jobs:
 
       - name: Set CONTRACT_ADDRESS and GARDEN_TOKEN from output
         run: |
-          echo "CONTRACT_ADDRESS=$(cat frontend/src/contracts/contract-address.json | jq -rc .)" >> $GITHUB_ENV
-          echo "GARDEN_TOKEN=$(cat frontend/src/contracts/GardenToken.json | jq -rc .)" >> $GITHUB_ENV
+          echo 'CONTRACT_ADDRESS=$(cat frontend/src/contracts/contract-address.json | jq -c .)' >> $GITHUB_ENV
+          echo 'GARDEN_TOKEN=$(cat frontend/src/contracts/GardenToken.json | jq -c .)' >> $GITHUB_ENV
 
       - name: Update repo CONTRACT_ADDRESS secret
         uses: gliech/create-github-secret-action@v1
@@ -73,7 +73,7 @@ jobs:
   frontend-test:
     name: Test frontend
     runs-on: ubuntu-latest
-#    needs: contract-deploy
+    needs: contract-deploy
 
     defaults:
       run:
@@ -113,7 +113,7 @@ jobs:
         run: pnpm install
 
       - name: ECHO
-        run: echo "GARDEN_TOKEN=${{ secrets.GARDEN_TOKEN }}" >> $GITHUB_ENV
+        run: echo 'GARDEN_TOKEN=${{ secrets.GARDEN_TOKEN }}' >> $GITHUB_ENV
 
       - name: Create contract address files from secret
         run: |
