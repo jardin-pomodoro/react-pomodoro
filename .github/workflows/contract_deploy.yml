@@ -112,9 +112,6 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
-      - name: ECHO
-        run: echo "GARDEN_TOKEN=${{ secrets.GARDEN_TOKEN }}" >> $GITHUB_ENV
-
       - name: Create contract address files from secret
         run: |
           mkdir -p src/contracts
@@ -175,8 +172,8 @@ jobs:
       - name: Create contract address files from secret
         run: |
           mkdir -p src/contracts
-          echo ${{ secrets.CONTRACT_ADDRESS }} | jq -c . > src/contracts/contract-address.json
-          echo ${{ secrets.GARDEN_TOKEN }} | jq -c . > src/contracts/GardenToken.json
+          echo ${{ secrets.CONTRACT_ADDRESS }} | jq -rc . > src/contracts/contract-address.json
+          echo ${{ secrets.GARDEN_TOKEN }} | jq -rc . > src/contracts/GardenToken.json
 
       - name: Build
         run: pnpm run build
@@ -184,4 +181,4 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: dist
+          folder: frontend/dist
