@@ -18,7 +18,7 @@ async function main() {
 }
 
 function saveFrontendDeploymentInfo(contract: Contract) {
-    const frontendDir = __dirname + '../frontend/src/contracts';
+    const frontendDir = path.join(__dirname ,'../frontend/src/contracts');
 
     if (!fs.existsSync(frontendDir)) {
         fs.mkdirSync(frontendDir);
