@@ -94,8 +94,8 @@ jobs:
       - name: Create contract address file from secret
         run: |
           echo mkdir -p src/contracts
-          echo ${{ secrets.CONTRACT_ADDRESS }} > src/contracts/contract-address.json
-          echo ${{ secrets.GARDEN_TOKEN }} > src/contracts/GardenToken.json
+          echo ${{ secrets.CONTRACT_ADDRESS }} | jq -c . > src/contracts/contract-address.json
+          echo ${{ secrets.GARDEN_TOKEN }} | jq -c . > src/contracts/GardenToken.json
 
       - name: Build
         run: npm run build
