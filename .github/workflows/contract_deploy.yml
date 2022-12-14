@@ -70,8 +70,8 @@ jobs:
           value: ${{ env.GARDEN_TOKEN }}
           pa_token: ${{ secrets.PA_TOKEN }}
 
-  frontend-deploy:
-    name: Deploy frontend to GitHub Pages
+  frontend-test:
+    name: Test frontend
     runs-on: ubuntu-latest
     needs: contract-deploy
 
@@ -88,17 +88,92 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install Dependencies
-        run: npm install
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 7
+          run_install: false
 
-      - name: Create contract address file from secret
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+          - uses: actions/cache@v3
+            name: Setup pnpm cache
+            with:
+              path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+              key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+              restore-keys: |
+                ${{ runner.os }}-pnpm-store-
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Create contract address files from secret
+        run: |
+          echo mkdir -p src/contracts
+          echo ${{ secrets.CONTRACT_ADDRESS }} | jq -c . > src/contracts/contract-address.json
+          echo ${{ secrets.GARDEN_TOKEN }} | jq -c . > src/contracts/GardenToken.json
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm install
+
+  frontend-deploy:
+    name: Deploy frontend to github pages
+    runs-on: ubuntu-latest
+    needs: frontend-test
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 7
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+          - uses: actions/cache@v3
+            name: Setup pnpm cache
+            with:
+              path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+              key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+              restore-keys: |
+                ${{ runner.os }}-pnpm-store-
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Create contract address files from secret
         run: |
           echo mkdir -p src/contracts
           echo ${{ secrets.CONTRACT_ADDRESS }} | jq -c . > src/contracts/contract-address.json
           echo ${{ secrets.GARDEN_TOKEN }} | jq -c . > src/contracts/GardenToken.json
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
