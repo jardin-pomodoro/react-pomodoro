@@ -68,7 +68,7 @@ jobs:
         with:
           name: CONTRACT_ADDRESS
           value: ${{ env.GARDEN_TOKEN }}
-          pa_token: ${{ secrets.GARDEN_TOKEN }}
+          pa_token: ${{ secrets.PA_TOKEN }}
 
   frontend-deploy:
     name: Deploy frontend to GitHub Pages
