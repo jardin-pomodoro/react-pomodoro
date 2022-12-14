@@ -107,3 +107,9 @@ frontend/dist
 
 
 .idea/
+
+artifacts/
+
+typechain-types/
+
+cache/
