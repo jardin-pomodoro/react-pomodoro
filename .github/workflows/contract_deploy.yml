@@ -66,7 +66,7 @@ jobs:
       - name: Update repo GARDEN_TOKEN secret
         uses: gliech/create-github-secret-action@v1
         with:
-          name: CONTRACT_ADDRESS
+          name: GARDEN_ADDRESS
           value: ${{ env.GARDEN_TOKEN }}
           pa_token: ${{ secrets.PA_TOKEN }}
 
@@ -114,7 +114,7 @@ jobs:
 
       - name: Create contract address files from secret
         run: |
-          mkdir -p src/contracts/
+          mkdir -p src/contracts
           echo ${{ secrets.CONTRACT_ADDRESS }} | jq -c . > src/contracts/contract-address.json
           echo ${{ secrets.GARDEN_TOKEN }} | jq -c . > src/contracts/GardenToken.json
 
@@ -168,7 +168,7 @@ jobs:
 
       - name: Create contract address files from secret
         run: |
-          mkdir -p src/contracts/
+          mkdir -p src/contracts
           echo ${{ secrets.CONTRACT_ADDRESS }} | jq -c . > src/contracts/contract-address.json
           echo ${{ secrets.GARDEN_TOKEN }} | jq -c . > src/contracts/GardenToken.json
 
