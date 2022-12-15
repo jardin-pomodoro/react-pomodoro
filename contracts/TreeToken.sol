@@ -104,7 +104,7 @@ contract Forest {
         plantedTrees[msg.sender] = PlantedTree(_tokenId, block.timestamp, getGrowingTime(_trunkStat));
     }
 
-    function getGrowingTree() external view returns (PlantedTree memory) {
+    function getGrowingTree() public view returns (PlantedTree memory) {
         return plantedTrees[msg.sender];
     }
 
@@ -169,11 +169,16 @@ contract TreeCore is TreeToken, BreedTree, Forest, TreeStats {
 
     function plantTree(uint256 _tokenId) external {
         require(balanceOf(msg.sender, _tokenId) == 1, "Not the owner of the tree");
-        plantTree(_tokenId, 0);
+        TreeUpgrade memory stats = getTreeStats(_tokenId);
+        uint32 seed = getSeed(_tokenId);
+        plantTree(_tokenId, getSeedTrunkStats(seed) + stats.trunkUpgrade);
     }
 
     function collectTree() external {
-        uint8 tokens = collectTree(0);
+        uint256 token = getGrowingTree().tokenId;
+        uint32 seed = getSeed(token);
+        TreeUpgrade memory stats = getTreeStats(token);
+        uint8 tokens = collectTree(getSeedLeavesStats(seed) + stats.leavesUpgrade);
         _mint(msg.sender, TREE_TOKEN, tokens, "");
     }
 
@@ -193,21 +198,21 @@ contract TreeCore is TreeToken, BreedTree, Forest, TreeStats {
         upgradeLeaves(_tokenId);
     }
 
-    function getSeedLeavesStats(uint8 _seed) public pure returns (uint8) {
-        uint8 seed = uint8(_seed % 1000);
+    function getSeedLeavesStats(uint32 _seed) public pure returns (uint8) {
+        uint32 seed = _seed % 1000;
         uint8 leavesStats = 0;
         for (uint8 i = 0; i < 3; i++) {
-            leavesStats += seed % 10;
+            leavesStats += uint8(seed % 10);
             seed /= 10;
         }
         return leavesStats;
     }
 
-    function getSeedTrunkStats(uint8 _seed) public pure returns (uint8) {
-        uint8 seed = uint8(_seed % 1000);
+    function getSeedTrunkStats(uint32 _seed) public pure returns (uint8) {
+        uint32 seed = _seed % 1000;
         uint8 trunkStats = 0;
         for (uint8 i = 0; i < 3; i++) {
-            trunkStats += seed % 10;
+            trunkStats += uint8(seed % 10);
             seed /= 10;
         }
         return trunkStats;
