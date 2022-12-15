@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract TreeToken is ERC1155, Ownable, ERC1155Burnable {
     string public name = "Tree Collection";
-    uint256 private TREE_TOKEN = 0;
+    uint256 internal TREE_TOKEN = 0;
     uint256 private tokenId = 1;
     mapping(uint256 => uint32) private treeSeeds;
 
@@ -38,7 +38,7 @@ contract TreeToken is ERC1155, Ownable, ERC1155Burnable {
         return super.uri(0);
     }
 
-    function seed(uint256 _tokenId) public view returns (uint32) {
+    function getSeed(uint256 _tokenId) public view returns (uint32) {
         return treeSeeds[tokenId];
     }
 }
@@ -46,17 +46,17 @@ contract TreeToken is ERC1155, Ownable, ERC1155Burnable {
 contract BreedTree {
     mapping(uint256 => uint8) private treeBreeds;
 
-    function mutate(uint32 seed) private returns (uint32 memory) {
-        uint32 memory mutations = seed;
+    function mutate(uint32 seed) private returns (uint32) {
+        uint32 mutations = seed;
         for (uint8 i = 0; i < 32; i++) {
             uint32 mutation = uint32(uint256(keccak256(abi.encodePacked(block.timestamp, seed, i))) % 5) - 2;
-            mutations = mutations + mutation * 10 ** i;
+            mutations = mutations + mutation * uint32(10 ** i);
         }
         return mutations;
     }
 
-    function breed(uint32 seed1, uint32 seed2) private returns (uint32 memory) {
-        uint32 memory seed = 0;
+    function breed(uint32 seed1, uint32 seed2) private returns (uint32) {
+        uint32 seed = 0;
         for (uint8 i = 0; i < 6; i++) {
             seed += (seed1 % 10 + seed2 % 10) / 2;
             seed1 /= 10;
@@ -86,13 +86,13 @@ contract BreedTree {
 
 contract TreeCore is TreeToken, BreedTree {
     function breed(uint256 _tokenId1, uint256 _tokenId2) external {
-        require(ownerOf(_tokenId1) == msg.sender, "Not the owner of the tree");
-        require(ownerOf(_tokenId2) == msg.sender, "Not the owner of the tree");
+        require(balanceOf(msg.sender,_tokenId1) == 1, "Not the owner of the tree");
+        require(balanceOf(msg.sender,_tokenId2) == 1, "Not the owner of the tree");
         canTreeBreed(_tokenId1);
         canTreeBreed(_tokenId2);
         uint8 breedCost = treeBreedCost(_tokenId1) + treeBreedCost(_tokenId2);
         _burn(msg.sender, TREE_TOKEN, breedCost);
-        uint32 seed = breedTrees(_tokenId1, _tokenId2);
+        uint32 seed = breedTrees(_tokenId1, _tokenId2, getSeed(_tokenId1), getSeed(_tokenId2));
         mintTree(msg.sender, seed);
     }
 }

@@ -107,3 +107,6 @@ frontend/dist
 
 *.idea
 package-lock.json
+artifacts/
+typechain-types/
+cache/
