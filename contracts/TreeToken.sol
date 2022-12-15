@@ -84,15 +84,55 @@ contract BreedTree {
     }
 }
 
-contract TreeCore is TreeToken, BreedTree {
+contract TreeCore is TreeToken, BreedTree, Forest {
     function breed(uint256 _tokenId1, uint256 _tokenId2) external {
-        require(balanceOf(msg.sender,_tokenId1) == 1, "Not the owner of the tree");
-        require(balanceOf(msg.sender,_tokenId2) == 1, "Not the owner of the tree");
+        require(balanceOf(msg.sender, _tokenId1) == 1, "Not the owner of the tree");
+        require(balanceOf(msg.sender, _tokenId2) == 1, "Not the owner of the tree");
         canTreeBreed(_tokenId1);
         canTreeBreed(_tokenId2);
         uint8 breedCost = treeBreedCost(_tokenId1) + treeBreedCost(_tokenId2);
         _burn(msg.sender, TREE_TOKEN, breedCost);
         uint32 seed = breedTrees(_tokenId1, _tokenId2, getSeed(_tokenId1), getSeed(_tokenId2));
         mintTree(msg.sender, seed);
+    }
+
+    function plantTree(uint256 _tokenId) external {
+        require(balanceOf(msg.sender, _tokenId) == 1, "Not the owner of the tree");
+        plantTree(_tokenId, 0);
+    }
+}
+
+contract Forest {
+    struct PlantedTree {
+        uint256 tokenId;
+        uint256 startTime;
+        uint8 growingTime;
+    }
+
+    mapping(address => PlantedTree) plantedTrees;
+
+    function getGrowingTime(uint8 trunkStat) private returns (uint8) {
+        return trunkStat / 2;
+    }
+
+    function getProducedTokens(uint8 leavesStat) private returns (uint8) {
+        return leavesStat / 2;
+    }
+
+
+    function plantTree(uint256 tokenId, uint8 trunkStat) internal {
+        plantedTrees[msg.sender] = PlantedTree(tokenId, now, getGrowingTime(trunkStat));
+    }
+
+    function getGrowingTree() external view {
+        return plantTrees[msg.sender];
+    }
+
+    function collectTree(uint8 leavesStat) internal returns (uint8) {
+        PlantedTree memory plantedTree = plantedTrees[msg.sender];
+        require(now - plantedTree.startTime / 3600 > plantedTree.growingTime);
+        delete plantedTrees[msg.sender];
+        uint8 tokens = getProducedTokens(leavesStat);
+        return tokens;
     }
 }
