@@ -12,7 +12,6 @@ contract TreeToken is ERC1155, Ownable, ERC1155Burnable {
     mapping(uint256 => uint32) private treeSeeds;
 
     constructor() ERC1155("https://pooetitu.fr/tree/") {
-        _mint(msg.sender, TREE_TOKEN, 4 * 10 ** 6, "");
     }
 
     function mintTree(address to, uint32 seed) internal {
@@ -99,6 +98,10 @@ contract TreeCore is TreeToken, BreedTree, Forest {
     function plantTree(uint256 _tokenId) external {
         require(balanceOf(msg.sender, _tokenId) == 1, "Not the owner of the tree");
         plantTree(_tokenId, 0);
+    }
+    function collectTree() external {
+        uint8 tokens = collectTree(0);
+        _mint(msg.sender, TREE_TOKEN, tokens, "");
     }
 }
 
