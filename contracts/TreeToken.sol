@@ -134,12 +134,12 @@ contract TreeStats {
         require(treeStats[_tokenId].leavesUpgrade <= treeStats[_tokenId].maxUpgrades, "Max leaves level reached for this token");
     }
 
-    function getLeavesUpgradeCost(uint256 _tokenId) public view returns (uint8) {
-        return treeStats[_tokenId].leavesUpgrade / treeStats[_tokenId].maxUpgrades;
+    function getLeavesUpgradeCost(uint256 _tokenId, uint8 leavesBaseStates) public view returns (uint8) {
+        return treeStats[_tokenId].leavesUpgrade + leavesBaseStates / treeStats[_tokenId].maxUpgrades;
     }
 
-    function getTrunkUpgradeCost(uint256 _tokenId) public view returns (uint8) {
-        return treeStats[_tokenId].trunkUpgrade / treeStats[_tokenId].maxUpgrades;
+    function getTrunkUpgradeCost(uint256 _tokenId, uint8 trunkBaseStats) public view returns (uint8) {
+        return treeStats[_tokenId].trunkUpgrade + trunkBaseStats / treeStats[_tokenId].maxUpgrades;
     }
 
     function upgradeTrunk(uint256 _tokenId) internal {
@@ -185,7 +185,8 @@ contract TreeCore is TreeToken, BreedTree, Forest, TreeStats {
     function upgradeTreeTrunk(uint256 _tokenId) external {
         require(balanceOf(msg.sender, _tokenId) == 1, "Not the owner of the tree");
         canUpgradeTrunk(_tokenId);
-        uint8 cost = getTrunkUpgradeCost(_tokenId);
+        uint32 seed = getSeed(_tokenId);
+        uint8 cost = getTrunkUpgradeCost(_tokenId, getSeedTrunkStats(seed));
         _burn(msg.sender, TREE_TOKEN, cost);
         upgradeTrunk(_tokenId);
     }
@@ -193,7 +194,8 @@ contract TreeCore is TreeToken, BreedTree, Forest, TreeStats {
     function upgradeTreeLeaves(uint256 _tokenId) external {
         require(balanceOf(msg.sender, _tokenId) == 1, "Not the owner of the tree");
         canUpgradeLeaves(_tokenId);
-        uint8 cost = getLeavesUpgradeCost(_tokenId);
+        uint32 seed = getSeed(_tokenId);
+        uint8 cost = getLeavesUpgradeCost(_tokenId,getSeedLeavesStats(seed));
         _burn(msg.sender, TREE_TOKEN, cost);
         upgradeLeaves(_tokenId);
     }
