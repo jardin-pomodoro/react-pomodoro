@@ -14,9 +14,9 @@ contract TreeToken is ERC1155, Ownable, ERC1155Burnable {
     constructor() ERC1155("https://pooetitu.fr/tree/") {
     }
 
-    function mintTree(address to, uint32 seed) internal {
-        treeSeeds[tokenId] = seed;
-        _mint(to, tokenId, 1, "");
+    function mintTree(address _to, uint32 _seed) internal {
+        treeSeeds[tokenId] = _seed;
+        _mint(_to, tokenId, 1, "");
         tokenId += 1;
     }
 
@@ -92,32 +92,70 @@ contract Forest {
 
     mapping(address => PlantedTree) plantedTrees;
 
-    function getGrowingTime(uint8 trunkStat) private pure returns (uint8) {
-        return trunkStat / 2;
+    function getGrowingTime(uint8 _trunkStat) private pure returns (uint8) {
+        return _trunkStat / 2;
     }
 
-    function getProducedTokens(uint8 leavesStat) private pure returns (uint8) {
-        return leavesStat / 2;
+    function getProducedTokens(uint8 _leavesStat) private pure returns (uint8) {
+        return _leavesStat * 2;
     }
 
-    function plantTree(uint256 tokenId, uint8 trunkStat) internal {
-        plantedTrees[msg.sender] = PlantedTree(tokenId, block.timestamp, getGrowingTime(trunkStat));
+    function plantTree(uint256 _tokenId, uint8 _trunkStat) internal {
+        plantedTrees[msg.sender] = PlantedTree(_tokenId, block.timestamp, getGrowingTime(_trunkStat));
     }
 
     function getGrowingTree() external view returns (PlantedTree memory) {
         return plantedTrees[msg.sender];
     }
 
-    function collectTree(uint8 leavesStat) internal returns (uint8) {
+    function collectTree(uint8 _leavesStat) internal returns (uint8) {
         PlantedTree memory plantedTree = plantedTrees[msg.sender];
         require(block.timestamp - plantedTree.startTime / 3600 > plantedTree.growingTime);
         delete plantedTrees[msg.sender];
-        uint8 tokens = getProducedTokens(leavesStat);
+        uint8 tokens = getProducedTokens(_leavesStat);
         return tokens;
     }
 }
 
-contract TreeCore is TreeToken, BreedTree, Forest {
+contract TreeStats {
+    struct TreeUpgrade {
+        uint8 maxUpgrades;
+        uint8 leavesUpgrade;
+        uint8 trunkUpgrade;
+    }
+
+    mapping(uint256 => TreeUpgrade) treeStats;
+
+    function canUpgradeTrunk(uint256 _tokenId) internal view {
+        require(treeStats[_tokenId].trunkUpgrade <= treeStats[_tokenId].maxUpgrades, "Max trunk level reached for this token");
+    }
+
+    function canUpgradeLeaves(uint256 _tokenId) internal view {
+        require(treeStats[_tokenId].leavesUpgrade <= treeStats[_tokenId].maxUpgrades, "Max leaves level reached for this token");
+    }
+
+    function getLeavesUpgradeCost(uint256 _tokenId) public view returns (uint8) {
+        return treeStats[_tokenId].leavesUpgrade / treeStats[_tokenId].maxUpgrades;
+    }
+
+    function getTrunkUpgradeCost(uint256 _tokenId) public view returns (uint8) {
+        return treeStats[_tokenId].trunkUpgrade / treeStats[_tokenId].maxUpgrades;
+    }
+
+    function upgradeTrunk(uint256 _tokenId) internal {
+        treeStats[_tokenId].trunkUpgrade++;
+    }
+
+    function upgradeLeaves(uint256 _tokenId) internal {
+        treeStats[_tokenId].leavesUpgrade++;
+    }
+
+    function getTreeStats(uint256 _tokenId) external view returns (TreeUpgrade memory) {
+        return treeStats[_tokenId];
+    }
+}
+
+contract TreeCore is TreeToken, BreedTree, Forest, TreeStats {
     function breed(uint256 _tokenId1, uint256 _tokenId2) external {
         require(balanceOf(msg.sender, _tokenId1) == 1, "Not the owner of the tree");
         require(balanceOf(msg.sender, _tokenId2) == 1, "Not the owner of the tree");
@@ -137,5 +175,21 @@ contract TreeCore is TreeToken, BreedTree, Forest {
     function collectTree() external {
         uint8 tokens = collectTree(0);
         _mint(msg.sender, TREE_TOKEN, tokens, "");
+    }
+
+    function upgradeTreeTrunk(uint256 _tokenId) external {
+        require(balanceOf(msg.sender, _tokenId) == 1, "Not the owner of the tree");
+        canUpgradeTrunk(_tokenId);
+        uint8 cost = getTrunkUpgradeCost(_tokenId);
+        _burn(msg.sender, TREE_TOKEN, cost);
+        upgradeTrunk(_tokenId);
+    }
+
+    function upgradeTreeLeaves(uint256 _tokenId) external {
+        require(balanceOf(msg.sender, _tokenId) == 1, "Not the owner of the tree");
+        canUpgradeLeaves(_tokenId);
+        uint8 cost = getLeavesUpgradeCost(_tokenId);
+        _burn(msg.sender, TREE_TOKEN, cost);
+        upgradeLeaves(_tokenId);
     }
 }
