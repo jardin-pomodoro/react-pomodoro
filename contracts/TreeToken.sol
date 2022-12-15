@@ -165,14 +165,47 @@ contract TreeStats {
     }
 }
 
-contract TreeCore is TreeToken, BreedTree, Forest, TreeStats {
+contract ForestSeeds {
+    struct ForestSeed {
+        uint8 seeds;
+        uint32 boughtSeeds;
+        uint256 lastUpdate;
+    }
+
+    mapping(address => ForestSeed) private userSeeds;
+
+    function consumeSeed() internal {
+        if (userSeeds[msg.sender].seeds > 0) {
+            userSeeds[msg.sender].seeds--;
+        }
+        else {
+            userSeeds[msg.sender].boughtSeeds--;
+        }
+    }
+
+    function updateSeeds() internal {
+        if (userSeeds[msg.sender].lastUpdate / 86400 < block.timestamp / 86400) {
+            userSeeds[msg.sender].seeds = 4;
+            userSeeds[msg.sender].lastUpdate = block.timestamp;
+        }
+    }
+
+    function getSeeds() public view returns (uint32) {
+        updateSeeds();
+        return seeds[msg.sender].boughtSeeds + seeds[msg.sender].seeds;
+    }
+}
+
+contract TreeCore is TreeToken, BreedTree, Forest, TreeStats, ForestSeeds {
     function breed(uint256 _tokenId1, uint256 _tokenId2) external {
         require(balanceOf(msg.sender, _tokenId1) == 1, "Not the owner of the tree");
         require(balanceOf(msg.sender, _tokenId2) == 1, "Not the owner of the tree");
+        require(getSeed() > 0, "No seeds left");
         canTreeBreed(_tokenId1);
         canTreeBreed(_tokenId2);
         uint8 breedCost = treeBreedCost(_tokenId1) + treeBreedCost(_tokenId2);
         _burn(msg.sender, TREE_TOKEN, breedCost);
+        consumeSeed();
         uint32 seed = breedTrees(_tokenId1, _tokenId2, getSeed(_tokenId1), getSeed(_tokenId2));
         uint256 tokenId = mintTree(msg.sender, seed);
         addTreeStats(tokenId, getTreeRarity(seed));
