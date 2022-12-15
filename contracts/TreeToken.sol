@@ -14,10 +14,12 @@ contract TreeToken is ERC1155, Ownable, ERC1155Burnable {
     constructor() ERC1155("https://pooetitu.fr/tree/") {
     }
 
-    function mintTree(address _to, uint32 _seed) internal {
+    function mintTree(address _to, uint32 _seed) internal returns (uint256) {
         treeSeeds[tokenId] = _seed;
-        _mint(_to, tokenId, 1, "");
+        uint256 _tokenId = tokenId;
+        _mint(_to, _tokenId, 1, "");
         tokenId += 1;
+        return _tokenId;
     }
 
     function setURI(string memory newUri) public onlyOwner {
@@ -126,6 +128,14 @@ contract TreeStats {
 
     mapping(uint256 => TreeUpgrade) treeStats;
 
+    function generateMaxUpgrades(uint8 rarity) private pure returns (uint8) {
+        return uint8(rarity / 6);
+    }
+
+    function addTreeStats(uint256 _tokenId, uint8 treeRarity) internal {
+        treeStats[_tokenId] = TreeUpgrade(generateMaxUpgrades(treeRarity), 0, 0);
+    }
+
     function canUpgradeTrunk(uint256 _tokenId) internal view {
         require(treeStats[_tokenId].trunkUpgrade <= treeStats[_tokenId].maxUpgrades, "Max trunk level reached for this token");
     }
@@ -164,7 +174,8 @@ contract TreeCore is TreeToken, BreedTree, Forest, TreeStats {
         uint8 breedCost = treeBreedCost(_tokenId1) + treeBreedCost(_tokenId2);
         _burn(msg.sender, TREE_TOKEN, breedCost);
         uint32 seed = breedTrees(_tokenId1, _tokenId2, getSeed(_tokenId1), getSeed(_tokenId2));
-        mintTree(msg.sender, seed);
+        uint256 tokenId = mintTree(msg.sender, seed);
+        addTreeStats(tokenId, getTreeRarity(seed));
     }
 
     function plantTree(uint256 _tokenId) external {
@@ -218,5 +229,14 @@ contract TreeCore is TreeToken, BreedTree, Forest, TreeStats {
             seed /= 10;
         }
         return trunkStats;
+    }
+
+    function getTreeRarity(uint32 _seed) public pure returns (uint8) {
+        uint8 rarity = 0;
+        for (uint8 i = 0; i < 6; i++) {
+            rarity += uint8(_seed % 10);
+            _seed /= 10;
+        }
+        return rarity;
     }
 }
