@@ -5,9 +5,9 @@
   "scripts": {
     "test": "hardhat test",
     "compile": "hardhat compile",
-    "deploy": "hardhat run scripts/deploy.js",
-    "deploy:mumbai": "hardhat run scripts/deploy.js --network mumbai",
-    "deploy:local": "hardhat run scripts/deploy.js --network localhost"
+    "deploy": "hardhat run scripts/deploy.ts",
+    "deploy:mumbai": "hardhat run scripts/deploy.ts --network mumbai",
+    "deploy:local": "hardhat run scripts/deploy.ts --network localhost"
   },
   "license": "MIT",
   "devDependencies": {
