@@ -150,7 +150,7 @@ contract TreeStats {
         treeStats[_tokenId].leavesUpgrade++;
     }
 
-    function getTreeStats(uint256 _tokenId) external view returns (TreeUpgrade memory) {
+    function getTreeStats(uint256 _tokenId) public view returns (TreeUpgrade memory) {
         return treeStats[_tokenId];
     }
 }
@@ -191,5 +191,25 @@ contract TreeCore is TreeToken, BreedTree, Forest, TreeStats {
         uint8 cost = getLeavesUpgradeCost(_tokenId);
         _burn(msg.sender, TREE_TOKEN, cost);
         upgradeLeaves(_tokenId);
+    }
+
+    function getSeedLeavesStats(uint8 _seed) public pure returns (uint8) {
+        uint8 seed = uint8(_seed % 1000);
+        uint8 leavesStats = 0;
+        for (uint8 i = 0; i < 3; i++) {
+            leavesStats += seed % 10;
+            seed /= 10;
+        }
+        return leavesStats;
+    }
+
+    function getSeedTrunkStats(uint8 _seed) public pure returns (uint8) {
+        uint8 seed = uint8(_seed % 1000);
+        uint8 trunkStats = 0;
+        for (uint8 i = 0; i < 3; i++) {
+            trunkStats += seed % 10;
+            seed /= 10;
+        }
+        return trunkStats;
     }
 }
