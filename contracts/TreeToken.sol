@@ -80,8 +80,8 @@ contract BreedTree {
         require(treeBreeds[_tokenId] < 2, "Tree already breed");
     }
 
-    function treeBreedCost(uint256 token) public view returns (uint8) {
-        return 20;
+    function treeBreedCost(uint8 treeRarity1, uint8 treeRarity2) public pure returns (uint8) {
+        return (treeRarity1 + treeRarity2) / 2;
     }
 }
 
@@ -191,8 +191,7 @@ contract ForestSeeds {
     }
 
     function getSeeds() public view returns (uint32) {
-        updateSeeds();
-        return seeds[msg.sender].boughtSeeds + seeds[msg.sender].seeds;
+        return userSeeds[msg.sender].boughtSeeds + userSeeds[msg.sender].seeds;
     }
 }
 
@@ -200,10 +199,11 @@ contract TreeCore is TreeToken, BreedTree, Forest, TreeStats, ForestSeeds {
     function breed(uint256 _tokenId1, uint256 _tokenId2) external {
         require(balanceOf(msg.sender, _tokenId1) == 1, "Not the owner of the tree");
         require(balanceOf(msg.sender, _tokenId2) == 1, "Not the owner of the tree");
-        require(getSeed() > 0, "No seeds left");
+        updateSeeds();
+        require(getSeeds() > 0, "No seeds left");
         canTreeBreed(_tokenId1);
         canTreeBreed(_tokenId2);
-        uint8 breedCost = treeBreedCost(_tokenId1) + treeBreedCost(_tokenId2);
+        uint8 breedCost = treeBreedCost(getTreeRarity(getSeed(_tokenId1)), getTreeRarity(getSeed(_tokenId1)));
         _burn(msg.sender, TREE_TOKEN, breedCost);
         consumeSeed();
         uint32 seed = breedTrees(_tokenId1, _tokenId2, getSeed(_tokenId1), getSeed(_tokenId2));
