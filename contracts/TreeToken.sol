@@ -38,14 +38,14 @@ contract TreeToken is ERC1155, Ownable, ERC1155Burnable {
     }
 
     function getSeed(uint256 _tokenId) public view returns (uint32) {
-        return treeSeeds[tokenId];
+        return treeSeeds[_tokenId];
     }
 }
 
 contract BreedTree {
     mapping(uint256 => uint8) private treeBreeds;
 
-    function mutate(uint32 seed) private returns (uint32) {
+    function mutate(uint32 seed) private view returns (uint32) {
         uint32 mutations = seed;
         for (uint8 i = 0; i < 32; i++) {
             uint32 mutation = uint32(uint256(keccak256(abi.encodePacked(block.timestamp, seed, i))) % 5) - 2;
@@ -54,7 +54,7 @@ contract BreedTree {
         return mutations;
     }
 
-    function breed(uint32 seed1, uint32 seed2) private returns (uint32) {
+    function breed(uint32 seed1, uint32 seed2) private pure returns (uint32) {
         uint32 seed = 0;
         for (uint8 i = 0; i < 6; i++) {
             seed += (seed1 % 10 + seed2 % 10) / 2;
@@ -74,12 +74,46 @@ contract BreedTree {
         return mutate(seed);
     }
 
-    function canTreeBreed(uint256 _tokenId) internal {
+    function canTreeBreed(uint256 _tokenId) internal view {
         require(treeBreeds[_tokenId] < 2, "Tree already breed");
     }
 
-    function treeBreedCost(uint256 _tokenId) public view returns (uint8) {
+    function treeBreedCost(uint256 token) public view returns (uint8) {
         return 20;
+    }
+}
+
+contract Forest {
+    struct PlantedTree {
+        uint256 tokenId;
+        uint256 startTime;
+        uint8 growingTime;
+    }
+
+    mapping(address => PlantedTree) plantedTrees;
+
+    function getGrowingTime(uint8 trunkStat) private pure returns (uint8) {
+        return trunkStat / 2;
+    }
+
+    function getProducedTokens(uint8 leavesStat) private pure returns (uint8) {
+        return leavesStat / 2;
+    }
+
+    function plantTree(uint256 tokenId, uint8 trunkStat) internal {
+        plantedTrees[msg.sender] = PlantedTree(tokenId, block.timestamp, getGrowingTime(trunkStat));
+    }
+
+    function getGrowingTree() external view returns (PlantedTree memory) {
+        return plantedTrees[msg.sender];
+    }
+
+    function collectTree(uint8 leavesStat) internal returns (uint8) {
+        PlantedTree memory plantedTree = plantedTrees[msg.sender];
+        require(block.timestamp - plantedTree.startTime / 3600 > plantedTree.growingTime);
+        delete plantedTrees[msg.sender];
+        uint8 tokens = getProducedTokens(leavesStat);
+        return tokens;
     }
 }
 
@@ -99,43 +133,9 @@ contract TreeCore is TreeToken, BreedTree, Forest {
         require(balanceOf(msg.sender, _tokenId) == 1, "Not the owner of the tree");
         plantTree(_tokenId, 0);
     }
+
     function collectTree() external {
         uint8 tokens = collectTree(0);
         _mint(msg.sender, TREE_TOKEN, tokens, "");
-    }
-}
-
-contract Forest {
-    struct PlantedTree {
-        uint256 tokenId;
-        uint256 startTime;
-        uint8 growingTime;
-    }
-
-    mapping(address => PlantedTree) plantedTrees;
-
-    function getGrowingTime(uint8 trunkStat) private returns (uint8) {
-        return trunkStat / 2;
-    }
-
-    function getProducedTokens(uint8 leavesStat) private returns (uint8) {
-        return leavesStat / 2;
-    }
-
-
-    function plantTree(uint256 tokenId, uint8 trunkStat) internal {
-        plantedTrees[msg.sender] = PlantedTree(tokenId, now, getGrowingTime(trunkStat));
-    }
-
-    function getGrowingTree() external view {
-        return plantTrees[msg.sender];
-    }
-
-    function collectTree(uint8 leavesStat) internal returns (uint8) {
-        PlantedTree memory plantedTree = plantedTrees[msg.sender];
-        require(now - plantedTree.startTime / 3600 > plantedTree.growingTime);
-        delete plantedTrees[msg.sender];
-        uint8 tokens = getProducedTokens(leavesStat);
-        return tokens;
     }
 }
