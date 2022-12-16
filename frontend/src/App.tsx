@@ -1,5 +1,6 @@
 import { MantineProvider } from '@mantine/core';
 
+import './App.css';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
