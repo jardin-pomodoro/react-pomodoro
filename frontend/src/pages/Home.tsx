@@ -1,7 +1,14 @@
+import { HeaderMenu } from '../components/common/header';
+
 function Home() {
   return (
     <>
-      <br />
+      <HeaderMenu
+        links={[
+          { link: '', label: 'Home', links: [] },
+          { link: '', label: 'gallery', links: [] },
+        ]}
+      />
       <h1>Hello World !</h1>
     </>
   );

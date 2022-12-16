@@ -1,25 +1,35 @@
-import { Grid } from '@mantine/core';
+import { Divider, Grid } from '@mantine/core';
+import { HeaderMenu } from '../components/common/header';
 import { FeaturesCard } from '../components/gallery/card';
 
 function Gallery() {
   return (
-    <Grid grow>
-      <Grid.Col span={4}>
-        <FeaturesCard />
-      </Grid.Col>
-      <Grid.Col span={4}>
-        <FeaturesCard />
-      </Grid.Col>
-      <Grid.Col span={4}>
-        <FeaturesCard />
-      </Grid.Col>
-      <Grid.Col span={4}>
-        <FeaturesCard />
-      </Grid.Col>
-      <Grid.Col span={4}>
-        <FeaturesCard />
-      </Grid.Col>
-    </Grid>
+    <>
+      <HeaderMenu
+        links={[
+          { link: '', label: 'Home', links: [] },
+          { link: '', label: 'gallery', links: [] },
+        ]}
+      />
+      <Grid>
+        <Divider my="m" />
+        <Grid.Col span={4}>
+          <FeaturesCard />
+        </Grid.Col>
+        <Grid.Col span={4}>
+          <FeaturesCard />
+        </Grid.Col>
+        <Grid.Col span={4}>
+          <FeaturesCard />
+        </Grid.Col>
+        <Grid.Col span={4}>
+          <FeaturesCard />
+        </Grid.Col>
+        <Grid.Col span={4}>
+          <FeaturesCard />
+        </Grid.Col>
+      </Grid>
+    </>
   );
 }
 

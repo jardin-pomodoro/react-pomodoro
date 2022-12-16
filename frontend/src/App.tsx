@@ -21,7 +21,7 @@ export function WrappedApp() {
       withCSSVariables
       withNormalizeCSS
       theme={{
-        colorScheme: 'dark',
+        colorScheme: 'light',
       }}
     >
       <BrowserRouter>

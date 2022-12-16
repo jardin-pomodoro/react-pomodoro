@@ -1,126 +1,33 @@
 /* eslint-disable import/prefer-default-export */
-import {
-  Card,
-  Image,
-  Text,
-  Group,
-  Badge,
-  createStyles,
-  Center,
-  Button,
-} from '@mantine/core';
-import {
-  IconGasStation,
-  IconGauge,
-  IconManualGearbox,
-  IconUsers,
-} from '@tabler/icons';
-
-const useStyles = createStyles((theme) => ({
-  card: {
-    backgroundColor:
-      theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-  },
-
-  imageSection: {
-    padding: theme.spacing.md,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderBottom: `1px solid ${
-      theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]
-    }`,
-  },
-
-  label: {
-    marginBottom: theme.spacing.xs,
-    lineHeight: 1,
-    fontWeight: 700,
-    fontSize: theme.fontSizes.xs,
-    letterSpacing: -0.25,
-    textTransform: 'uppercase',
-  },
-
-  section: {
-    padding: theme.spacing.md,
-    borderTop: `1px solid ${
-      theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]
-    }`,
-  },
-
-  icon: {
-    marginRight: 5,
-    color:
-      theme.colorScheme === 'dark'
-        ? theme.colors.dark[2]
-        : theme.colors.gray[5],
-  },
-}));
-
-const mockdata = [
-  { label: '4 passengers', icon: IconUsers },
-  { label: '100 km/h in 4 seconds', icon: IconGauge },
-  { label: 'Automatic gearbox', icon: IconManualGearbox },
-  { label: 'Electric', icon: IconGasStation },
-];
+import { Card, Image, Text, Badge, Button, Group } from '@mantine/core';
 
 export function FeaturesCard() {
-  const { classes } = useStyles();
-  const features = mockdata.map((feature) => (
-    <Center key={feature.label}>
-      <feature.icon size={18} className={classes.icon} stroke={1.5} />
-      <Text size="xs">{feature.label}</Text>
-    </Center>
-  ));
 
   return (
-    <Card withBorder radius="md" className={classes.card}>
-      <Card.Section className={classes.imageSection}>
-        <Image src="https://i.imgur.com/ZL52Q2D.png" alt="Tesla Model S" />
+    <Card shadow="sm" p="lg" radius="md" withBorder>
+      <Card.Section component="a" href="https://mantine.dev/">
+        <Image
+          src="https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
+          height={160}
+          alt="Norway"
+        />
       </Card.Section>
 
-      <Group position="apart" mt="md">
-        <div>
-          <Text weight={500}>Tesla Model S</Text>
-          <Text size="xs" color="dimmed">
-            Free recharge at any station
-          </Text>
-        </div>
-        <Badge variant="outline">25% off</Badge>
+      <Group position="apart" mt="md" mb="xs">
+        <Text weight={500}>Norway Fjord Adventures</Text>
+        <Badge color="pink" variant="light">
+          On Sale
+        </Badge>
       </Group>
 
-      <Card.Section className={classes.section} mt="md">
-        <Text size="sm" color="dimmed" className={classes.label}>
-          Basic configuration
-        </Text>
+      <Text size="sm" color="dimmed">
+        With Fjord Tours you can explore more of the magical fjord landscapes
+        with tours and activities on and around the fjords of Norway
+      </Text>
 
-        <Group spacing={8} mb={-8}>
-          {features}
-        </Group>
-      </Card.Section>
-
-      <Card.Section className={classes.section}>
-        <Group spacing={30}>
-          <div>
-            <Text size="xl" weight={700} sx={{ lineHeight: 1 }}>
-              $168.00
-            </Text>
-            <Text
-              size="sm"
-              color="dimmed"
-              weight={500}
-              sx={{ lineHeight: 1 }}
-              mt={3}
-            >
-              per day
-            </Text>
-          </div>
-
-          <Button radius="xl" style={{ flex: 1 }}>
-            Rent now
-          </Button>
-        </Group>
-      </Card.Section>
+      <Button variant="light" color="blue" fullWidth mt="md" radius="md">
+        Book classic tour now
+      </Button>
     </Card>
   );
 }
