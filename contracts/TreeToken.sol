@@ -8,13 +8,13 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 contract TreeToken is ERC1155, Ownable, ERC1155Burnable {
     string public name = "Tree Collection";
     uint256 internal TREE_TOKEN = 0;
-    uint256 private tokenId = 1;
-    mapping(uint256 => uint32) private treeSeeds;
+    uint256 internal tokenId = 1;
+    mapping(uint256 => uint) private treeSeeds;
 
     constructor() ERC1155("https://pooetitu.fr/tree/") {
     }
 
-    function mintTree(address _to, uint32 _seed) internal returns (uint256) {
+    function mintTree(address _to, uint _seed) internal returns (uint256) {
         treeSeeds[tokenId] = _seed;
         uint256 _tokenId = tokenId;
         _mint(_to, _tokenId, 1, "");
@@ -39,7 +39,7 @@ contract TreeToken is ERC1155, Ownable, ERC1155Burnable {
         return super.uri(0);
     }
 
-    function getSeed(uint256 _tokenId) public view returns (uint32) {
+    function getSeed(uint256 _tokenId) public view returns (uint) {
         return treeSeeds[_tokenId];
     }
 }
