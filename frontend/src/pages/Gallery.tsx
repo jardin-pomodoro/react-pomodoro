@@ -7,8 +7,8 @@ function Gallery() {
     <>
       <HeaderMenu
         links={[
-          { link: '', label: 'Home', links: [] },
-          { link: '', label: 'gallery', links: [] },
+          { link: '/', label: 'Home', links: [] },
+          { link: '/gallery', label: 'gallery', links: [] },
         ]}
       />
       <Grid>

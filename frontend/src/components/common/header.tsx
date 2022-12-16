@@ -7,6 +7,7 @@ import {
   Center,
   Burger,
   Container,
+  Text,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconChevronDown } from '@tabler/icons';
@@ -110,6 +111,9 @@ export function HeaderMenu({ links }: HeaderSearchProps) {
     <Header height={56} mb={120}>
       <Container>
         <div className={classes.inner}>
+          <Text c="teal.8" fz="lg">
+            Forest
+          </Text>
           <Group spacing={5} className={classes.links}>
             {items}
           </Group>
