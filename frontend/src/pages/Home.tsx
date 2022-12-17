@@ -5,8 +5,9 @@ function Home() {
     <>
       <HeaderMenu
         links={[
-          { link: '/', label: 'Home', links: [] },
-          { link: '/gallery', label: 'gallery', links: [] },
+          { link: './', label: 'Home', links: [] },
+          { link: './gallery', label: 'Gallery', links: [] },
+          { link: './acheter', label: 'Acheter', links: [] },
         ]}
       />
       <h1>Hello World !</h1>

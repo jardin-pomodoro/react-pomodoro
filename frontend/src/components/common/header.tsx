@@ -42,16 +42,16 @@ const useStyles = createStyles((theme) => ({
     color:
       theme.colorScheme === 'dark'
         ? theme.colors.dark[0]
-        : theme.colors.gray[0],
+        : theme.colors.dark[0],
     fontSize: theme.fontSizes.sm,
     fontWeight: 500,
 
     '&:hover': {
-      color: theme.colors.dark[8],
+      color: theme.colors.gray[0],
       backgroundColor:
         theme.colorScheme === 'dark'
           ? theme.colors.dark[6]
-          : theme.colors.gray[0],
+          : theme.colors.teal[8],
     },
   },
 
@@ -113,7 +113,7 @@ export function HeaderMenu({ links }: HeaderSearchProps) {
     <Header className="header" height={56} mb={120}>
       <Container>
         <div className={classes.inner}>
-          <Text c="gray.0" fz="lg">
+          <Text c="teal.8" fz="lg">
             NFT-Forest
           </Text>
           <Group spacing={5} className={classes.links}>

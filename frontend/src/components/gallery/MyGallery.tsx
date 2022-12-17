@@ -4,7 +4,7 @@ import { FeaturesCard } from './card';
 import './my-gallery.css';
 
 export function MyGallery() {
-  document.body.style.backgroundColor = '#50AA8D';
+  //document.body.style.backgroundColor = '#50AA8D';
   return (
     <div className="gallery-body">
       <Container>
