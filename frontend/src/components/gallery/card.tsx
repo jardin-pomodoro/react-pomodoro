@@ -1,9 +1,38 @@
 /* eslint-disable import/prefer-default-export */
-import { Card, Image, Text, Badge, Button, Group } from '@mantine/core';
+import {
+  Card,
+  Image,
+  Text,
+  Badge,
+  Button,
+  Group,
+  createStyles,
+} from '@mantine/core';
+import './card.css';
 
-export function FeaturesCard() {
+interface FeaturesCardProps {
+  backgroundColor: string;
+}
+
+const useStyles = createStyles(
+  (theme, { backgroundColor }: FeaturesCardProps) => ({
+    card_body: {
+      backgroundColor,
+    },
+  })
+);
+
+export function FeaturesCard({ backgroundColor }: FeaturesCardProps) {
+  console.log(document.querySelectorAll<HTMLElement>('.card-body')[0]);
+  const { classes } = useStyles({ backgroundColor });
   return (
-    <Card shadow="sm" p="lg" radius="md" withBorder>
+    <Card
+      shadow="sm"
+      p="lg"
+      radius="md"
+      className={classes.card_body}
+      withBorder
+    >
       <Card.Section component="a" href="https://mantine.dev/">
         <Image
           src="https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"

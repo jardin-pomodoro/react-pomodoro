@@ -41,8 +41,8 @@ const useStyles = createStyles((theme) => ({
     textDecoration: 'none',
     color:
       theme.colorScheme === 'dark'
-        ? theme.colors.dark[0]
-        : theme.colors.dark[0],
+        ? theme.colors.dark[8]
+        : theme.colors.dark[8],
     fontSize: theme.fontSizes.sm,
     fontWeight: 500,
 
