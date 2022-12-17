@@ -1,3 +1,4 @@
+import { useState } from 'react';
 /* eslint-disable import/prefer-default-export */
 import {
   Card,
@@ -13,21 +14,24 @@ interface FeaturesCardProps {
   backgroundColor: string;
   textColor: string;
   title: string;
+  selectMerge: (id: string) => void;
+}
+
+interface FeaturesCardStyle {
+  cardBackgroundColor: string;
+  textColor: string;
 }
 
 const useStyles = createStyles(
-  (
-    theme,
-    { backgroundColor, textColor }: Omit<FeaturesCardProps, 'title'>
-  ) => ({
+  (theme, { cardBackgroundColor, textColor }: FeaturesCardStyle) => ({
     card_body: {
-      backgroundColor,
+      backgroundColor: cardBackgroundColor,
     },
     text_color: {
       color: textColor,
     },
     button_color: {
-      color: backgroundColor,
+      color: cardBackgroundColor,
       backgroundColor: textColor,
       '&:hover': {
         opacity: 0.95,
@@ -41,8 +45,14 @@ export function FeaturesCard({
   backgroundColor,
   textColor,
   title,
+  selectMerge,
 }: FeaturesCardProps) {
-  const { classes } = useStyles({ backgroundColor, textColor });
+  const [cardBackgroundColor, setCardBackgroundColor] =
+    useState(backgroundColor);
+  const { classes } = useStyles({
+    cardBackgroundColor,
+    textColor,
+  });
   return (
     <Card
       shadow="sm"
@@ -89,6 +99,13 @@ export function FeaturesCard({
         mt="md"
         radius="md"
         className={classes.button_color}
+        onClick={() => {
+          selectMerge(title);
+          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+          cardBackgroundColor === backgroundColor
+            ? setCardBackgroundColor('#F0F0F0')
+            : setCardBackgroundColor(backgroundColor);
+        }}
       >
         fusionner l'arbre
       </Button>
