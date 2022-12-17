@@ -11,6 +11,7 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconChevronDown } from '@tabler/icons';
+import './header.css';
 
 const useStyles = createStyles((theme) => ({
   inner: {
@@ -41,11 +42,12 @@ const useStyles = createStyles((theme) => ({
     color:
       theme.colorScheme === 'dark'
         ? theme.colors.dark[0]
-        : theme.colors.gray[7],
+        : theme.colors.gray[0],
     fontSize: theme.fontSizes.sm,
     fontWeight: 500,
 
     '&:hover': {
+      color: theme.colors.dark[8],
       backgroundColor:
         theme.colorScheme === 'dark'
           ? theme.colors.dark[6]
@@ -108,11 +110,11 @@ export function HeaderMenu({ links }: HeaderSearchProps) {
   });
 
   return (
-    <Header height={56} mb={120}>
+    <Header className="header" height={56} mb={120}>
       <Container>
         <div className={classes.inner}>
-          <Text c="teal.8" fz="lg">
-            Forest
+          <Text c="gray.0" fz="lg">
+            NFT-Forest
           </Text>
           <Group spacing={5} className={classes.links}>
             {items}

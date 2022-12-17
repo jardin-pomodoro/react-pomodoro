@@ -2,7 +2,6 @@
 import { Card, Image, Text, Badge, Button, Group } from '@mantine/core';
 
 export function FeaturesCard() {
-
   return (
     <Card shadow="sm" p="lg" radius="md" withBorder>
       <Card.Section component="a" href="https://mantine.dev/">
@@ -15,18 +14,20 @@ export function FeaturesCard() {
 
       <Group position="apart" mt="md" mb="xs">
         <Text weight={500}>Norway Fjord Adventures</Text>
-        <Badge color="pink" variant="light">
-          On Sale
+        <Badge color="teal.7" variant="light">
+          Disponible
         </Badge>
       </Group>
 
       <Text size="sm" color="dimmed">
-        With Fjord Tours you can explore more of the magical fjord landscapes
-        with tours and activities on and around the fjords of Norway
+        Cette NFT vous donnera la force de vosu concentrer
       </Text>
 
       <Button variant="light" color="blue" fullWidth mt="md" radius="md">
-        Book classic tour now
+        Améliorer l'arbre
+      </Button>
+      <Button variant="light" color="blue" fullWidth mt="md" radius="md">
+        fusionner l'arbre
       </Button>
     </Card>
   );

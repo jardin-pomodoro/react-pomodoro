@@ -1,6 +1,5 @@
-import { Divider, Grid } from '@mantine/core';
 import { HeaderMenu } from '../components/common/header';
-import { FeaturesCard } from '../components/gallery/card';
+import { MyGallery } from '../components/gallery/MyGallery';
 
 function Gallery() {
   return (
@@ -8,27 +7,11 @@ function Gallery() {
       <HeaderMenu
         links={[
           { link: '/', label: 'Home', links: [] },
-          { link: '/gallery', label: 'gallery', links: [] },
+          { link: '/gallery', label: 'Gallery', links: [] },
+          { link: '/acheter', label: 'Acheter', links: [] },
         ]}
       />
-      <Grid>
-        <Divider my="m" />
-        <Grid.Col span={4}>
-          <FeaturesCard />
-        </Grid.Col>
-        <Grid.Col span={4}>
-          <FeaturesCard />
-        </Grid.Col>
-        <Grid.Col span={4}>
-          <FeaturesCard />
-        </Grid.Col>
-        <Grid.Col span={4}>
-          <FeaturesCard />
-        </Grid.Col>
-        <Grid.Col span={4}>
-          <FeaturesCard />
-        </Grid.Col>
-      </Grid>
+      <MyGallery />
     </>
   );
 }
