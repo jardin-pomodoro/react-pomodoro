@@ -8,15 +8,18 @@ import {
   Group,
   createStyles,
 } from '@mantine/core';
-import './card.css';
 
 interface FeaturesCardProps {
   backgroundColor: string;
   textColor: string;
+  title: string;
 }
 
 const useStyles = createStyles(
-  (theme, { backgroundColor, textColor }: FeaturesCardProps) => ({
+  (
+    theme,
+    { backgroundColor, textColor }: Omit<FeaturesCardProps, 'title'>
+  ) => ({
     card_body: {
       backgroundColor,
     },
@@ -37,6 +40,7 @@ const useStyles = createStyles(
 export function FeaturesCard({
   backgroundColor,
   textColor,
+  title,
 }: FeaturesCardProps) {
   const { classes } = useStyles({ backgroundColor, textColor });
   return (
@@ -57,7 +61,7 @@ export function FeaturesCard({
 
       <Group position="apart" mt="md" mb="xs">
         <Text weight={500} className={classes.text_color}>
-          Norway Fjord Adventures
+          {title}
         </Text>
         <Badge color="teal.7" variant="light">
           Disponible
