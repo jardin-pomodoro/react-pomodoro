@@ -10,25 +10,25 @@ export function MyGallery() {
       <Container>
         <Grid>
           <Grid.Col span={4}>
-            <FeaturesCard backgroundColor="#76BA99" />
+            <FeaturesCard backgroundColor="#4B8673" textColor="#FFFFFF" />
           </Grid.Col>
           <Grid.Col span={4}>
-            <FeaturesCard backgroundColor="#76BA99" />
+            <FeaturesCard backgroundColor="#4B8673" textColor="#FFFFFF" />
           </Grid.Col>
           <Grid.Col span={4}>
-            <FeaturesCard backgroundColor="#76BA99" />
+            <FeaturesCard backgroundColor="#76BA99" textColor="#FFFFFF" />
           </Grid.Col>
           <Grid.Col span={4}>
-            <FeaturesCard backgroundColor="#76BA99" />
+            <FeaturesCard backgroundColor="#76BA99" textColor="#FFFFFF" />
           </Grid.Col>
           <Grid.Col span={4}>
-            <FeaturesCard backgroundColor="#76BA99" />
+            <FeaturesCard backgroundColor="#76BA99" textColor="#FFFFFF" />
           </Grid.Col>
           <Grid.Col span={4}>
-            <FeaturesCard backgroundColor="#76BA99" />
+            <FeaturesCard backgroundColor="#76BA99" textColor="#FFFFFF" />
           </Grid.Col>
           <Grid.Col span={4}>
-            <FeaturesCard backgroundColor="#76BA99" />
+            <FeaturesCard backgroundColor="#76BA99" textColor="#FFFFFF" />
           </Grid.Col>
         </Grid>
       </Container>

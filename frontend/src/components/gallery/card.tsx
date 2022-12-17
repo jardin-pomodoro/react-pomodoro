@@ -12,19 +12,33 @@ import './card.css';
 
 interface FeaturesCardProps {
   backgroundColor: string;
+  textColor: string;
 }
 
 const useStyles = createStyles(
-  (theme, { backgroundColor }: FeaturesCardProps) => ({
+  (theme, { backgroundColor, textColor }: FeaturesCardProps) => ({
     card_body: {
       backgroundColor,
+    },
+    text_color: {
+      color: textColor,
+    },
+    button_color: {
+      color: backgroundColor,
+      backgroundColor: textColor,
+      '&:hover': {
+        opacity: 0.95,
+        color: textColor,
+      },
     },
   })
 );
 
-export function FeaturesCard({ backgroundColor }: FeaturesCardProps) {
-  console.log(document.querySelectorAll<HTMLElement>('.card-body')[0]);
-  const { classes } = useStyles({ backgroundColor });
+export function FeaturesCard({
+  backgroundColor,
+  textColor,
+}: FeaturesCardProps) {
+  const { classes } = useStyles({ backgroundColor, textColor });
   return (
     <Card
       shadow="sm"
@@ -42,20 +56,36 @@ export function FeaturesCard({ backgroundColor }: FeaturesCardProps) {
       </Card.Section>
 
       <Group position="apart" mt="md" mb="xs">
-        <Text weight={500}>Norway Fjord Adventures</Text>
+        <Text weight={500} className={classes.text_color}>
+          Norway Fjord Adventures
+        </Text>
         <Badge color="teal.7" variant="light">
           Disponible
         </Badge>
       </Group>
 
-      <Text size="sm" color="dimmed">
+      <Text size="sm" className={classes.text_color}>
         Cette NFT vous donnera la force de vosu concentrer
       </Text>
 
-      <Button variant="light" color="blue" fullWidth mt="md" radius="md">
+      <Button
+        variant="light"
+        color="blue"
+        fullWidth
+        mt="md"
+        radius="md"
+        className={classes.button_color}
+      >
         Améliorer l'arbre
       </Button>
-      <Button variant="light" color="blue" fullWidth mt="md" radius="md">
+      <Button
+        variant="light"
+        color="blue"
+        fullWidth
+        mt="md"
+        radius="md"
+        className={classes.button_color}
+      >
         fusionner l'arbre
       </Button>
     </Card>
