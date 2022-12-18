@@ -17,7 +17,7 @@ interface BannerProps {
 }
 
 const modifyBanner = (selectedNfts: Nft[]): BannerProps => {
-  return {
+  const banner: BannerProps = {
     backgroundColor: '#4B8673',
     textColor: 'white',
     title: 'Fusionnez vos arbres',
@@ -26,6 +26,21 @@ const modifyBanner = (selectedNfts: Nft[]): BannerProps => {
     buttonText: 'Fusionner',
     buttonValidity: true,
   };
+  console.log(selectedNfts);
+
+  if (selectedNfts.length === 1) {
+    banner.title = 'Fusionnez vos arbres';
+    banner.description =
+      "Il ne vous manque qu'un arbre pour pouvoir procéder à la fusion";
+    banner.buttonText = 'Ajoutez en un de plus';
+    banner.buttonValidity = false;
+  } else if (selectedNfts.length === 2) {
+    banner.title = 'Fusionnez vos arbres';
+    banner.description = 'Vous pouvez fusionner vos arbres';
+    banner.buttonText = 'Fusionner';
+    banner.buttonValidity = true;
+  }
+  return banner;
 };
 
 export function MyGallery() {
@@ -55,13 +70,16 @@ export function MyGallery() {
     const nftIsAlreadysSelected = selectedNfts.find(
       (nftFromResearch) => nftFromResearch.id === id
     );
+    let newSelectedNfts = selectedNfts;
     if (nftIsAlreadysSelected) {
       selectedNfts.splice(selectedNfts.indexOf(nft), 1);
+      newSelectedNfts = selectedNfts;
       setSelectedNfts([...selectedNfts]);
     } else {
-      setSelectedNfts([...selectedNfts, nft]);
+      newSelectedNfts = [...selectedNfts, nft];
+      setSelectedNfts(newSelectedNfts);
     }
-    setBannerProps(modifyBanner(selectedNfts));
+    setBannerProps(modifyBanner(newSelectedNfts));
   };
 
   return (
