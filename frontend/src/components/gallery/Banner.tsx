@@ -6,44 +6,79 @@ import {
   Group,
   CloseButton,
   Container,
+  createStyles,
 } from '@mantine/core';
-import './banner.css';
 
 interface BannerProps {
   backgroundColor: string;
   textColor: string;
   title: string;
   description: string;
+  buttonValidity: boolean;
+  buttonText: string;
 }
+
+const useStyles = createStyles(
+  (_, { backgroundColor, textColor }: BannerProps) => ({
+    container_banner: {
+      marginBottom: '1.5rem',
+    },
+    banner_body: {
+      backgroundColor,
+      color: textColor,
+    },
+    banner_button_color: {
+      color: backgroundColor,
+      backgroundColor: textColor,
+      '&:hover': {
+        opacity: 0.95,
+        color: textColor,
+      },
+    },
+  })
+);
 
 export function Banner({
   backgroundColor,
   textColor,
   title,
   description,
+  buttonValidity,
+  buttonText,
 }: BannerProps) {
+  const { classes } = useStyles({
+    backgroundColor,
+    textColor,
+    title,
+    description,
+    buttonValidity,
+    buttonText,
+  });
+
   return (
-    <Container className="banner-body">
-      <Paper withBorder p="lg" radius="md" shadow="md">
+    <Container className={classes.container_banner}>
+      <Paper
+        withBorder
+        p="lg"
+        radius="md"
+        shadow="md"
+        className={classes.banner_body}
+      >
         <Group position="apart" mb="xs">
           <Text size="md" weight={500}>
-            Allow cookies
+            {title}
           </Text>
           <CloseButton mr={-9} mt={-9} />
         </Group>
-        <Text color="dimmed" size="xs">
-          So the deal is, we want to spy on you. We would like to know what did
-          you have for todays breakfast, where do you live, how much do you earn
-          and like 50 other things. To view our landing page you will have to
-          accept all cookies. That&apos;s all, and remember that we are
-          watching...
-        </Text>
+        <Text size="xs">{description}</Text>
         <Group position="right" mt="xs">
-          <Button variant="default" size="xs">
-            Cookies preferences
-          </Button>
-          <Button variant="outline" size="xs">
-            Accept all
+          <Button
+            variant="outline"
+            size="xs"
+            disabled={!buttonValidity}
+            className={classes.banner_button_color}
+          >
+            {buttonText}
           </Button>
         </Group>
       </Paper>
