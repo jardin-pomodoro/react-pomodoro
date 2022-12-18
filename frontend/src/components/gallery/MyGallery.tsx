@@ -7,6 +7,7 @@ import { GetNftsService } from '../../services/get-nfts.service';
 import { Nft } from '../../core/nft';
 import { Banner } from './Banner';
 import { MergeNftsService } from '../../services/merge-nfts.service';
+import { ImproveNftService } from '../../services/improve-tree.service';
 
 interface BannerProps {
   backgroundColor: string;
@@ -143,8 +144,6 @@ export function MyGallery() {
   };
 
   const mergeTwoNfts = () => {
-    console.log('je me pointe ici');
-    console.log(selectedNfts);
     if (selectedNfts.length !== 2) return;
     const nft1 = selectedNfts[0];
     const nft2 = selectedNfts[1];
@@ -152,6 +151,19 @@ export function MyGallery() {
     mergeNftsService.handle({ nft1: nft1.id, nft2: nft2.id }).then(() => {
       console.log("L'arbre a été fusionné avec succès");
       setSelectedNfts([]);
+      loadFeatureCardProps().then((featureCardUi) => {
+        console.log('featureCardUi ', featureCardUi);
+        setFeaturesCardProps(featureCardUi);
+      });
+    });
+  };
+
+  const improveNft = (id: string) => {
+    const improveNftService = new ImproveNftService(
+      new InMemoryNftRepository()
+    );
+    const nft: Nft = { id };
+    improveNftService.handle({ nft }).then(() => {
       loadFeatureCardProps().then((featureCardUi) => {
         console.log('featureCardUi ', featureCardUi);
         setFeaturesCardProps(featureCardUi);
@@ -201,6 +213,7 @@ export function MyGallery() {
                   title={nft.title}
                   textButtonMerge={nft.textButtonMerge}
                   selectMerge={selectNftToMerge}
+                  selectImprove={improveNft}
                 />
               </Grid.Col>
             );

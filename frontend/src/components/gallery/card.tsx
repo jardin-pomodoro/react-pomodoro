@@ -16,6 +16,7 @@ interface FeaturesCardProps {
   textButtonMerge: string;
   improveButtonShow: boolean;
   selectMerge: (id: string) => void;
+  selectImprove: (id: string) => void;
 }
 
 interface FeaturesCardStyle {
@@ -39,14 +40,6 @@ const useStyles = createStyles(
         color: textColor,
       },
     },
-    // button_color_cancelled: {
-    //   color: cardBackgroundColor,
-    //   backgroundColor: '#F7A4A4',
-    //   '&:hover': {
-    //     opacity: 0.95,
-    //     color: textColor,
-    //   },
-    // },
   })
 );
 
@@ -57,6 +50,7 @@ export function FeaturesCard({
   textButtonMerge,
   improveButtonShow,
   selectMerge,
+  selectImprove,
 }: FeaturesCardProps) {
   const { classes } = useStyles({
     cardBackgroundColor: backgroundColor,
@@ -99,6 +93,9 @@ export function FeaturesCard({
         mt="md"
         radius="md"
         className={classes.button_color}
+        onClick={() => {
+          selectImprove(title);
+        }}
       >
         Améliorer l'arbre
       </Button>
@@ -111,7 +108,6 @@ export function FeaturesCard({
         className={classes.button_color}
         onClick={() => {
           selectMerge(title);
-          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         }}
       >
         {textButtonMerge}

@@ -29,4 +29,13 @@ export class InMemoryNftRepository implements NftRepository {
       }, 1000);
     });
   }
+
+  async improve(nft: Nft): Promise<void> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log(`${nft.id}has been improved`);
+        resolve();
+      }, 2000);
+    });
+  }
 }

@@ -6,7 +6,12 @@ export class MetamaskNftRepository implements NftRepository {
   async merge(nfts1: Nft[], nfts2: Nft[]): Promise<void> {
     throw new Error('Method not implemented.');
   }
+
   async getAll(): Promise<Nft[]> {
-    return [];
+    throw new Error('Method not implemented.');
+  }
+
+  async improve(nft: Nft): Promise<void> {
+    throw new Error('Method not implemented.');
   }
 }
