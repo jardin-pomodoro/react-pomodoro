@@ -82,6 +82,21 @@ const modifyFeaturesCard = (
   });
 };
 
+const loadFeatureCardProps = (): Promise<FeaturesCardUI[]> => {
+  const getNftsService = new GetNftsService(new InMemoryNftRepository());
+  return getNftsService.handle().then((nftsfromService: Nft[]) => {
+    return nftsfromService.map((nft) => {
+      return {
+        backgroundColor: '#4B8673',
+        textColor: 'white',
+        textButtonMerge: "Fusionner l'arbre",
+        improveButtonShow: true,
+        title: nft.id,
+      };
+    });
+  });
+};
+
 export function MyGallery() {
   const initialNfts: Nft[] = [];
   const initialFeatureCardProps: FeaturesCardUI[] = [];
@@ -122,7 +137,6 @@ export function MyGallery() {
       setSelectedNfts(newSelectedNfts);
     }
     setBannerProps(modifyBanner(newSelectedNfts));
-
     setFeaturesCardProps(
       modifyFeaturesCard(featuresCardProps, newSelectedNfts)
     );
@@ -138,7 +152,10 @@ export function MyGallery() {
     mergeNftsService.handle({ nft1: nft1.id, nft2: nft2.id }).then(() => {
       console.log("L'arbre a été fusionné avec succès");
       setSelectedNfts([]);
-      setFeaturesCardProps(modifyFeaturesCard(featuresCardProps, []));
+      loadFeatureCardProps().then((featureCardUi) => {
+        console.log('featureCardUi ', featureCardUi);
+        setFeaturesCardProps(featureCardUi);
+      });
     });
   };
 

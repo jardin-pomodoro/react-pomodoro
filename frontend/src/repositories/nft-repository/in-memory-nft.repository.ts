@@ -2,8 +2,9 @@
 import { Nft } from '../../core/nft';
 import { NftRepository } from '../../core/nft.repository';
 
+/** TODO replace static with dependency injection to keep the same instance */
 export class InMemoryNftRepository implements NftRepository {
-  private nfts: Nft[] = [
+  private static nfts: Nft[] = [
     { id: '82781378133' },
     { id: '82781378132' },
     { id: '62738329' },
@@ -14,13 +15,16 @@ export class InMemoryNftRepository implements NftRepository {
   ];
 
   async getAll(): Promise<Nft[]> {
-    return this.nfts;
+    console.log('result de getAll', InMemoryNftRepository.nfts);
+    return InMemoryNftRepository.nfts;
   }
 
   async merge(nfts1: string, nfts2: string): Promise<void> {
     return new Promise((resolve) => {
       setTimeout(() => {
         console.log(`c'est bien merge ${nfts1} ${nfts2}`);
+        InMemoryNftRepository.nfts.push({ id: 'newNftCreated' });
+        console.log(InMemoryNftRepository.nfts);
         resolve();
       }, 1000);
     });
