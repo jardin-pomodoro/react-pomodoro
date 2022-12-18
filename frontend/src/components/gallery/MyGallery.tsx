@@ -16,6 +16,13 @@ interface BannerProps {
   buttonText: string;
 }
 
+interface FeaturesCardUI {
+  backgroundColor: string;
+  textColor: string;
+  textButtonMerge: string;
+  title: string;
+}
+
 const modifyBanner = (selectedNfts: Nft[]): BannerProps => {
   const banner: BannerProps = {
     backgroundColor: '#4B8673',
@@ -26,7 +33,6 @@ const modifyBanner = (selectedNfts: Nft[]): BannerProps => {
     buttonText: 'Fusionner',
     buttonValidity: true,
   };
-  console.log(selectedNfts);
 
   if (selectedNfts.length === 1) {
     banner.title = 'Fusionnez vos arbres';
@@ -43,9 +49,37 @@ const modifyBanner = (selectedNfts: Nft[]): BannerProps => {
   return banner;
 };
 
+const modifyFeaturesCard = (
+  featuresCardUI: FeaturesCardUI[],
+  selectedNfts: Nft[]
+): FeaturesCardUI[] => {
+  return featuresCardUI.map((featuresCard) => {
+    const nftIsAlreadysSelected = selectedNfts.find(
+      (nftFromResearch) => nftFromResearch.id === featuresCard.title
+    );
+    if (nftIsAlreadysSelected) {
+      return {
+        ...featuresCard,
+        textButtonMerge: 'Annuler la sélection',
+        backgroundColor: '#F0F0F0',
+        textColor: '#4B8673',
+      };
+    }
+    return {
+      ...featuresCard,
+      textButtonMerge: "Fusionner l'arbre",
+      backgroundColor: '#4B8673',
+      textColor: 'white',
+    };
+  });
+};
+
 export function MyGallery() {
   const initialNfts: Nft[] = [];
-  const [nfts, setNfts] = useState(initialNfts);
+  const initialFeatureCardProps: FeaturesCardUI[] = [];
+  const [featuresCardProps, setFeaturesCardProps] = useState(
+    initialFeatureCardProps
+  );
   const [selectedNfts, setSelectedNfts] = useState(initialNfts);
   const [bannerProps, setBannerProps] = useState({
     backgroundColor: '#4B8673',
@@ -57,30 +91,49 @@ export function MyGallery() {
     buttonValidity: true,
   });
 
-  useEffect(() => {
-    const getNftsService = new GetNftsService(new InMemoryNftRepository());
-    getNftsService.handle().then((nftsfromService: Nft[]) => {
-      setNfts(nftsfromService);
-    });
-  }, []);
-
   const selectNftToMerge = (id: string) => {
-    const nft = nfts.find((nftFromResearch) => nftFromResearch.id === id);
+    const nft = featuresCardProps.find(
+      (nftFromResearch) => nftFromResearch.title === id
+    );
     if (nft === undefined) return;
     const nftIsAlreadysSelected = selectedNfts.find(
       (nftFromResearch) => nftFromResearch.id === id
     );
     let newSelectedNfts = selectedNfts;
     if (nftIsAlreadysSelected) {
-      selectedNfts.splice(selectedNfts.indexOf(nft), 1);
+      const nftFind = selectedNfts.find(
+        (nftFromResearch) => nftFromResearch.id === nft.title
+      );
+      if (nftFind === undefined) return;
+      selectedNfts.splice(selectedNfts.indexOf(nftFind), 1);
       newSelectedNfts = selectedNfts;
       setSelectedNfts([...selectedNfts]);
     } else {
-      newSelectedNfts = [...selectedNfts, nft];
+      newSelectedNfts = [...selectedNfts, { id: nft.title } as Nft];
+      if (newSelectedNfts.length > 2) return;
       setSelectedNfts(newSelectedNfts);
     }
     setBannerProps(modifyBanner(newSelectedNfts));
+
+    setFeaturesCardProps(
+      modifyFeaturesCard(featuresCardProps, newSelectedNfts)
+    );
   };
+
+  useEffect(() => {
+    const getNftsService = new GetNftsService(new InMemoryNftRepository());
+    getNftsService.handle().then((nftsfromService: Nft[]) => {
+      const nfts = nftsfromService.map((nft) => {
+        return {
+          backgroundColor: '#4B8673',
+          textColor: 'white',
+          textButtonMerge: "Fusionner l'arbre",
+          title: nft.id,
+        };
+      });
+      setFeaturesCardProps(nfts);
+    });
+  }, []);
 
   return (
     <div className="gallery-body">
@@ -97,13 +150,16 @@ export function MyGallery() {
           />
         )}
         <Grid>
-          {nfts.map((nft: Nft, index: number) => {
+          {featuresCardProps.map((nft: FeaturesCardUI, index: number) => {
             return (
-              <Grid.Col key={nft.id} span={4}>
+              <Grid.Col key={nft.title} span={4}>
                 <FeaturesCard
-                  backgroundColor={index % 2 === 0 ? '#4B8673' : '#76BA99'}
-                  textColor="#FFFFFF"
-                  title={nft.id}
+                  backgroundColor={
+                    index % 2 === 0 ? nft.backgroundColor : '#76BA99'
+                  }
+                  textColor={nft.textColor}
+                  title={nft.title}
+                  textButtonMerge={nft.textButtonMerge}
                   selectMerge={selectNftToMerge}
                 />
               </Grid.Col>

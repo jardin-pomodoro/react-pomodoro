@@ -14,6 +14,7 @@ interface FeaturesCardProps {
   backgroundColor: string;
   textColor: string;
   title: string;
+  textButtonMerge: string;
   selectMerge: (id: string) => void;
 }
 
@@ -38,14 +39,14 @@ const useStyles = createStyles(
         color: textColor,
       },
     },
-    button_color_cancelled: {
-      color: cardBackgroundColor,
-      backgroundColor: '#F7A4A4',
-      '&:hover': {
-        opacity: 0.95,
-        color: textColor,
-      },
-    },
+    // button_color_cancelled: {
+    //   color: cardBackgroundColor,
+    //   backgroundColor: '#F7A4A4',
+    //   '&:hover': {
+    //     opacity: 0.95,
+    //     color: textColor,
+    //   },
+    // },
   })
 );
 
@@ -53,12 +54,11 @@ export function FeaturesCard({
   backgroundColor,
   textColor,
   title,
+  textButtonMerge,
   selectMerge,
 }: FeaturesCardProps) {
-  const [cardBackgroundColor, setCardBackgroundColor] =
-    useState(backgroundColor);
   const { classes } = useStyles({
-    cardBackgroundColor,
+    cardBackgroundColor: backgroundColor,
     textColor,
   });
   return (
@@ -106,22 +106,13 @@ export function FeaturesCard({
         fullWidth
         mt="md"
         radius="md"
-        className={
-          cardBackgroundColor === backgroundColor
-            ? classes.button_color
-            : classes.button_color_cancelled
-        }
+        className={classes.button_color}
         onClick={() => {
           selectMerge(title);
           // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-          cardBackgroundColor === backgroundColor
-            ? setCardBackgroundColor('#F0F0F0')
-            : setCardBackgroundColor(backgroundColor);
         }}
       >
-        {cardBackgroundColor === backgroundColor
-          ? "fusionner l'arbre"
-          : 'annuler la sélection'}
+        {textButtonMerge}
       </Button>
     </Card>
   );
