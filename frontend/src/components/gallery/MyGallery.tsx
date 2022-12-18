@@ -127,6 +127,12 @@ export function MyGallery() {
     );
   };
 
+  const mergeTwoNfts = () => {
+    if (selectNftToMerge.length !== 2) return;
+    const nft1 = selectedNfts[0];
+    const nft2 = selectedNfts[1];
+  };
+
   useEffect(() => {
     const getNftsService = new GetNftsService(new InMemoryNftRepository());
     getNftsService.handle().then((nftsfromService: Nft[]) => {
@@ -155,6 +161,7 @@ export function MyGallery() {
             buttonText={bannerProps.buttonText}
             // eslint-disable-next-line react/jsx-boolean-value
             buttonValidity={bannerProps.buttonValidity}
+            onClick={mergeTwoNfts}
           />
         )}
         <Grid>

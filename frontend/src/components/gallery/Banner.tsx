@@ -15,6 +15,7 @@ interface BannerProps {
   description: string;
   buttonValidity: boolean;
   buttonText: string;
+  onClick: () => void;
 }
 
 const useStyles = createStyles(
@@ -42,6 +43,7 @@ export function Banner({
   description,
   buttonValidity,
   buttonText,
+  onClick,
 }: BannerProps) {
   const { classes } = useStyles({
     backgroundColor,
@@ -50,6 +52,7 @@ export function Banner({
     description,
     buttonValidity,
     buttonText,
+    onClick,
   });
 
   return (
@@ -73,6 +76,7 @@ export function Banner({
           size="xs"
           disabled={!buttonValidity}
           className={classes.banner_button_color}
+          onClick={onClick}
         >
           {buttonText}
         </Button>
