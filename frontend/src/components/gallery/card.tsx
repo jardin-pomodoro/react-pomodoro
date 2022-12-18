@@ -1,4 +1,3 @@
-import { useState } from 'react';
 /* eslint-disable import/prefer-default-export */
 import {
   Card,
@@ -15,6 +14,7 @@ interface FeaturesCardProps {
   textColor: string;
   title: string;
   textButtonMerge: string;
+  improveButtonShow: boolean;
   selectMerge: (id: string) => void;
 }
 
@@ -55,6 +55,7 @@ export function FeaturesCard({
   textColor,
   title,
   textButtonMerge,
+  improveButtonShow,
   selectMerge,
 }: FeaturesCardProps) {
   const { classes } = useStyles({
@@ -91,6 +92,7 @@ export function FeaturesCard({
       </Text>
 
       <Button
+        disabled={!improveButtonShow}
         variant="light"
         color="blue"
         fullWidth

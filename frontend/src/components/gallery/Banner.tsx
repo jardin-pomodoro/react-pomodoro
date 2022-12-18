@@ -5,7 +5,6 @@ import {
   Text,
   Group,
   CloseButton,
-  Container,
   createStyles,
 } from '@mantine/core';
 

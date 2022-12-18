@@ -20,6 +20,7 @@ interface FeaturesCardUI {
   backgroundColor: string;
   textColor: string;
   textButtonMerge: string;
+  improveButtonShow: boolean;
   title: string;
 }
 
@@ -27,7 +28,7 @@ const modifyBanner = (selectedNfts: Nft[]): BannerProps => {
   const banner: BannerProps = {
     backgroundColor: '#4B8673',
     textColor: 'white',
-    title: 'Fusionnez vos arbres',
+    title: `Fusionnez vos arbres`,
     description:
       "Il ne vous manque qu'un arbre pour pouvoir procéder à la fusion",
     buttonText: 'Fusionner',
@@ -35,13 +36,17 @@ const modifyBanner = (selectedNfts: Nft[]): BannerProps => {
   };
 
   if (selectedNfts.length === 1) {
-    banner.title = 'Fusionnez vos arbres';
+    banner.title = `Fusionnez vos arbres ${selectedNfts
+      .map((nft) => nft.id)
+      .join(', ')}`;
     banner.description =
       "Il ne vous manque qu'un arbre pour pouvoir procéder à la fusion";
     banner.buttonText = 'Ajoutez en un de plus';
     banner.buttonValidity = false;
   } else if (selectedNfts.length === 2) {
-    banner.title = 'Fusionnez vos arbres';
+    banner.title = `Fusionnez vos arbres ${selectedNfts
+      .map((nft) => nft.id)
+      .join(', ')}`;
     banner.description = 'Vous pouvez fusionner vos arbres';
     banner.buttonText = 'Fusionner';
     banner.buttonValidity = true;
@@ -61,12 +66,14 @@ const modifyFeaturesCard = (
       return {
         ...featuresCard,
         textButtonMerge: 'Annuler la sélection',
+        improveButtonShow: false,
         backgroundColor: '#F0F0F0',
         textColor: '#4B8673',
       };
     }
     return {
       ...featuresCard,
+      improveButtonShow: true,
       textButtonMerge: "Fusionner l'arbre",
       backgroundColor: '#4B8673',
       textColor: 'white',
@@ -128,6 +135,7 @@ export function MyGallery() {
           backgroundColor: '#4B8673',
           textColor: 'white',
           textButtonMerge: "Fusionner l'arbre",
+          improveButtonShow: true,
           title: nft.id,
         };
       });
@@ -150,13 +158,12 @@ export function MyGallery() {
           />
         )}
         <Grid>
-          {featuresCardProps.map((nft: FeaturesCardUI, index: number) => {
+          {featuresCardProps.map((nft: FeaturesCardUI) => {
             return (
               <Grid.Col key={nft.title} span={4}>
                 <FeaturesCard
-                  backgroundColor={
-                    index % 2 === 0 ? nft.backgroundColor : '#76BA99'
-                  }
+                  improveButtonShow={nft.improveButtonShow}
+                  backgroundColor={nft.backgroundColor}
                   textColor={nft.textColor}
                   title={nft.title}
                   textButtonMerge={nft.textButtonMerge}
