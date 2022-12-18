@@ -12,14 +12,6 @@ function Gallery() {
           { link: '/acheter', label: 'Acheter', links: [] },
         ]}
       />
-      <Banner
-        backgroundColor="#4B8673"
-        textColor="white"
-        title="Fusionnez vos arbres"
-        description="Il ne vous manque qu'un arbre pour pouvoir procéder à la fusion"
-        buttonText="Fusionner"
-        buttonValidity={true}
-      />
       <MyGallery />
     </>
   );

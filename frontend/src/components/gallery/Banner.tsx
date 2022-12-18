@@ -20,12 +20,10 @@ interface BannerProps {
 
 const useStyles = createStyles(
   (_, { backgroundColor, textColor }: BannerProps) => ({
-    container_banner: {
-      marginBottom: '1.5rem',
-    },
     banner_body: {
       backgroundColor,
       color: textColor,
+      marginBottom: '1.5rem',
     },
     banner_button_color: {
       color: backgroundColor,
@@ -56,32 +54,30 @@ export function Banner({
   });
 
   return (
-    <Container className={classes.container_banner}>
-      <Paper
-        withBorder
-        p="lg"
-        radius="md"
-        shadow="md"
-        className={classes.banner_body}
-      >
-        <Group position="apart" mb="xs">
-          <Text size="md" weight={500}>
-            {title}
-          </Text>
-          <CloseButton mr={-9} mt={-9} />
-        </Group>
-        <Text size="xs">{description}</Text>
-        <Group position="right" mt="xs">
-          <Button
-            variant="outline"
-            size="xs"
-            disabled={!buttonValidity}
-            className={classes.banner_button_color}
-          >
-            {buttonText}
-          </Button>
-        </Group>
-      </Paper>
-    </Container>
+    <Paper
+      withBorder
+      p="lg"
+      radius="md"
+      shadow="md"
+      className={classes.banner_body}
+    >
+      <Group position="apart" mb="xs">
+        <Text size="md" weight={500}>
+          {title}
+        </Text>
+        <CloseButton mr={-9} mt={-9} />
+      </Group>
+      <Text size="xs">{description}</Text>
+      <Group position="right" mt="xs">
+        <Button
+          variant="outline"
+          size="xs"
+          disabled={!buttonValidity}
+          className={classes.banner_button_color}
+        >
+          {buttonText}
+        </Button>
+      </Group>
+    </Paper>
   );
 }
