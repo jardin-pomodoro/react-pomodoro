@@ -16,4 +16,13 @@ export class InMemoryNftRepository implements NftRepository {
   async getAll(): Promise<Nft[]> {
     return this.nfts;
   }
+
+  async merge(nfts1: string, nfts2: string): Promise<void> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log(`c'est bien merge ${nfts1} ${nfts2}`);
+        resolve();
+      }, 1000);
+    });
+  }
 }

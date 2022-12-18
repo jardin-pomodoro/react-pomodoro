@@ -6,6 +6,7 @@ import { InMemoryNftRepository } from '../../repositories/nft-repository/in-memo
 import { GetNftsService } from '../../services/get-nfts.service';
 import { Nft } from '../../core/nft';
 import { Banner } from './Banner';
+import { MergeNftsService } from '../../services/merge-nfts.service';
 
 interface BannerProps {
   backgroundColor: string;
@@ -128,9 +129,17 @@ export function MyGallery() {
   };
 
   const mergeTwoNfts = () => {
-    if (selectNftToMerge.length !== 2) return;
+    console.log('je me pointe ici');
+    console.log(selectedNfts);
+    if (selectedNfts.length !== 2) return;
     const nft1 = selectedNfts[0];
     const nft2 = selectedNfts[1];
+    const mergeNftsService = new MergeNftsService(new InMemoryNftRepository());
+    mergeNftsService.handle({ nft1: nft1.id, nft2: nft2.id }).then(() => {
+      console.log("L'arbre a été fusionné avec succès");
+      setSelectedNfts([]);
+      setFeaturesCardProps(modifyFeaturesCard(featuresCardProps, []));
+    });
   };
 
   useEffect(() => {
