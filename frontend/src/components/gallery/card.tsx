@@ -38,6 +38,14 @@ const useStyles = createStyles(
         color: textColor,
       },
     },
+    button_color_cancelled: {
+      color: cardBackgroundColor,
+      backgroundColor: '#F7A4A4',
+      '&:hover': {
+        opacity: 0.95,
+        color: textColor,
+      },
+    },
   })
 );
 
@@ -98,7 +106,11 @@ export function FeaturesCard({
         fullWidth
         mt="md"
         radius="md"
-        className={classes.button_color}
+        className={
+          cardBackgroundColor === backgroundColor
+            ? classes.button_color
+            : classes.button_color_cancelled
+        }
         onClick={() => {
           selectMerge(title);
           // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -107,7 +119,9 @@ export function FeaturesCard({
             : setCardBackgroundColor(backgroundColor);
         }}
       >
-        fusionner l'arbre
+        {cardBackgroundColor === backgroundColor
+          ? "fusionner l'arbre"
+          : 'annuler la sélection'}
       </Button>
     </Card>
   );
