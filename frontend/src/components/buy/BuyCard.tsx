@@ -23,7 +23,6 @@ const useStyles = createStyles((theme) => ({
   },
 
   imageSection: {
-    padding: theme.spacing.md,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -76,10 +75,10 @@ export function BuyCard() {
   return (
     <Card withBorder radius="md" className={classes.card}>
       <Card.Section className={classes.imageSection}>
-        <Image src="https://i.imgur.com/ZL52Q2D.png" alt="Tesla Model S" />
+        <Image src="/seed.jpg" alt="Seed" />
       </Card.Section>
 
-      <Group position="apart" mt="md">
+      <Group position="apart" mt="md" mb="md">
         <div>
           <Text weight={500}>1 Graine prenium</Text>
           <Text size="xs" color="dimmed">
@@ -88,16 +87,6 @@ export function BuyCard() {
         </div>
         <Badge variant="outline">20% off</Badge>
       </Group>
-
-      <Card.Section className={classes.section} mt="md">
-        <Text size="sm" color="dimmed" className={classes.label}>
-          Spécificités
-        </Text>
-
-        <Group spacing={8} mb={-8}>
-          {features}
-        </Group>
-      </Card.Section>
 
       <Card.Section className={classes.section}>
         <Group spacing={30}>
