@@ -1,8 +1,7 @@
+import BuySeed from '../components/buy/BuySeed';
 import { HeaderMenu } from '../components/common/header';
-import { Banner } from '../components/gallery/Banner';
-import { MyGallery } from '../components/gallery/MyGallery';
 
-function Gallery() {
+function BuySeedPage() {
   return (
     <>
       <HeaderMenu
@@ -12,9 +11,9 @@ function Gallery() {
           { link: '/buy', label: 'Acheter', links: [] },
         ]}
       />
-      <MyGallery />
+      <BuySeed />
     </>
   );
 }
 
-export default Gallery;
+export default BuySeedPage;

@@ -4,13 +4,15 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Gallery from './pages/Gallery';
+import BuySeed from './pages/BuySeedPage';
 
 export function App() {
   return (
     <Routes>
-      <Route path="*" element={<NotFound />} />
-      <Route path="/" element={<Home />} />
+      <Route path="/buy" element={<BuySeed />} />
       <Route path="/gallery" element={<Gallery />} />
+      <Route path="/" element={<Home />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
