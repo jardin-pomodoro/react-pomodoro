@@ -26,9 +26,9 @@ contract TreeCore is TreeToken, BreedTree, Forest, TreeStats, ForestSeeds {
 
     function plantTree(uint256 _tokenId) external {
         require(balanceOf(msg.sender, _tokenId) == 1, "Not the owner of the tree");
-        updateSeeds();
-        require(getSeeds() > 0, "No seeds left");
-        consumeSeed();
+        updateSeeds(_tokenId);
+        require(getSeeds(_tokenId) > 0, "No seeds left");
+        consumeSeed(_tokenId);
         TreeUpgrade memory stats = getTreeStats(_tokenId);
         uint seed = getSeed(_tokenId);
         plantTree(_tokenId, getSeedTrunkStats(seed) + stats.trunkUpgrade);
@@ -95,5 +95,13 @@ contract TreeCore is TreeToken, BreedTree, Forest, TreeStats, ForestSeeds {
         payable(owner()).transfer(msg.value);
         uint seed = uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender, tokenId))) % 1000000;
         createTree(seed);
+    }
+
+    function buySeeds(uint256 _tokenId, uint256 _amount) external {
+        require(balanceOf(msg.sender, _tokenId) == 1, "Not the owner of the tree");
+        require(getSeedCost(_tokenId) * _amount < balanceOf(msg.sender, TREE_TOKEN), "Max seeds reached");
+        uint8 cost = getSeedCost(_tokenId);
+        _burn(msg.sender, TREE_TOKEN, cost);
+        addSeed(_tokenId, _amount);
     }
 }

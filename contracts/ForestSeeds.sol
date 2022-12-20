@@ -8,25 +8,33 @@ contract ForestSeeds {
         uint256 lastUpdate;
     }
 
-    mapping(address => ForestSeed) private userSeeds;
+    mapping(uint256 => ForestSeed) private userSeeds;
 
-    function consumeSeed() internal {
-        if (userSeeds[msg.sender].seeds > 0) {
-            userSeeds[msg.sender].seeds--;
+    function consumeSeed(uint256 _tokenId) internal {
+        if (userSeeds[_tokenId].seeds > 0) {
+            userSeeds[_tokenId].seeds--;
         }
         else {
-            userSeeds[msg.sender].boughtSeeds--;
+            userSeeds[_tokenId].boughtSeeds--;
         }
     }
 
-    function updateSeeds() internal {
-        if (userSeeds[msg.sender].lastUpdate / 86400 < block.timestamp / 86400) {
-            userSeeds[msg.sender].seeds = 4;
-            userSeeds[msg.sender].lastUpdate = block.timestamp;
+    function updateSeeds(uint256 _tokenId) internal {
+        if (userSeeds[_tokenId].lastUpdate / 86400 < block.timestamp / 86400) {
+            userSeeds[_tokenId].seeds = 4;
+            userSeeds[_tokenId].lastUpdate = block.timestamp;
         }
     }
 
-    function getSeeds() public view returns (uint32) {
-        return userSeeds[msg.sender].boughtSeeds + userSeeds[msg.sender].seeds;
+    function getSeeds(uint256 _tokenId) public view returns (uint32) {
+        return userSeeds[_tokenId].boughtSeeds + userSeeds[_tokenId].seeds;
+    }
+
+    function getSeedCost(uint256 _tokenId) public view returns (uint256) {
+        return 0.01 * (userSeeds[_tokenId].boughtSeeds + 1);
+    }
+
+    function addSeed(uint256 _tokenId, uint256 amount) internal {
+        userSeeds[_tokenId].boughtSeeds += amount;
     }
 }
