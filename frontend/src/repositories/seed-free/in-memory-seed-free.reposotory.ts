@@ -10,4 +10,12 @@ export class InMemorySeedFreeRepository implements SeedFreeRepository {
   async getSeedFree(): Promise<SeedFree> {
     return this.seedFree;
   }
+
+  async BuySeed(): Promise<void> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 2000);
+    });
+  }
 }
