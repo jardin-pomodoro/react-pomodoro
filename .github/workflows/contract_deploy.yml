@@ -1,4 +1,4 @@
-name: Contract Deploy
+name: Deployment
 on:
   workflow_dispatch:
   push:
@@ -7,69 +7,6 @@ on:
       - feature/ci
 
 jobs:
-  contract-test:
-    name: Contract Test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Test
-        env:
-          ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
-          OWNER_PRIVATE_KEY: ${{ secrets.OWNER_PRIVATE_KEY }}
-        run: npm run test
-  contract-deploy:
-    name: Deploy Contract on Mumbai Testnet
-    runs-on: ubuntu-latest
-    needs: contract-test
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Deploy on mumbai testnet
-        env:
-          ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
-          OWNER_PRIVATE_KEY: ${{ secrets.OWNER_PRIVATE_KEY }}
-        run: npm run deploy:mumbai
-
-      - name: Set CONTRACT_ADDRESS and GARDEN_TOKEN from output
-        run: |
-          echo "CONTRACT_ADDRESS=$(cat frontend/src/contracts/contract-address.json | jq -rc .)" >> $GITHUB_ENV
-          echo "GARDEN_TOKEN=$(cat frontend/src/contracts/GardenToken.json | jq -rc .)" >> $GITHUB_ENV
-
-      - name: Update repo CONTRACT_ADDRESS secret
-        uses: gliech/create-github-secret-action@v1
-        with:
-          name: CONTRACT_ADDRESS
-          value: ${{ env.CONTRACT_ADDRESS }}
-          pa_token: ${{ secrets.PA_TOKEN }}
-
-      - name: Update repo GARDEN_TOKEN secret
-        uses: gliech/create-github-secret-action@v1
-        with:
-          name: GARDEN_TOKEN
-          value: ${{ env.GARDEN_TOKEN }}
-          pa_token: ${{ secrets.PA_TOKEN }}
-
   frontend-test:
     name: Test frontend
     runs-on: ubuntu-latest
@@ -88,8 +25,8 @@ jobs:
         with:
           node-version: 18
 
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
         id: pnpm-install
         with:
           version: 7
@@ -108,15 +45,6 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-
-      - name: Install Dependencies
-        run: pnpm install
-
-      - name: Create contract address files from secret
-        run: |
-          mkdir -p src/contracts
-          echo ${{ secrets.CONTRACT_ADDRESS }} | jq -rc . > src/contracts/contract-address.json
-          echo ${{ secrets.GARDEN_TOKEN }} | jq -rc . > src/contracts/GardenToken.json
 
       - name: Install Dependencies
         run: pnpm install
@@ -145,8 +73,8 @@ jobs:
         with:
           node-version: 18
 
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
         id: pnpm-install
         with:
           version: 7
@@ -168,12 +96,6 @@ jobs:
 
       - name: Install Dependencies
         run: pnpm install
-
-      - name: Create contract address files from secret
-        run: |
-          mkdir -p src/contracts
-          echo ${{ secrets.CONTRACT_ADDRESS }} | jq -rc . > src/contracts/contract-address.json
-          echo ${{ secrets.GARDEN_TOKEN }} | jq -rc . > src/contracts/GardenToken.json
 
       - name: Build
         run: pnpm run build
