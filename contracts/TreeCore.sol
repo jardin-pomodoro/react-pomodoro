@@ -100,7 +100,7 @@ contract TreeCore is TreeToken, BreedTree, Forest, TreeStats, ForestSeeds {
     function buySeeds(uint256 _tokenId, uint256 _amount) external {
         require(balanceOf(msg.sender, _tokenId) == 1, "Not the owner of the tree");
         require(getSeedCost(_tokenId) * _amount < balanceOf(msg.sender, TREE_TOKEN), "Max seeds reached");
-        uint8 cost = getSeedCost(_tokenId);
+        uint256 cost = getSeedCost(_tokenId);
         _burn(msg.sender, TREE_TOKEN, cost);
         addSeed(_tokenId, _amount);
     }

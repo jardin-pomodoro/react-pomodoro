@@ -3,8 +3,8 @@ pragma solidity ^0.8.0;
 
 contract ForestSeeds {
     struct ForestSeed {
-        uint8 seeds;
-        uint32 boughtSeeds;
+        uint256 seeds;
+        uint256 boughtSeeds;
         uint256 lastUpdate;
     }
 
@@ -26,12 +26,12 @@ contract ForestSeeds {
         }
     }
 
-    function getSeeds(uint256 _tokenId) public view returns (uint32) {
+    function getSeeds(uint256 _tokenId) public view returns (uint256) {
         return userSeeds[_tokenId].boughtSeeds + userSeeds[_tokenId].seeds;
     }
 
     function getSeedCost(uint256 _tokenId) public view returns (uint256) {
-        return 0.01 * (userSeeds[_tokenId].boughtSeeds + 1);
+        return 2 * (userSeeds[_tokenId].boughtSeeds + 1);
     }
 
     function addSeed(uint256 _tokenId, uint256 amount) internal {
