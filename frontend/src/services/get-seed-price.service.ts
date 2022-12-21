@@ -1,11 +1,10 @@
 /* eslint-disable import/prefer-default-export */
-import { SeedFreeRepository } from '../core/seed.repository';
-import { SeedFree } from '../core/seed-free';
+import { SeedRepository } from '../core/seed.repository';
 
 export class GetSeedPriceService {
-  constructor(private readonly seedFreeRepository: SeedFreeRepository) {}
+  constructor(private readonly seedRepository: SeedRepository) {}
 
-  async handle(): Promise<SeedFree> {
-    return this.seedFreeRepository.getSeedFree();
+  async handle(): Promise<number> {
+    return this.seedRepository.getPrice();
   }
 }

@@ -15,9 +15,10 @@ import {
 import { useEffect, useState } from 'react';
 import { Nft } from '../../core/nft';
 import { InMemoryNftRepository } from '../../repositories/nft-repository/in-memory-nft.repository';
-import { InMemorySeedFreeRepository } from '../../repositories/seed-free/in-memory-seed-free.reposotory';
+import { InMemorySeedRepository } from '../../repositories/seed-free/in-memory-seed.reposotory';
 import { BuySeedService } from '../../services/buy-seed.service';
 import { GetNftsService } from '../../services/get-nfts.service';
+import { GetSeedPriceService } from '../../services/get-seed-price.service';
 
 const useStyles = createStyles((theme) => ({
   center_button: {
@@ -36,6 +37,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 function BuySeed() {
+  const [seedPrice, setSeedPrice] = useState(0);
   const [tokenIdValue, setTokenIdValue] = useState('');
   const initalNfts: string[] = [];
   const [nfts, setNfts] = useState(initalNfts);
@@ -45,6 +47,15 @@ function BuySeed() {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const { classes } = useStyles();
+
+  useEffect(() => {
+    const getSeedPriceService = new GetSeedPriceService(
+      new InMemorySeedRepository()
+    );
+    getSeedPriceService.handle().then((price) => {
+      setSeedPrice(price);
+    });
+  }, []);
 
   useEffect(() => {
     const getNftsService = new GetNftsService(new InMemoryNftRepository());
@@ -75,7 +86,7 @@ function BuySeed() {
   }, [days, hours, minutes, seconds]);
 
   const buy = (tokenId: string) => {
-    const buySeedService = new BuySeedService(new InMemorySeedFreeRepository());
+    const buySeedService = new BuySeedService(new InMemorySeedRepository());
     buySeedService.handle({ tokenId, amount: 1 }).then((result) => {
       console.log('achat effectué');
       setOpened(false);
@@ -118,9 +129,9 @@ function BuySeed() {
             Plus que {days} jours {hours} heures {minutes} minutes et {seconds}{' '}
             secondes pour profiter de la réduction
           </Text>
-          <Text td="line-through">120$</Text>
+          <Text td="line-through">1,2 name Money</Text>
           <Text pt="md" fw={700}>
-            100$
+            {seedPrice !== 0 && seedPrice} name Money
           </Text>
         </Paper>
         <div>
@@ -133,7 +144,7 @@ function BuySeed() {
                   de graine journellement offertes.
                 </Text>
                 <Button onClick={() => setOpened(true)} color="teal">
-                  Acheter 100$
+                  {seedPrice !== 0 && `Acheter ${seedPrice} name Money`}
                 </Button>
               </Center>
             </Grid.Col>
