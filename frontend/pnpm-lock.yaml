@@ -8,6 +8,7 @@ specifiers:
   '@mantine/hooks': ^5.8.0
   '@mantine/modals': ^5.8.0
   '@mantine/notifications': ^5.8.0
+  '@rive-app/react-canvas': ^3.0.33
   '@testing-library/jest-dom': ^5.16.5
   '@testing-library/react': ^13.4.0
   '@types/react': ^18.0.25
@@ -32,7 +33,6 @@ specifiers:
   react: ^18.2.0
   react-dom: ^18.2.0
   react-router-dom: ^6.4.3
-  rive-react: ^3.0.33
   typescript: ^4.9.3
   vite: ^3.2.4
   vitest: ^0.25.2
@@ -47,10 +47,10 @@ dependencies:
   '@mantine/hooks': 5.8.0_react@18.2.0
   '@mantine/modals': 5.8.0_ewvkjm4ajyqza72j4kh4rch33a
   '@mantine/notifications': 5.8.0_ewvkjm4ajyqza72j4kh4rch33a
+  '@rive-app/react-canvas': 3.0.33_react@18.2.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-router-dom: 6.4.3_biqbaboplfbrettd7655fr4n2y
-  rive-react: 3.0.33_react@18.2.0
   zod: 3.19.1
   zustand: 4.1.4_react@18.2.0
 
@@ -865,8 +865,13 @@ packages:
     resolution: {integrity: sha512-fpUz4zWtGkEvjbfCk1qydk1tpg/pHLeib21ugJYlm3fV3zwOvZiHbcS46ukBxaXKEVmjdBOrwqUZEKzwy6bN6g==}
     dev: false
 
-  /@rive-app/webgl/1.0.91:
-    resolution: {integrity: sha512-Zw6xyOaIqWK9XVirqN2oQEVAicUAlmafS6OgsBGdJTtGomsIbpqZLCV6JZ0ujtQB1Q+K/RjAtKzubRJFXSBoqA==}
+  /@rive-app/react-canvas/3.0.33_react@18.2.0:
+    resolution: {integrity: sha512-V5r1qmZVpewGAtpsa/et6RQT64DAcx2ZpgAXJYa6O9wWgAxjJgsQIaL/xW+tA6ODikcsaB9gJrouJNGvow59zw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@rive-app/canvas': 1.0.95
+      react: 18.2.0
     dev: false
 
   /@sinclair/typebox/0.24.51:
@@ -3518,16 +3523,6 @@ packages:
     dependencies:
       glob: 7.2.3
     dev: true
-
-  /rive-react/3.0.33_react@18.2.0:
-    resolution: {integrity: sha512-gdXSSnfwEIU3MnDgIK60Z80djD71x++Om/QX+Dwxo9vfc3VMGoKYlKNLbIb66g/WWYDw1YCuFWleze1OjyodaQ==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    dependencies:
-      '@rive-app/canvas': 1.0.95
-      '@rive-app/webgl': 1.0.91
-      react: 18.2.0
-    dev: false
 
   /rollup/2.79.1:
     resolution: {integrity: sha512-uKxbd0IhMZOhjAiD5oAFp7BqvkA4Dv47qpOCtaNvng4HBwdbWtdOh8f5nZNuk2rp51PMGk3bzfWu5oayNEuYnw==}
