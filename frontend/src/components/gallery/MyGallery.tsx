@@ -1,13 +1,13 @@
 /* eslint-disable import/prefer-default-export */
-import { Grid, Container } from '@mantine/core';
-import { useState, useEffect } from 'react';
-import { FeaturesCard } from './card';
+import { Container, Grid } from '@mantine/core';
+import { useEffect, useState } from 'react';
+import { Nft } from '../../core/nft';
 import { InMemoryNftRepository } from '../../repositories/nft-repository/in-memory-nft.repository';
 import { GetNftsService } from '../../services/get-nfts.service';
-import { Nft } from '../../core/nft';
-import { Banner } from './Banner';
-import { MergeNftsService } from '../../services/merge-nfts.service';
 import { ImproveNftService } from '../../services/improve-tree.service';
+import { MergeNftsService } from '../../services/merge-nfts.service';
+import { Banner } from './Banner';
+import { FeaturesCard } from './card';
 
 interface BannerProps {
   backgroundColor: string;

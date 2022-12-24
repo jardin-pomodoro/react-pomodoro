@@ -1,12 +1,12 @@
 /* eslint-disable import/prefer-default-export */
 import {
-  Card,
-  Image,
-  Text,
   Badge,
   Button,
-  Group,
+  Card,
   createStyles,
+  Group,
+  Image,
+  Text,
 } from '@mantine/core';
 
 interface FeaturesCardProps {
