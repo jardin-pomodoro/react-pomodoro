@@ -1,7 +1,7 @@
 import BuySeed from '../components/buy/BuySeed';
 import { HeaderMenu } from '../components/common/header';
 
-function BuySeedPage() {
+function BuySeedPage({ provider, signer }: any) {
   return (
     <>
       <HeaderMenu

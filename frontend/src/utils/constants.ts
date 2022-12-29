@@ -1,4 +1,5 @@
-import Greeter from './Greeter';
+import Greeter from './greeter.json';
+import TreeToken from './tree-token.json';
 
-export const contract = Greeter.abi;
-export const contractAddress = '';
+export const contractAbi = Greeter;
+export const treeToken = TreeToken;

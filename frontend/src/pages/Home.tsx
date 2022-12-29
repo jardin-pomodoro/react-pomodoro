@@ -1,6 +1,6 @@
 import { HeaderMenu } from '../components/common/header';
 
-function Home() {
+function Home({ provider, signer }: any) {
   return (
     <>
       <HeaderMenu

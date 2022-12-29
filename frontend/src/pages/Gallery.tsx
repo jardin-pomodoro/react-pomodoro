@@ -2,7 +2,7 @@ import { HeaderMenu } from '../components/common/header';
 import { Banner } from '../components/gallery/Banner';
 import { MyGallery } from '../components/gallery/MyGallery';
 
-function Gallery() {
+function Gallery({ provider, signer }: any) {
   return (
     <>
       <HeaderMenu
