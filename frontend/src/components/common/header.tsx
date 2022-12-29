@@ -9,6 +9,7 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import './header.css';
+import { IconUser } from '@tabler/icons';
 
 const useStyles = createStyles((theme) => ({
   inner: {
@@ -51,6 +52,11 @@ const useStyles = createStyles((theme) => ({
           : theme.colors.teal[8],
     },
   },
+  account: {
+    overflow: 'hidden',
+    WhiteSpace: 'nowrap',
+    width: '10rem',
+  },
 
   linkLabel: {
     marginRight: 5,
@@ -63,9 +69,10 @@ interface HeaderSearchProps {
     label: string;
     links: { link: string; label: string }[];
   }[];
+  account: string;
 }
 
-export function HeaderMenu({ links }: HeaderSearchProps) {
+export function HeaderMenu({ links, account }: HeaderSearchProps) {
   const [opened, { toggle }] = useDisclosure(false);
   const { classes } = useStyles();
 
@@ -84,14 +91,23 @@ export function HeaderMenu({ links }: HeaderSearchProps) {
 
   return (
     <Header className="header" height={56} mb={120}>
-      <Container>
+      <Container size="xl">
         <div className={classes.inner}>
           <Text c="teal.8" fz="lg">
             NFT-Forest
           </Text>
+
           <Group spacing={5} className={classes.links}>
             {items}
+            <IconUser />
+            <div
+              style={{ textOverflow: 'ellipsis' }}
+              className={classes.account}
+            >
+              {account}
+            </div>
           </Group>
+
           <Burger
             opened={opened}
             onClick={toggle}

@@ -19,6 +19,9 @@ import { InMemorySeedRepository } from '../../repositories/seed-free/in-memory-s
 import { BuySeedService } from '../../services/buy-seed.service';
 import { GetNftsService } from '../../services/get-nfts.service';
 import { GetSeedPriceService } from '../../services/get-seed-price.service';
+import MetamaskSeedRepository from '../../repositories/seed-free/metamask-seed.repository';
+import { contractAbi, treeToken } from '../../utils/constants';
+import { ethers } from 'ethers';
 
 const useStyles = createStyles((theme) => ({
   center_button: {
@@ -36,7 +39,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-function BuySeed() {
+function BuySeed({ provider, signer }: any) {
   const [seedPrice, setSeedPrice] = useState(0);
   const [tokenIdValue, setTokenIdValue] = useState('');
   const initalNfts: string[] = [];
@@ -49,13 +52,23 @@ function BuySeed() {
   const { classes } = useStyles();
 
   useEffect(() => {
-    const getSeedPriceService = new GetSeedPriceService(
-      new InMemorySeedRepository()
-    );
-    getSeedPriceService.handle().then((price) => {
-      setSeedPrice(price);
-    });
-  }, []);
+    if (provider && signer) {
+      const getSeedPriceService = new GetSeedPriceService(
+        new MetamaskSeedRepository(
+          provider,
+          signer,
+          new ethers.Contract(
+            treeToken.Token,
+            contractAbi,
+            provider.getSigner(0)
+          )
+        )
+      );
+      getSeedPriceService.handle().then((price) => {
+        setSeedPrice(price);
+      });
+    }
+  }, [provider, signer]);
 
   useEffect(() => {
     const getNftsService = new GetNftsService(new InMemoryNftRepository());

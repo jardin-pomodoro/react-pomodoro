@@ -10,7 +10,7 @@ import Gallery from './pages/Gallery';
 import BuySeed from './pages/BuySeedPage';
 import { contractAbi, treeToken } from './utils/constants';
 import { InstallPlugin } from './pages/installPlugin';
-import * as path from 'path';
+import LoadingEtherAccount from './pages/LoadingEtherAccount';
 
 export function App() {
   const [provider, setProvider] = useState(
@@ -37,7 +37,7 @@ export function App() {
   useEffect(() => {
     const connectToWallet = async (): Promise<boolean> => {
       const NETWORK_ID = '80001';
-      if (window.ethereum) {
+      if (window.ethereum !== undefined) {
         try {
           // Request account access if needed
           await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -45,7 +45,7 @@ export function App() {
             await initializeEthers();
             return true;
           }
-          alert('Please connect Metamask to your contract');
+          alert('Please connect Metamask to the network of your contract');
           return false;
         } catch (error) {
           alert('Error when connecting to wallet');
@@ -62,9 +62,7 @@ export function App() {
 
   return (
     <Routes>
-      {loadAccount && (
-        <Route path="*" element={<Loader color="teal" size="xl" />} />
-      )}
+      {loadAccount && <Route path="*" element={<LoadingEtherAccount />} />}
       {!loadAccount && (
         <>
           <Route

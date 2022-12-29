@@ -1,8 +1,14 @@
+import { useEffect, useState } from 'react';
 import { HeaderMenu } from '../components/common/header';
-import { Banner } from '../components/gallery/Banner';
 import { MyGallery } from '../components/gallery/MyGallery';
 
 function Gallery({ provider, signer }: any) {
+  const [account, setAccount] = useState<string | undefined>(undefined);
+  useEffect(() => {
+    signer?.getAddress().then((address: string) => {
+      setAccount(address);
+    });
+  }, [provider, signer]);
   return (
     <>
       <HeaderMenu
@@ -11,6 +17,7 @@ function Gallery({ provider, signer }: any) {
           { link: '/gallery', label: 'Gallery', links: [] },
           { link: '/buy', label: 'Acheter', links: [] },
         ]}
+        account={account || ''}
       />
       <MyGallery />
     </>
