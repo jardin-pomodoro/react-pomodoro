@@ -23,6 +23,7 @@ export default class MetamaskSeedRepository implements SeedRepository {
     const value = await this.contract
       .connect(this.signer)
       .getSeedCost(this.signer.getAddress());
-    return Number(ethers.utils.formatEther(value));
+    console.log(ethers.BigNumber.from(value).toNumber())
+    return Number(ethers.BigNumber.from(value).toNumber());
   }
 }
