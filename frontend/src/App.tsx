@@ -7,6 +7,7 @@ import NotFound from './pages/NotFound';
 import Gallery from './pages/Gallery';
 import BuySeed from './pages/BuySeedPage';
 import { contract as contractAbi, contractAddress } from './utils/constants';
+import { ConnectWallet } from './pages/connectWallet';
 
 export function App() {
   return (
@@ -15,6 +16,14 @@ export function App() {
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/" element={<Home />} />
       <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+}
+
+export function UnAuthApp() {
+  return (
+    <Routes>
+      <Route path="/*" element={<ConnectWallet />} />
     </Routes>
   );
 }
@@ -31,7 +40,7 @@ export function WrappedApp() {
       }}
     >
       <BrowserRouter>
-        <App />
+        {window.ethereum && <App />} {!window.ethereum && <UnAuthApp />}
       </BrowserRouter>
     </MantineProvider>
   );
