@@ -4,6 +4,24 @@ import { NftRepository } from '../../core/nft.repository';
 
 /** TODO replace static with dependency injection to keep the same instance */
 export class InMemoryNftRepository implements NftRepository {
+  improveLeaves(nft: Nft): Promise<void> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log(`${nft.id}has been improved`);
+        resolve();
+      }, 2000);
+    });
+  }
+
+  improveTrunk(nft: Nft): Promise<void> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log(`${nft.id}has been improved`);
+        resolve();
+      }, 2000);
+    });
+  }
+
   getMetadata(nft: Nft): Promise<string> {
     throw new Error('Method not implemented.');
   }
@@ -31,15 +49,6 @@ export class InMemoryNftRepository implements NftRepository {
         console.log(InMemoryNftRepository.nfts);
         resolve();
       }, 1000);
-    });
-  }
-
-  async improve(nft: Nft): Promise<void> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        console.log(`${nft.id}has been improved`);
-        resolve();
-      }, 2000);
     });
   }
 }

@@ -12,9 +12,8 @@ import {
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { Nft } from '../../core/nft';
-import { InMemoryNftRepository } from '../../repositories/nft-repository/in-memory-nft.repository';
 import { GetNftsService } from '../../services/get-nfts.service';
-import { ImproveNftService } from '../../services/improve-tree.service';
+import { ImproveLeavesNftService } from '../../services/improve-leaves-tree.service';
 import { MergeNftsService } from '../../services/merge-nfts.service';
 import { Banner } from './Banner';
 import { FeaturesCard } from './card';
@@ -29,6 +28,11 @@ interface BannerProps {
   description: string;
   buttonValidity: boolean;
   buttonText: string;
+}
+
+interface simpleBannerProps {
+  title: string;
+  description: string;
 }
 
 interface FeaturesCardUI {
@@ -140,7 +144,9 @@ export function MyGallery({ provider, signer }: any) {
     buttonText: 'Fusionner',
     buttonValidity: true,
   });
-  const [bannerMessage, setBannerMessage] = useState('');
+  const [simpleBannerProps, setSimpleBannerProps] = useState(
+    {} as simpleBannerProps
+  );
   const { classes } = useStyles();
 
   const selectNftToMerge = (id: string) => {
@@ -196,19 +202,23 @@ export function MyGallery({ provider, signer }: any) {
       const featureCardUi = await loadFeatureCardProps(getNftsService);
 
       setFeaturesCardProps(featureCardUi);
-      setBannerMessage(
-        "Votre Fusion est un succès, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction"
-      );
+      setSimpleBannerProps({
+        title: 'Succès',
+        description:
+          "Votre Fusion est un succès, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction",
+      });
     } catch (e) {
-      setBannerMessage(
-        "Votre Fusion est un echec, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction"
-      );
+      setSimpleBannerProps({
+        title: 'Echec',
+        description:
+          "Votre Fusion est un echec, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction",
+      });
     }
   };
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
-  const improveNft = async (id: string) => {
-    const improveNftService = new ImproveNftService(
+  const improveLeavesNft = async (id: string) => {
+    const improveNftService = new ImproveLeavesNftService(
       new MetamaskNftRepository(
         provider,
         signer,
@@ -226,6 +236,36 @@ export function MyGallery({ provider, signer }: any) {
     await improveNftService.handle({ nft });
     const featureCardUi = await loadFeatureCardProps(getNftsService);
     setFeaturesCardProps(featureCardUi);
+    setSimpleBannerProps({
+      title: 'Succès',
+      description: 'Le tronc de votre arbre a été amélioré avec succès',
+    });
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  const improveTrunkNft = async (id: string) => {
+    const improveNftService = new ImproveLeavesNftService(
+      new MetamaskNftRepository(
+        provider,
+        signer,
+        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
+      )
+    );
+    const getNftsService = new GetNftsService(
+      new MetamaskNftRepository(
+        provider,
+        signer,
+        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
+      )
+    );
+    const nft: Nft = { id };
+    await improveNftService.handle({ nft });
+    const featureCardUi = await loadFeatureCardProps(getNftsService);
+    setFeaturesCardProps(featureCardUi);
+    setSimpleBannerProps({
+      title: 'Succès',
+      description: 'Les feuilles de votre arbre ont été améliorées avec succès',
+    });
   };
 
   useEffect(() => {
@@ -279,27 +319,33 @@ export function MyGallery({ provider, signer }: any) {
             onClick={() => mergeTwoNfts()}
           />
         )}
-        {bannerMessage && (
-          <Paper
-            withBorder
-            p="lg"
-            radius="md"
-            shadow="md"
-            className={classes.banner_body}
-          >
-            <Group position="apart" mb="xs">
-              <Text size="md" weight={500}>
-                Résultat de votre fusion
-              </Text>
-              <CloseButton
-                mr={-9}
-                mt={-9}
-                onClick={() => setBannerMessage('')}
-              />
-            </Group>
-            <Text size="xs">{bannerMessage}</Text>
-          </Paper>
-        )}
+        {simpleBannerProps?.description !== undefined &&
+          simpleBannerProps.description !== '' && (
+            <Paper
+              withBorder
+              p="lg"
+              radius="md"
+              shadow="md"
+              className={classes.banner_body}
+            >
+              <Group position="apart" mb="xs">
+                <Text size="md" weight={500}>
+                  {simpleBannerProps.title}
+                </Text>
+                <CloseButton
+                  mr={-9}
+                  mt={-9}
+                  onClick={() =>
+                    setSimpleBannerProps({
+                      title: '',
+                      description: '',
+                    })
+                  }
+                />
+              </Group>
+              <Text size="xs">{simpleBannerProps.description}</Text>
+            </Paper>
+          )}
         <Grid>
           {featuresCardProps.map((nft: FeaturesCardUI) => {
             return (
@@ -311,7 +357,8 @@ export function MyGallery({ provider, signer }: any) {
                   title={nft.title}
                   textButtonMerge={nft.textButtonMerge}
                   selectMerge={() => selectNftToMerge(nft.title)}
-                  selectImprove={() => improveNft(nft.title)}
+                  selectImproveLeaves={() => improveLeavesNft(nft.title)}
+                  selectImproveTrunk={() => improveTrunkNft(nft.title)}
                 />
               </Grid.Col>
             );

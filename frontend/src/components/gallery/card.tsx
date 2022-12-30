@@ -18,7 +18,8 @@ interface FeaturesCardProps {
   // eslint-disable-next-line react/require-default-props
   imageUrl?: string;
   selectMerge: (id: string) => void;
-  selectImprove: (id: string) => void;
+  selectImproveLeaves: (id: string) => void;
+  selectImproveTrunk: (id: string) => void;
 }
 
 interface FeaturesCardStyle {
@@ -53,7 +54,8 @@ export function FeaturesCard({
   improveButtonShow,
   imageUrl,
   selectMerge,
-  selectImprove,
+  selectImproveLeaves,
+  selectImproveTrunk,
 }: FeaturesCardProps) {
   const { classes } = useStyles({
     cardBackgroundColor: backgroundColor,
@@ -101,10 +103,24 @@ export function FeaturesCard({
         radius="md"
         className={classes.button_color}
         onClick={() => {
-          selectImprove(title);
+          selectImproveLeaves(title);
         }}
       >
-        Améliorer l'arbre
+        Améliorer les feuilles de l'arbre
+      </Button>
+      <Button
+        disabled={!improveButtonShow}
+        variant="light"
+        color="blue"
+        fullWidth
+        mt="md"
+        radius="md"
+        className={classes.button_color}
+        onClick={() => {
+          selectImproveTrunk(title);
+        }}
+      >
+        Améliorer le tronc de l'arbre
       </Button>
       <Button
         variant="light"

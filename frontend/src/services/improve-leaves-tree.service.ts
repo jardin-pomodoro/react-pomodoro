@@ -2,10 +2,10 @@
 import { NftRepository } from '../core/nft.repository';
 import { Nft } from '../core/nft';
 
-export class ImproveNftService {
+export class ImproveLeavesNftService {
   constructor(private readonly nftRepository: NftRepository) {}
 
   async handle(improveNftProps: { nft: Nft }): Promise<void> {
-    await this.nftRepository.improve(improveNftProps.nft);
+    await this.nftRepository.improveLeaves(improveNftProps.nft);
   }
 }

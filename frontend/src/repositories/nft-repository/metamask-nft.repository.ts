@@ -17,6 +17,14 @@ export class MetamaskNftRepository implements NftRepository {
     private contract: ethers.Contract
   ) {}
 
+  async improveLeaves(nft: Nft): Promise<void> {
+    await this.contract.connect(this.signer).upgradeTreeLeaves(nft.id);
+  }
+
+  async improveTrunk(nft: Nft): Promise<void> {
+    await this.contract.connect(this.signer).upgradeTreeTrunk(nft.id);
+  }
+
   async getMetadata(nft: Nft): Promise<string> {
     const uriAssociated = await this.contract.connect(this.signer).uri(nft.id);
     try {
@@ -33,10 +41,6 @@ export class MetamaskNftRepository implements NftRepository {
     // promise resolve in one second
 
     await this.contract.connect(this.signer).breedTree(nfts1, nfts2);
-  }
-
-  async improve(nft: Nft): Promise<void> {
-    await this.contract.connect(this.signer).updateSeeds(nft.id);
   }
 
   async getAll(): Promise<Nft[]> {
