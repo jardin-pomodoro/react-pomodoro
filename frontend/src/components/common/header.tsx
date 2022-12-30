@@ -9,7 +9,7 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import './header.css';
-import { IconUser } from '@tabler/icons';
+import { IconUser, IconCurrencyEthereum } from '@tabler/icons';
 
 const useStyles = createStyles((theme) => ({
   inner: {
@@ -70,9 +70,11 @@ interface HeaderSearchProps {
     links: { link: string; label: string }[];
   }[];
   account: string;
+  // eslint-disable-next-line react/require-default-props
+  moneyCount?: number;
 }
 
-export function HeaderMenu({ links, account }: HeaderSearchProps) {
+export function HeaderMenu({ links, account, moneyCount }: HeaderSearchProps) {
   const [opened, { toggle }] = useDisclosure(false);
   const { classes } = useStyles();
 
@@ -106,6 +108,12 @@ export function HeaderMenu({ links, account }: HeaderSearchProps) {
             >
               {account}
             </div>
+            {moneyCount && (
+              <>
+                <IconCurrencyEthereum />
+                <div>{moneyCount}</div>
+              </>
+            )}
           </Group>
 
           <Burger

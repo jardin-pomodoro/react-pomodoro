@@ -1,3 +1,3 @@
 export default abstract class MoneyRepository {
-  getBalance(): Promise<number>;
+  abstract getBalance(): Promise<number>;
 }

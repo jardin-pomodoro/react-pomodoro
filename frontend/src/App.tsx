@@ -10,6 +10,8 @@ import Gallery from './pages/Gallery';
 import BuySeed from './pages/BuySeedPage';
 import { InstallPlugin } from './pages/installPlugin';
 import LoadingEtherAccount from './pages/LoadingEtherAccount';
+import { GetMoneyCountService } from './services/get-money-count.service';
+import MetamaskMoneyRepository from './repositories/money/metamask-money.repository';
 
 export function App() {
   const [provider, setProvider] = useState(
@@ -17,6 +19,7 @@ export function App() {
   );
 
   const [signer, setSigner] = useState(undefined as ethers.Signer | undefined);
+  const [moneyCount, setMoneyCount] = useState(undefined as number | undefined);
   const [loadAccount, setLoadAccount] = useState(false);
 
   const initializeEthers = async () => {

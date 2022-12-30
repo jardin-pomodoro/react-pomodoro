@@ -5,6 +5,7 @@ export class GetMoneyCountService {
   constructor(private readonly moneyRepository: MoneyRepository) {}
 
   async handle(): Promise<number> {
-    return this.moneyRepository.getBalance();
+    console.log(await this.moneyRepository.getBalance());
+    return await this.moneyRepository.getBalance();
   }
 }
