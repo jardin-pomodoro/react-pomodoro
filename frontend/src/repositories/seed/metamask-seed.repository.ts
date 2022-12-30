@@ -11,8 +11,10 @@ export default class MetamaskSeedRepository implements SeedRepository {
   ) {}
 
   async getSeedFree(): Promise<SeedFree> {
-    console.log(this.contract.connect(this.signer).getSeedFree());
-    throw new Error('Method not implemented.');
+    const seedFree = await this.contract.connect(this.signer).getSeedFree();
+    return {
+      numberSeed: Number(ethers.BigNumber.from(seedFree).toNumber()),
+    };
   }
 
   async buySeed(tokenId: string, amount: number): Promise<void> {
