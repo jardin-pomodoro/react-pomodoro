@@ -3,6 +3,13 @@ import { ethers } from 'ethers';
 import { Nft } from '../../core/nft';
 import { NftRepository } from '../../core/nft.repository';
 
+interface NftMetadata {
+  name: string;
+  external_link: string;
+  image: string;
+  id: number;
+}
+
 export class MetamaskNftRepository implements NftRepository {
   constructor(
     private provider: ethers.providers.Web3Provider,
@@ -10,27 +17,50 @@ export class MetamaskNftRepository implements NftRepository {
     private contract: ethers.Contract
   ) {}
 
-  merge(nfts1: string, nfts2: string): Promise<void> {
+  async getMetadata(nft: Nft): Promise<string> {
+    const uriAssociated = await this.contract.connect(this.signer).uri(nft.id);
+    try {
+      const jsonFounded: NftMetadata = await (
+        await fetch(uriAssociated)
+      ).json();
+      return jsonFounded.image;
+    } catch (e) {
+      return '';
+    }
+  }
+
+  async merge(nfts1: string, nfts2: string): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
-  improve(nft: Nft): Promise<void> {
-    throw new Error('Method not implemented.');
+  async improve(nft: Nft): Promise<void> {
+    await this.contract.connect(this.signer).updateSeeds(nft.id);
   }
 
   async getAll(): Promise<Nft[]> {
-    // get token associated to a contract and a wallet
-    /*const tokenIds = await this.contract
-      .connect(this.signer)
-      .balanceOf(this.signer.getAddress());*/
-
     const adress = await this.signer.getAddress();
-
-    this.contract.balanceOf(adress, 0).then((result) => {
-      console.log('result => ', result); // un tableau contenant les identifiants des NFT possédées par le compte
-      console.log('traduct -> ', ethers.BigNumber.from(result).toNumber());
-    });
-    //console.log(tokenIds);
-    throw new Error('Method not implemented.');
+    const adresses = [
+      adress,
+      adress,
+      adress,
+      adress,
+      adress,
+      adress,
+      adress,
+      adress,
+      adress,
+      adress,
+    ];
+    const tokenAsked = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const nftFounded: number[] = [];
+    const result = await this.contract.balanceOfBatch(adresses, tokenAsked);
+    if (Array.isArray(result)) {
+      result.forEach((element) => {
+        if (ethers.BigNumber.from(element).toNumber() === 1) {
+          nftFounded.push(tokenAsked[result.indexOf(element)]);
+        }
+      });
+    }
+    return nftFounded.map((id) => ({ id: id.toString() }));
   }
 }

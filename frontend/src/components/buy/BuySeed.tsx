@@ -13,15 +13,14 @@ import {
   Radio,
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
+import { ethers } from 'ethers';
 import { Nft } from '../../core/nft';
-import { InMemoryNftRepository } from '../../repositories/nft-repository/in-memory-nft.repository';
-import { InMemorySeedRepository } from '../../repositories/seed/in-memory-seed.reposotory';
 import { BuySeedService } from '../../services/buy-seed.service';
 import { GetNftsService } from '../../services/get-nfts.service';
 import { GetSeedPriceService } from '../../services/get-seed-price.service';
 import MetamaskSeedRepository from '../../repositories/seed/metamask-seed.repository';
 import { contractAbi, treeToken } from '../../utils/constants';
-import { ethers } from 'ethers';
+import { MetamaskNftRepository } from '../../repositories/nft-repository/metamask-nft.repository';
 
 const useStyles = createStyles((theme) => ({
   center_button: {
@@ -71,12 +70,18 @@ function BuySeed({ provider, signer }: any) {
   }, [provider, signer]);
 
   useEffect(() => {
-    const getNftsService = new GetNftsService(new InMemoryNftRepository());
+    const getNftsService = new GetNftsService(
+      new MetamaskNftRepository(
+        provider,
+        signer,
+        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
+      )
+    );
     getNftsService.handle().then((nftsfromService: Nft[]) => {
       const nfts = nftsfromService.map((nft) => nft.id);
       setNfts(nfts);
     });
-  }, []);
+  }, [provider, signer]);
 
   useEffect(() => {
     const deadline = 'Februray, 01, 2023';
@@ -99,9 +104,14 @@ function BuySeed({ provider, signer }: any) {
   }, [days, hours, minutes, seconds]);
 
   const buy = (tokenId: string) => {
-    const buySeedService = new BuySeedService(new InMemorySeedRepository());
+    const buySeedService = new BuySeedService(
+      new MetamaskSeedRepository(
+        provider,
+        signer,
+        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
+      )
+    );
     buySeedService.handle({ tokenId, amount: 1 }).then((result) => {
-      console.log('achat effectué');
       setOpened(false);
     });
   };

@@ -15,6 +15,8 @@ interface FeaturesCardProps {
   title: string;
   textButtonMerge: string;
   improveButtonShow: boolean;
+  // eslint-disable-next-line react/require-default-props
+  imageUrl?: string;
   selectMerge: (id: string) => void;
   selectImprove: (id: string) => void;
 }
@@ -49,6 +51,7 @@ export function FeaturesCard({
   title,
   textButtonMerge,
   improveButtonShow,
+  imageUrl,
   selectMerge,
   selectImprove,
 }: FeaturesCardProps) {
@@ -66,7 +69,11 @@ export function FeaturesCard({
     >
       <Card.Section component="a" href="https://mantine.dev/">
         <Image
-          src="https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
+          src={
+            !imageUrl
+              ? 'https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80'
+              : imageUrl
+          }
           height={160}
           alt="Norway"
         />

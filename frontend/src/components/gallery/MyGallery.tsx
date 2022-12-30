@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import { Container, Grid } from '@mantine/core';
 import { useEffect, useState } from 'react';
+import { ethers } from 'ethers';
 import { Nft } from '../../core/nft';
 import { InMemoryNftRepository } from '../../repositories/nft-repository/in-memory-nft.repository';
 import { GetNftsService } from '../../services/get-nfts.service';
@@ -10,7 +11,7 @@ import { Banner } from './Banner';
 import { FeaturesCard } from './card';
 import { MetamaskNftRepository } from '../../repositories/nft-repository/metamask-nft.repository';
 import { contractAbi, treeToken } from '../../utils/constants';
-import { ethers } from 'ethers';
+import { GetNftMetadataService } from '../../services/get-nft-metadata.service';
 
 interface BannerProps {
   backgroundColor: string;
@@ -27,6 +28,7 @@ interface FeaturesCardUI {
   textButtonMerge: string;
   improveButtonShow: boolean;
   title: string;
+  imageMetadata?: string;
 }
 
 const modifyBanner = (selectedNfts: Nft[]): BannerProps => {
@@ -150,12 +152,16 @@ export function MyGallery({ provider, signer }: any) {
     if (selectedNfts.length !== 2) return;
     const nft1 = selectedNfts[0];
     const nft2 = selectedNfts[1];
-    const mergeNftsService = new MergeNftsService(new InMemoryNftRepository());
+    const mergeNftsService = new MergeNftsService(
+      new MetamaskNftRepository(
+        provider,
+        signer,
+        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
+      )
+    );
     mergeNftsService.handle({ nft1: nft1.id, nft2: nft2.id }).then(() => {
-      console.log("L'arbre a été fusionné avec succès");
       setSelectedNfts([]);
       loadFeatureCardProps().then((featureCardUi) => {
-        console.log('featureCardUi ', featureCardUi);
         setFeaturesCardProps(featureCardUi);
       });
     });
@@ -163,19 +169,21 @@ export function MyGallery({ provider, signer }: any) {
 
   const improveNft = (id: string) => {
     const improveNftService = new ImproveNftService(
-      new InMemoryNftRepository()
+      new MetamaskNftRepository(
+        provider,
+        signer,
+        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
+      )
     );
     const nft: Nft = { id };
     improveNftService.handle({ nft }).then(() => {
       loadFeatureCardProps().then((featureCardUi) => {
-        console.log('featureCardUi ', featureCardUi);
         setFeaturesCardProps(featureCardUi);
       });
     });
   };
 
   useEffect(() => {
-    
     const getNftsService = new GetNftsService(
       new MetamaskNftRepository(
         provider,
@@ -183,19 +191,31 @@ export function MyGallery({ provider, signer }: any) {
         new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
       )
     );
-    getNftsService.handle().then((nftsfromService: Nft[]) => {
-      const nfts = nftsfromService.map((nft) => {
-        return {
-          backgroundColor: '#4B8673',
-          textColor: 'white',
-          textButtonMerge: "Fusionner l'arbre",
-          improveButtonShow: true,
-          title: nft.id,
-        };
-      });
+    const getNftMetadataService = new GetNftMetadataService(
+      new MetamaskNftRepository(
+        provider,
+        signer,
+        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
+      )
+    );
+    getNftsService.handle().then(async (nftsfromService: Nft[]) => {
+      const nfts = await Promise.all(
+        nftsfromService.map(async (nft) => {
+          const nftMetadata = await getNftMetadataService.handle(nft);
+          const nftE = {
+            backgroundColor: '#4B8673',
+            textColor: 'white',
+            textButtonMerge: "Fusionner l'arbre",
+            improveButtonShow: true,
+            title: nft.id,
+            imageMetadata: nftMetadata,
+          };
+          return nftE;
+        })
+      );
       setFeaturesCardProps(nfts);
     });
-  }, []);
+  }, [provider, signer]);
 
   return (
     <div className="gallery-body">

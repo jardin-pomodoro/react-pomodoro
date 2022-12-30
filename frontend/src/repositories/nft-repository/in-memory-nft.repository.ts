@@ -4,6 +4,10 @@ import { NftRepository } from '../../core/nft.repository';
 
 /** TODO replace static with dependency injection to keep the same instance */
 export class InMemoryNftRepository implements NftRepository {
+  getMetadata(nft: Nft): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
+
   private static nfts: Nft[] = [
     { id: '82781378133' },
     { id: '82781378132' },

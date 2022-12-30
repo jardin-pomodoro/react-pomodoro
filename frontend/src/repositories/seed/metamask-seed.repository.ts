@@ -16,14 +16,14 @@ export default class MetamaskSeedRepository implements SeedRepository {
   }
 
   async buySeed(tokenId: string, amount: number): Promise<void> {
-    throw new Error('Method not implemented.');
+    await this.contract.connect(this.signer).buySeeds(tokenId, amount);
   }
 
   async getPrice(): Promise<number> {
     const value = await this.contract
       .connect(this.signer)
       .getSeedCost(this.signer.getAddress());
-    console.log(ethers.BigNumber.from(value).toNumber())
+
     return Number(ethers.BigNumber.from(value).toNumber());
   }
 }

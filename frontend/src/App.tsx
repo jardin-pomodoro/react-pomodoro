@@ -8,7 +8,6 @@ import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Gallery from './pages/Gallery';
 import BuySeed from './pages/BuySeedPage';
-import { contractAbi, treeToken } from './utils/constants';
 import { InstallPlugin } from './pages/installPlugin';
 import LoadingEtherAccount from './pages/LoadingEtherAccount';
 
@@ -22,11 +21,7 @@ export function App() {
 
   const initializeEthers = async () => {
     const localProvider = new ethers.providers.Web3Provider(window.ethereum);
-    // const localContract = new ethers.Contract(
-    //   treeToken.Token,
-    //   contractAbi,
-    //   localProvider.getSigner(0)
-    // );
+
     await localProvider.send('eth_requestAccounts', []);
     const localSigner = localProvider.getSigner();
     setProvider(localProvider);

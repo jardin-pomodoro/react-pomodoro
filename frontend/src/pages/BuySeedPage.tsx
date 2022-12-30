@@ -19,7 +19,7 @@ function BuySeedPage({ provider, signer }: any) {
         ]}
         account={account || ''}
       />
-      <BuySeed provider={provider} signer={signer} />
+      {provider && signer && <BuySeed provider={provider} signer={signer} />}
     </>
   );
 }
