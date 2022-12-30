@@ -11,6 +11,7 @@ import {
   Group,
   Modal,
   Radio,
+  CloseButton,
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
@@ -36,6 +37,15 @@ const useStyles = createStyles((theme) => ({
     width: '100%',
     height: '100%',
   },
+  banner_body: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+    marginBottom: '1rem',
+  },
 }));
 
 function BuySeed({ provider, signer }: any) {
@@ -44,6 +54,7 @@ function BuySeed({ provider, signer }: any) {
   const initalNfts: string[] = [];
   const [nfts, setNfts] = useState(initalNfts);
   const [opened, setOpened] = useState(false);
+  const [transactionSuccess, setTransactionSuccess] = useState(false);
   const [days, setDays] = useState(0);
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
@@ -112,6 +123,7 @@ function BuySeed({ provider, signer }: any) {
       )
     );
     buySeedService.handle({ tokenId, amount: 1 }).then((result) => {
+      setTransactionSuccess(true);
       setOpened(false);
     });
   };
@@ -137,7 +149,32 @@ function BuySeed({ provider, signer }: any) {
           <Button onClick={() => buy(tokenIdValue)}>Confirmer l'achat</Button>
         </Center>
       </Modal>
+
       <Container>
+        {transactionSuccess && (
+          <Paper
+            withBorder
+            p="lg"
+            radius="md"
+            shadow="md"
+            className={classes.banner_body}
+          >
+            <Group position="apart" mb="xs">
+              <Text size="md" weight={500}>
+                Achat bien finalisé
+              </Text>
+              <CloseButton
+                mr={-9}
+                mt={-9}
+                onClick={() => setTransactionSuccess(false)}
+              />
+            </Group>
+            <Text size="xs">
+              Votre transaction est un succès, vous pouvez vous rendre dans
+              metamask pour suivre l'historique de votre transaction
+            </Text>
+          </Paper>
+        )}
         <Paper withBorder p="lg" radius="md" shadow="md" mb="xs">
           <Group position="apart" mb="xs">
             <Text size="md" weight={500}>

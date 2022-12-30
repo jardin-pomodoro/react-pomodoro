@@ -16,7 +16,12 @@ export default class MetamaskSeedRepository implements SeedRepository {
   }
 
   async buySeed(tokenId: string, amount: number): Promise<void> {
-    await this.contract.connect(this.signer).buySeeds(tokenId, amount);
+    //await this.contract.connect(this.signer).buySeeds(tokenId, amount);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 2000);
+    });
   }
 
   async getPrice(): Promise<number> {
