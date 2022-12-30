@@ -15,7 +15,6 @@ import {
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
-import { Nft } from '../../core/nft';
 import { BuySeedService } from '../../services/buy-seed.service';
 import { GetNftsService } from '../../services/get-nfts.service';
 import { GetSeedPriceService } from '../../services/get-seed-price.service';
@@ -60,39 +59,39 @@ function BuySeed({ provider, signer }: any) {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const { classes } = useStyles();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const getSeedPriceService = new GetSeedPriceService(
+    new MetamaskSeedRepository(
+      provider,
+      signer,
+      new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
+    )
+  );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const getNftsService = new GetNftsService(
+    new MetamaskNftRepository(
+      provider,
+      signer,
+      new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
+    )
+  );
 
   useEffect(() => {
-    if (provider && signer) {
-      const getSeedPriceService = new GetSeedPriceService(
-        new MetamaskSeedRepository(
-          provider,
-          signer,
-          new ethers.Contract(
-            treeToken.Token,
-            contractAbi,
-            provider.getSigner(0)
-          )
-        )
-      );
-      getSeedPriceService.handle().then((price) => {
-        setSeedPrice(price);
-      });
-    }
-  }, [provider, signer]);
+    const getSeePrice = async () => {
+      const seedPriceFromService = await getSeedPriceService.handle();
+      setSeedPrice(seedPriceFromService);
+    };
+    getSeePrice();
+  }, [getSeedPriceService]);
 
   useEffect(() => {
-    const getNftsService = new GetNftsService(
-      new MetamaskNftRepository(
-        provider,
-        signer,
-        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
-      )
-    );
-    getNftsService.handle().then((nftsfromService: Nft[]) => {
-      const nfts = nftsfromService.map((nft) => nft.id);
-      setNfts(nfts);
-    });
-  }, [provider, signer]);
+    const getNfts = async () => {
+      const nftsFromService = await getNftsService.handle();
+      const nftsFormatted = nftsFromService.map((nft) => nft.id);
+      setNfts(nftsFormatted);
+    };
+    getNfts();
+  }, [getNftsService]);
 
   useEffect(() => {
     const deadline = 'Februray, 01, 2023';
@@ -114,7 +113,7 @@ function BuySeed({ provider, signer }: any) {
     return () => clearInterval(interval);
   }, [days, hours, minutes, seconds]);
 
-  const buy = (tokenId: string) => {
+  const buy = async (tokenId: string) => {
     const buySeedService = new BuySeedService(
       new MetamaskSeedRepository(
         provider,
@@ -122,10 +121,9 @@ function BuySeed({ provider, signer }: any) {
         new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
       )
     );
-    buySeedService.handle({ tokenId, amount: 1 }).then((result) => {
-      setTransactionSuccess(true);
-      setOpened(false);
-    });
+    await buySeedService.handle({ tokenId, amount: 1 });
+    setTransactionSuccess(true);
+    setOpened(false);
   };
 
   return (

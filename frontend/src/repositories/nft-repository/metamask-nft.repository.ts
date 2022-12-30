@@ -30,7 +30,9 @@ export class MetamaskNftRepository implements NftRepository {
   }
 
   async merge(nfts1: string, nfts2: string): Promise<void> {
-    throw new Error('Method not implemented.');
+    // promise resolve in one second
+
+    await this.contract.connect(this.signer).breedTree(nfts1, nfts2);
   }
 
   async improve(nft: Nft): Promise<void> {
