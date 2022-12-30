@@ -20,7 +20,7 @@ import { GetNftsService } from '../../services/get-nfts.service';
 import { GetSeedPriceService } from '../../services/get-seed-price.service';
 import MetamaskSeedRepository from '../../repositories/seed/metamask-seed.repository';
 import { contractAbi, treeToken } from '../../utils/constants';
-import { MetamaskNftRepository } from '../../repositories/nft-repository/metamask-nft.repository';
+import { MetamaskNftRepository } from '../../repositories/nft/metamask-nft.repository';
 
 const useStyles = createStyles((theme) => ({
   center_button: {

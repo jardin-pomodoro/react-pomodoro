@@ -17,7 +17,7 @@ import { ImproveLeavesNftService } from '../../services/improve-leaves-tree.serv
 import { MergeNftsService } from '../../services/merge-nfts.service';
 import { Banner } from './Banner';
 import { FeaturesCard } from './card';
-import { MetamaskNftRepository } from '../../repositories/nft-repository/metamask-nft.repository';
+import { MetamaskNftRepository } from '../../repositories/nft/metamask-nft.repository';
 import { contractAbi, treeToken } from '../../utils/constants';
 import { GetNftMetadataService } from '../../services/get-nft-metadata.service';
 
@@ -30,7 +30,7 @@ interface BannerProps {
   buttonText: string;
 }
 
-interface simpleBannerProps {
+interface SimpleBannerProps {
   title: string;
   description: string;
 }
@@ -145,7 +145,7 @@ export function MyGallery({ provider, signer }: any) {
     buttonValidity: true,
   });
   const [simpleBannerProps, setSimpleBannerProps] = useState(
-    {} as simpleBannerProps
+    {} as SimpleBannerProps
   );
   const { classes } = useStyles();
 
