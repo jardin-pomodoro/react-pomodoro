@@ -8,6 +8,9 @@ import { ImproveNftService } from '../../services/improve-tree.service';
 import { MergeNftsService } from '../../services/merge-nfts.service';
 import { Banner } from './Banner';
 import { FeaturesCard } from './card';
+import { MetamaskNftRepository } from '../../repositories/nft-repository/metamask-nft.repository';
+import { contractAbi, treeToken } from '../../utils/constants';
+import { ethers } from 'ethers';
 
 interface BannerProps {
   backgroundColor: string;
@@ -98,7 +101,7 @@ const loadFeatureCardProps = (): Promise<FeaturesCardUI[]> => {
   });
 };
 
-export function MyGallery() {
+export function MyGallery({ provider, signer }: any) {
   const initialNfts: Nft[] = [];
   const initialFeatureCardProps: FeaturesCardUI[] = [];
   const [featuresCardProps, setFeaturesCardProps] = useState(
@@ -172,7 +175,14 @@ export function MyGallery() {
   };
 
   useEffect(() => {
-    const getNftsService = new GetNftsService(new InMemoryNftRepository());
+    
+    const getNftsService = new GetNftsService(
+      new MetamaskNftRepository(
+        provider,
+        signer,
+        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
+      )
+    );
     getNftsService.handle().then((nftsfromService: Nft[]) => {
       const nfts = nftsfromService.map((nft) => {
         return {

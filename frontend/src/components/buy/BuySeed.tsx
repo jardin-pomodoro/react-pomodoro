@@ -15,11 +15,11 @@ import {
 import { useEffect, useState } from 'react';
 import { Nft } from '../../core/nft';
 import { InMemoryNftRepository } from '../../repositories/nft-repository/in-memory-nft.repository';
-import { InMemorySeedRepository } from '../../repositories/seed-free/in-memory-seed.reposotory';
+import { InMemorySeedRepository } from '../../repositories/seed/in-memory-seed.reposotory';
 import { BuySeedService } from '../../services/buy-seed.service';
 import { GetNftsService } from '../../services/get-nfts.service';
 import { GetSeedPriceService } from '../../services/get-seed-price.service';
-import MetamaskSeedRepository from '../../repositories/seed-free/metamask-seed.repository';
+import MetamaskSeedRepository from '../../repositories/seed/metamask-seed.repository';
 import { contractAbi, treeToken } from '../../utils/constants';
 import { ethers } from 'ethers';
 

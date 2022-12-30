@@ -19,7 +19,7 @@ function Gallery({ provider, signer }: any) {
         ]}
         account={account || ''}
       />
-      <MyGallery />
+      {provider && signer && <MyGallery provider={provider} signer={signer} />}
     </>
   );
 }
