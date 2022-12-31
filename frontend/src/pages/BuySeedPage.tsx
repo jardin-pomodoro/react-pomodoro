@@ -1,39 +1,43 @@
 import { useEffect, useState } from 'react';
+import { ethers } from 'ethers';
 import BuySeed from '../components/buy/BuySeed';
 import { HeaderMenu } from '../components/common/header';
 import MetamaskMoneyRepository from '../repositories/money/metamask-money.repository';
 import { GetMoneyCountService } from '../services/get-money-count.service';
 import { contractAbi, treeToken } from '../utils/constants';
-import { ethers } from 'ethers';
 
 function BuySeedPage({ provider, signer }: any) {
   const [account, setAccount] = useState<string | undefined>(undefined);
   const [moneyCount, setMoneyCount] = useState<number | undefined>(undefined);
   useEffect(() => {
-    signer?.getAddress().then((address: string) => {
-      setAccount(address);
-    });
+    const getAdress = async () => {
+      const accountFromSerice = await signer.getAddress();
+      setAccount(accountFromSerice);
+    };
+    if (provider && signer) {
+      getAdress();
+    }
   }, [provider, signer]);
 
   useEffect(() => {
     const getMoneyCount = async () => {
-      if (provider && signer) {
-        const getMoneyCountService = new GetMoneyCountService(
-          new MetamaskMoneyRepository(
-            provider,
-            signer,
-            new ethers.Contract(
-              treeToken.Token,
-              contractAbi,
-              provider.getSigner(0)
-            )
+      const getMoneyCountService = new GetMoneyCountService(
+        new MetamaskMoneyRepository(
+          provider,
+          signer,
+          new ethers.Contract(
+            treeToken.Token,
+            contractAbi,
+            provider.getSigner(0)
           )
-        );
-        const money = await getMoneyCountService.handle();
-        setMoneyCount(money);
-      }
+        )
+      );
+      const money = await getMoneyCountService.handle();
+      setMoneyCount(money);
     };
-    getMoneyCount();
+    if (provider && signer) {
+      getMoneyCount();
+    }
   }, [provider, signer]);
   return (
     <>

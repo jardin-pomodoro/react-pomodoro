@@ -101,13 +101,17 @@ export function HeaderMenu({ links, account, moneyCount }: HeaderSearchProps) {
 
           <Group spacing={5} className={classes.links}>
             {items}
-            <IconUser />
-            <div
-              style={{ textOverflow: 'ellipsis' }}
-              className={classes.account}
-            >
-              {account}
-            </div>
+            {account && (
+              <>
+                <IconUser />
+                <div
+                  style={{ textOverflow: 'ellipsis' }}
+                  className={classes.account}
+                >
+                  {account}
+                </div>
+              </>
+            )}
             {moneyCount && (
               <>
                 <IconCurrencyEthereum />
