@@ -110,5 +110,4 @@ package-lock.json
 artifacts/
 typechain-types/
 cache/
-tree-token.json
-greeter.json
+
