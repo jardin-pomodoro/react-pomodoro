@@ -20,7 +20,6 @@ export function App() {
     undefined | ethers.providers.Web3Provider
   >(undefined);
   const [signer, setSigner] = useState<undefined | ethers.Signer>(undefined);
-  const [moneyCount, setMoneyCount] = useState<undefined | number>(undefined);
   const [loadingMessage, setLoadingMessage] = useState('');
   const [loadAccount, setLoadAccount] = useState(false);
 
@@ -34,11 +33,6 @@ export function App() {
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
-    const resetState = () => {
-      setProvider(undefined);
-      setSigner(undefined);
-    };
-
     const initConnection = async (): Promise<void> => {
       console.log('recall');
       const connectToWalletservice = new ConnectToWalletService();

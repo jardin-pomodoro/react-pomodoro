@@ -1,7 +1,5 @@
 export enum ConnectToWalletResponse {
   OK = 'OK',
-  NEW_ACCOUNT = 'NEW_ACCOUNT',
-  NO_ACCOUNT = 'NO_ACCOUNT',
 }
 
 export class ConnectToWalletService {
@@ -31,11 +29,11 @@ export class ConnectToWalletService {
     throw new Error('En attente de la synchronisation du compte metamask');
   }
 
-  async listenAccountChanged(callbackFunc: () => void): Promise<void> {
-    window.ethereum.on('accountsChanged', ([address]) => {
+  listenAccountChanged(callbackFunc: () => void): void {
+    window.ethereum.on('accountsChanged', () => {
       callbackFunc();
     });
-    window.ethereum.on('chainChanged', (chainId) => {
+    window.ethereum.on('chainChanged', () => {
       callbackFunc();
     });
   }
