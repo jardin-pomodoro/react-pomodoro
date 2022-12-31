@@ -18,7 +18,7 @@ async function main() {
 }
 
 function saveFrontendDeploymentInfo(contract: Contract) {
-  const frontendDir = __dirname + '../frontend/src/contracts';
+  const frontendDir = path.normalize(__dirname + '/../frontend/src/contracts');
 
   if (!fs.existsSync(frontendDir)) {
     fs.mkdirSync(frontendDir);
@@ -35,3 +35,10 @@ function saveFrontendDeploymentInfo(contract: Contract) {
     JSON.stringify(contractArtifact, null, 2),
   );
 }
+
+main()
+    .then(() => process.exit(0))
+    .catch((error) => {
+        console.error(error);
+        process.exit(1);
+    });

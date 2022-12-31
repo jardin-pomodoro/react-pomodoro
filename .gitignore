@@ -105,3 +105,8 @@ frontend/dist
 .tern-port
 .DS_Store
 
+*.idea
+package-lock.json
+artifacts/
+typechain-types/
+cache/
