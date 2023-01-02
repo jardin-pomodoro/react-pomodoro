@@ -42,5 +42,9 @@ contract TreeToken is ERC1155, Ownable, ERC1155Burnable {
     function getSeed(uint256 _tokenId) public view returns (uint) {
         return treeSeeds[_tokenId];
     }
+
+    function getTokenCount() public view returns (uint256) {
+        return tokenId;
+    }
 }
 
