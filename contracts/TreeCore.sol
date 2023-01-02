@@ -14,11 +14,12 @@ contract TreeCore is TreeToken, BreedTree, Forest, TreeStats, ForestSeeds {
     }
 
     function breedTree(uint256 _tokenId1, uint256 _tokenId2) external {
+        require(_tokenId1 != _tokenId2, "Can't breed tree with itself");
         require(balanceOf(msg.sender, _tokenId1) == 1, "Not the owner of the tree");
         require(balanceOf(msg.sender, _tokenId2) == 1, "Not the owner of the tree");
         canTreeBreed(_tokenId1);
         canTreeBreed(_tokenId2);
-        uint8 breedCost = treeBreedCost(getTreeRarity(getSeed(_tokenId1)), getTreeRarity(getSeed(_tokenId1)));
+        uint8 breedCost = treeBreedCost(getTreeRarity(getSeed(_tokenId1)), getTreeRarity(getSeed(_tokenId2)));
         _burn(msg.sender, TREE_TOKEN, breedCost);
         uint childSeed = breedTrees(_tokenId1, _tokenId2, getSeed(_tokenId1), getSeed(_tokenId2));
         createTree(childSeed);
