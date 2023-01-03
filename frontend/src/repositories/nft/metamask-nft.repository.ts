@@ -45,19 +45,13 @@ export class MetamaskNftRepository implements NftRepository {
 
   async getAll(): Promise<Nft[]> {
     const adress = await this.signer.getAddress();
-    const adresses = [
-      adress,
-      adress,
-      adress,
-      adress,
-      adress,
-      adress,
-      adress,
-      adress,
-      adress,
-      adress,
-    ];
-    const tokenAsked = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const numberOfExistingToken = await this.getNumberOfExistingNft();
+    const adresses: string[] = [];
+    const tokenAsked: number[] = [];
+    for (let i = 1; i < numberOfExistingToken; i += 1) {
+      adresses.push(adress);
+      tokenAsked.push(i);
+    }
     const nftFounded: number[] = [];
     const result = await this.contract.balanceOfBatch(adresses, tokenAsked);
     if (Array.isArray(result)) {
@@ -68,5 +62,10 @@ export class MetamaskNftRepository implements NftRepository {
       });
     }
     return nftFounded.map((id) => ({ id: id.toString() }));
+  }
+
+  async getNumberOfExistingNft(): Promise<number> {
+    const result = await this.contract.getTokenCount();
+    return ethers.BigNumber.from(result).toNumber();
   }
 }

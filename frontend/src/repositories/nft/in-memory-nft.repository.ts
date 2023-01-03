@@ -1,31 +1,9 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable import/prefer-default-export */
 import { Nft } from '../../core/nft';
 import { NftRepository } from '../../core/nft.repository';
 
-/** TODO replace static with dependency injection to keep the same instance */
 export class InMemoryNftRepository implements NftRepository {
-  improveLeaves(nft: Nft): Promise<void> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        console.log(`${nft.id}has been improved`);
-        resolve();
-      }, 2000);
-    });
-  }
-
-  improveTrunk(nft: Nft): Promise<void> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        console.log(`${nft.id}has been improved`);
-        resolve();
-      }, 2000);
-    });
-  }
-
-  getMetadata(nft: Nft): Promise<string> {
-    throw new Error('Method not implemented.');
-  }
-
   private static nfts: Nft[] = [
     { id: '82781378133' },
     { id: '82781378132' },
@@ -50,5 +28,31 @@ export class InMemoryNftRepository implements NftRepository {
         resolve();
       }, 1000);
     });
+  }
+
+  async getNumberOfExistingNft(): Promise<number> {
+    throw new Error('Method not implemented.');
+  }
+
+  async improveLeaves(nft: Nft): Promise<void> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log(`${nft.id}has been improved`);
+        resolve();
+      }, 2000);
+    });
+  }
+
+  async improveTrunk(nft: Nft): Promise<void> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log(`${nft.id}has been improved`);
+        resolve();
+      }, 2000);
+    });
+  }
+
+  async getMetadata(nft: Nft): Promise<string> {
+    throw new Error('Method not implemented.');
   }
 }

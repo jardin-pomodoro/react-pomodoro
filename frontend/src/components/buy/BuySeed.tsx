@@ -82,7 +82,8 @@ function BuySeed({ provider, signer }: any) {
       setSeedPrice(seedPriceFromService);
     };
     getSeePrice();
-  }, [getSeedPriceService]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [provider, signer]);
 
   useEffect(() => {
     const getNfts = async () => {
@@ -91,7 +92,8 @@ function BuySeed({ provider, signer }: any) {
       setNfts(nftsFormatted);
     };
     getNfts();
-  }, [getNftsService]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [provider, signer]);
 
   useEffect(() => {
     const deadline = 'Februray, 01, 2023';

@@ -9,7 +9,6 @@ export default class MetamaskMoneyRepository implements MoneyRepository {
   ) {}
 
   async getBalance(): Promise<number> {
-    // eslint-disable-next-line @typescript-eslint/return-await
     const money = await this.contract
       .connect(this.signer)
       .balanceOf(this.signer.getAddress(), 0);
