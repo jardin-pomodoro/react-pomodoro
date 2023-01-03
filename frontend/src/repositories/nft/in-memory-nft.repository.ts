@@ -55,4 +55,8 @@ export class InMemoryNftRepository implements NftRepository {
   async getMetadata(nft: Nft): Promise<string> {
     throw new Error('Method not implemented.');
   }
+
+  buyNft(): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
 }

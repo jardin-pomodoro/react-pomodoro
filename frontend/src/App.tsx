@@ -18,6 +18,7 @@ import {
 import { MetamaskNftRepository } from './repositories/nft/metamask-nft.repository';
 import { contractAbi, treeToken } from './utils/constants';
 import { GetNftsService } from './services/get-nfts.service';
+import BuyNft from './pages/BuyNft';
 
 export function App() {
   const [provider, setProvider] = useState<
@@ -76,7 +77,6 @@ export function App() {
           )
         );
         const numberOfNft = await getNftService.handle();
-        console.log(numberOfNft.length);
         if (numberOfNft.length > 0) {
           setHasNft(true);
         }
@@ -110,10 +110,11 @@ export function App() {
           <Route path="*" element={<NotFound />} />
         </>
       )}
-      {!loadAccount && !hasNft && (
-        <>
-          <Route path="*" element={<NotFound />} />
-        </>
+      {!loadAccount && !hasNft && provider && signer && (
+        <Route
+          path="*"
+          element={<BuyNft provider={provider} signer={signer} />}
+        />
       )}
     </Routes>
   );

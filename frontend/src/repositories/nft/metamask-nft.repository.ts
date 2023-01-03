@@ -68,4 +68,9 @@ export class MetamaskNftRepository implements NftRepository {
     const result = await this.contract.getTokenCount();
     return ethers.BigNumber.from(result).toNumber();
   }
+
+  async buyNft(): Promise<void> {
+    const result = await this.contract.connect(this.signer).mintRandomTree();
+    console.log(result);
+  }
 }

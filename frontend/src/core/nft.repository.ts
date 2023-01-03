@@ -8,4 +8,5 @@ export abstract class NftRepository {
   abstract improveLeaves(nft: Nft): Promise<void>;
   abstract improveTrunk(nft: Nft): Promise<void>;
   abstract getMetadata(nft: Nft): Promise<string>;
+  abstract buyNft(): Promise<void>;
 }
