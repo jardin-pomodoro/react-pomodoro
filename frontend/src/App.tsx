@@ -10,10 +10,14 @@ import Gallery from './pages/Gallery';
 import BuySeed from './pages/BuySeedPage';
 import { InstallPlugin } from './pages/installPlugin';
 import LoadingMatamaskAccount from './pages/LoadingMetamaskAccount';
+import GetNumberOfNftService from './services/get-number-of-nft.service';
 import {
   ConnectToWalletResponse,
   ConnectToWalletService,
 } from './services/connect-to-wallet.service';
+import { MetamaskNftRepository } from './repositories/nft/metamask-nft.repository';
+import { contractAbi, treeToken } from './utils/constants';
+import { GetNftsService } from './services/get-nfts.service';
 
 export function App() {
   const [provider, setProvider] = useState<
@@ -22,6 +26,7 @@ export function App() {
   const [signer, setSigner] = useState<undefined | ethers.Signer>(undefined);
   const [loadingMessage, setLoadingMessage] = useState('');
   const [loadAccount, setLoadAccount] = useState(false);
+  const [hasNft, setHasNft] = useState(false);
 
   const initializeEthers = async () => {
     const localProvider = new ethers.providers.Web3Provider(window.ethereum);
@@ -34,7 +39,6 @@ export function App() {
   // eslint-disable-next-line consistent-return
   useEffect(() => {
     const initConnection = async (): Promise<void> => {
-      console.log('recall');
       const connectToWalletservice = new ConnectToWalletService();
       try {
         setLoadAccount(true);
@@ -57,6 +61,30 @@ export function App() {
     initConnection();
   }, []);
 
+  useEffect(() => {
+    const checkNft = async () => {
+      if (provider && signer) {
+        const getNftService = new GetNftsService(
+          new MetamaskNftRepository(
+            provider,
+            signer,
+            new ethers.Contract(
+              treeToken.Token,
+              contractAbi,
+              provider.getSigner(0)
+            )
+          )
+        );
+        const numberOfNft = await getNftService.handle();
+        console.log(numberOfNft.length);
+        if (numberOfNft.length > 0) {
+          setHasNft(true);
+        }
+      }
+    };
+    checkNft();
+  }, [provider, signer]);
+
   return (
     <Routes>
       {loadAccount && (
@@ -65,7 +93,7 @@ export function App() {
           element={<LoadingMatamaskAccount message={loadingMessage} />}
         />
       )}
-      {!loadAccount && (
+      {!loadAccount && hasNft && (
         <>
           <Route
             path="/buy"
@@ -79,6 +107,11 @@ export function App() {
             path="/"
             element={<Home provider={provider} signer={signer} />}
           />
+          <Route path="*" element={<NotFound />} />
+        </>
+      )}
+      {!loadAccount && !hasNft && (
+        <>
           <Route path="*" element={<NotFound />} />
         </>
       )}
