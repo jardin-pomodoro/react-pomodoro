@@ -93,7 +93,6 @@ contract TreeCore is TreeToken, BreedTree, Forest, TreeStats, ForestSeeds {
     function mintRandomTree() external payable {
         require(tokenId <= 10000, "Max supply reached");
         require(msg.value >= 0.1 ether, "Wrong amount");
-        payable(address(this)).transfer(msg.value);
         uint seed = uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender, tokenId))) % 1000000;
         createTree(seed);
     }
