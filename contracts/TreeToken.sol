@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract TreeToken is ERC1155, Ownable, ERC1155Burnable {
     string public name = "Tree Collection";
+    address public CONTRACT_OWNER;
     uint256 internal TREE_TOKEN = 0;
     uint256 internal tokenId = 1;
     mapping(uint256 => uint) private treeSeeds;
@@ -24,6 +25,11 @@ contract TreeToken is ERC1155, Ownable, ERC1155Burnable {
 
     function setURI(string memory newUri) public onlyOwner {
         _setURI(newUri);
+    }
+
+    function withdraw() public payable onlyOwner {
+        (bool os,) = payable(msg.sender).call{value : address(this).balance}("");
+        require(os);
     }
 
     function uri(uint256 _tokenId) override public view returns (string memory) {
