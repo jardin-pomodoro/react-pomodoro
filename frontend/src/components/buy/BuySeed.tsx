@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import {
   Container,
   Text,
@@ -22,7 +23,7 @@ import MetamaskSeedRepository from '../../repositories/seed/metamask-seed.reposi
 import { contractAbi, treeToken } from '../../utils/constants';
 import { MetamaskNftRepository } from '../../repositories/nft/metamask-nft.repository';
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   center_button: {
     display: 'flex',
     flexDirection: 'column',
@@ -47,6 +48,8 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+// { ethers.providers.Web3provider, ethers.Signer }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function BuySeed({ provider, signer }: any) {
   const [seedPrice, setSeedPrice] = useState(0);
   const [tokenIdValue, setTokenIdValue] = useState('');
@@ -185,7 +188,7 @@ function BuySeed({ provider, signer }: any) {
               20% de réduction
             </Badge>
           </Group>
-          <Text size="l">
+          <Text size="lg">
             Plus que {days} jours {hours} heures {minutes} minutes et {seconds}{' '}
             secondes pour profiter de la réduction
           </Text>

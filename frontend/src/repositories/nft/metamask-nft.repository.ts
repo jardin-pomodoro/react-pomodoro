@@ -71,6 +71,7 @@ export class MetamaskNftRepository implements NftRepository {
 
   async buyNft(): Promise<void> {
     const result = await this.contract.connect(this.signer).mintRandomTree();
+    // eslint-disable-next-line no-console
     console.log(result);
   }
 }

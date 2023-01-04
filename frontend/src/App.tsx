@@ -1,4 +1,4 @@
-import { Loader, MantineProvider } from '@mantine/core';
+import { MantineProvider } from '@mantine/core';
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -10,7 +10,6 @@ import Gallery from './pages/Gallery';
 import BuySeed from './pages/BuySeedPage';
 import { InstallPlugin } from './pages/installPlugin';
 import LoadingMatamaskAccount from './pages/LoadingMetamaskAccount';
-import GetNumberOfNftService from './services/get-number-of-nft.service';
 import {
   ConnectToWalletResponse,
   ConnectToWalletService,
@@ -19,6 +18,12 @@ import { MetamaskNftRepository } from './repositories/nft/metamask-nft.repositor
 import { contractAbi, treeToken } from './utils/constants';
 import { GetNftsService } from './services/get-nfts.service';
 import BuyNft from './pages/BuyNft';
+
+declare global {
+  interface Window {
+    ethereum?: import('ethers').providers.ExternalProvider;
+  }
+}
 
 export function App() {
   const [provider, setProvider] = useState<
@@ -30,6 +35,9 @@ export function App() {
   const [hasNft, setHasNft] = useState(false);
 
   const initializeEthers = async () => {
+    if (!window.ethereum) {
+      throw new Error('ether does not exist');
+    }
     const localProvider = new ethers.providers.Web3Provider(window.ethereum);
     await localProvider.send('eth_requestAccounts', []);
     const localSigner = localProvider.getSigner();
@@ -53,9 +61,9 @@ export function App() {
         }
 
         setLoadAccount(false);
-      } catch (error) {
-        if (error.message) {
-          setLoadingMessage(error.message);
+      } catch (error: unknown) {
+        if (error && typeof error === 'object' && 'message' in error) {
+          setLoadingMessage(error.message as string);
         }
       }
     };

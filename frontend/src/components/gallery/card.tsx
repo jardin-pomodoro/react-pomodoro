@@ -1,4 +1,5 @@
 /* eslint-disable import/prefer-default-export */
+/* eslint-disable react/no-unescaped-entities */
 import {
   Badge,
   Button,
@@ -28,7 +29,7 @@ interface FeaturesCardStyle {
 }
 
 const useStyles = createStyles(
-  (theme, { cardBackgroundColor, textColor }: FeaturesCardStyle) => ({
+  (_theme, { cardBackgroundColor, textColor }: FeaturesCardStyle) => ({
     card_body: {
       backgroundColor: cardBackgroundColor,
     },

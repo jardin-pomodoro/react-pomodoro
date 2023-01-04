@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react/no-unescaped-entities */
 import {
   Container,
   Text,
@@ -9,19 +11,17 @@ import {
   Badge,
   Paper,
   Group,
-  Modal,
-  Radio,
   CloseButton,
 } from '@mantine/core';
 import { useState, useEffect } from 'react';
-import { BuyFirstNftService } from '../services/buy-first-nft.service';
 import { ethers } from 'ethers';
+import { BuyFirstNftService } from '../services/buy-first-nft.service';
 import { contractAbi, treeToken } from '../utils/constants';
 import { MetamaskNftRepository } from '../repositories/nft/metamask-nft.repository';
 import { GetNftsService } from '../services/get-nfts.service';
 import { Nft } from '../core/nft';
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   center_button: {
     display: 'flex',
     flexDirection: 'column',
@@ -113,7 +113,7 @@ export default function BuyNft({ provider, signer }: any) {
             20% de réduction
           </Badge>
         </Group>
-        <Text size="l">
+        <Text size="lg">
           Plus que 4 jours pour profiter de cette réduction exceptionnel
         </Text>
         <Text td="line-through">0.8 Matic</Text>

@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import { SeedFree } from '../../core/seed-free';
 import { SeedRepository } from '../../core/seed.repository';
 

@@ -6,6 +6,7 @@ import MetamaskMoneyRepository from '../repositories/money/metamask-money.reposi
 import { GetMoneyCountService } from '../services/get-money-count.service';
 import { contractAbi, treeToken } from '../utils/constants';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function BuySeedPage({ provider, signer }: any) {
   const [account, setAccount] = useState<string | undefined>(undefined);
   const [moneyCount, setMoneyCount] = useState<number | undefined>(undefined);

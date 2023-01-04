@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { HeaderMenu } from '../components/common/header';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Home({ provider, signer }: any) {
   const [account, setAccount] = useState<string | undefined>(undefined);
   useEffect(() => {

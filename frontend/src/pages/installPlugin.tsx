@@ -1,18 +1,12 @@
-import {
-  Container,
-  createStyles,
-  Text,
-  Flex,
-  Paper,
-  Center,
-} from '@mantine/core';
+/* eslint-disable react/no-unescaped-entities */
+import { Container, createStyles, Text, Flex, Paper } from '@mantine/core';
 
 export interface ConnectWalletProps {
   networkErrorMessage: string;
   dismiss: () => void;
 }
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   container: {
     width: '100%',
     height: '50vh',
