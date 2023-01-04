@@ -3,6 +3,7 @@ import { WalletState } from '@web3-onboard/core';
 import injectedModule from '@web3-onboard/injected-wallets';
 import { init } from '@web3-onboard/react';
 import { treeToken, contractAbi } from '../utils/constants';
+import { utils } from 'ethers';
 
 export class SmartContractService {
   private static growTreeContract: Contract;
@@ -13,10 +14,10 @@ export class SmartContractService {
       wallets: [injected],
       chains: [
         {
-          id: '0x1',
-          token: 'ETH',
-          label: 'Ethereum Mainnet',
-          rpcUrl: 'http://localhost:8545',
+          id: utils.hexValue(80001),
+          token: 'Matic',
+          label: 'matic-mumbai',
+          rpcUrl: 'https://matic-mumbai.chainstacklabs.com',
         },
       ],
     });
