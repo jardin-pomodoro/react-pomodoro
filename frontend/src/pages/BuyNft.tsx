@@ -20,6 +20,7 @@ import { contractAbi, treeToken } from '../utils/constants';
 import { MetamaskNftRepository } from '../repositories/nft/metamask-nft.repository';
 import { GetNftsService } from '../services/get-nfts.service';
 import { Nft } from '../core/nft';
+import Animtion from '../components/animation';
 
 const useStyles = createStyles(() => ({
   center_button: {
@@ -149,6 +150,7 @@ export default function BuyNft({ provider, signer }: any) {
           </Grid.Col>
         </Grid>
       </div>
+      <Animtion />
     </Container>
   );
 }
