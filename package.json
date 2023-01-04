@@ -22,5 +22,8 @@
       "package/frontend"
     ]
   },
-  "packageManager": "pnpm"
+  "packageManager": "pnpm",
+  "dependencies": {
+    "web3": "^1.8.1"
+  }
 }
