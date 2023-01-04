@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { ethers } from 'ethers';
 import { useState, useEffect } from 'react';
+import { useConnectWallet } from '@web3-onboard/react';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Gallery from './pages/Gallery';
@@ -19,6 +20,7 @@ import { MetamaskNftRepository } from './repositories/nft/metamask-nft.repositor
 import { contractAbi, treeToken } from './utils/constants';
 import { GetNftsService } from './services/get-nfts.service';
 import BuyNft from './pages/BuyNft';
+import ConnectWallet from './pages/ConnectWallet';
 
 export function App() {
   const [provider, setProvider] = useState<
@@ -28,6 +30,7 @@ export function App() {
   const [loadingMessage, setLoadingMessage] = useState('');
   const [loadAccount, setLoadAccount] = useState(false);
   const [hasNft, setHasNft] = useState(false);
+  const [{ wallet, connecting }] = useConnectWallet();
 
   const initializeEthers = async () => {
     const localProvider = new ethers.providers.Web3Provider(window.ethereum);
@@ -87,13 +90,8 @@ export function App() {
 
   return (
     <Routes>
-      {loadAccount && (
-        <Route
-          path="*"
-          element={<LoadingMatamaskAccount message={loadingMessage} />}
-        />
-      )}
-      {!loadAccount && hasNft && (
+      {loadAccount && <Route path="*" element={<ConnectWallet />} />}
+      {!loadAccount && wallet && (
         <>
           <Route
             path="/buy"
@@ -110,7 +108,7 @@ export function App() {
           <Route path="*" element={<NotFound />} />
         </>
       )}
-      {!loadAccount && !hasNft && provider && signer && (
+      {!loadAccount && wallet && (
         <Route
           path="*"
           element={<BuyNft provider={provider} signer={signer} />}
@@ -131,7 +129,7 @@ export function WrappedApp() {
     >
       <BrowserRouter>
         {window.ethereum && <App />}
-        {!window.ethereum && <InstallPlugin />}
+        {!window.ethereum && <ConnectWallet />}
       </BrowserRouter>
     </MantineProvider>
   );
