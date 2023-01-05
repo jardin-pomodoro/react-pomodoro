@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import { WalletState } from '@web3-onboard/core';
 import { Nft } from '../../core/nft';
 import { NftRepository } from '../../core/nft.repository';
+import { SmartContractService } from '../../services/smart-contract.service';
 
 interface NftMetadata {
   name: string;
@@ -15,15 +16,21 @@ export class MetamaskNftRepository implements NftRepository {
   constructor(private wallet: WalletState) {}
 
   async improveLeaves(nft: Nft): Promise<void> {
-    //await this.contract.connect(this.signer).upgradeTreeLeaves(nft.id);
+    await SmartContractService.loadContract(this.wallet)
+      .connect(this.wallet.accounts[0].address)
+      .upgradeTreeLeaves(nft.id);
   }
 
   async improveTrunk(nft: Nft): Promise<void> {
-    //await this.contract.connect(this.signer).upgradeTreeTrunk(nft.id);
+    await SmartContractService.loadContract(this.wallet)
+      .connect(this.wallet.accounts[0].address)
+      .upgradeTreeTrunk(nft.id);
   }
 
   async getMetadata(nft: Nft): Promise<string> {
-    /*const uriAssociated = await this.contract.connect(this.signer).uri(nft.id);
+    const uriAssociated = await SmartContractService.loadContract(this.wallet)
+      .connect(this.wallet.accounts[0].address)
+      .uri(nft.id);
     try {
       const jsonFounded: NftMetadata = await (
         await fetch(uriAssociated)
@@ -31,17 +38,18 @@ export class MetamaskNftRepository implements NftRepository {
       return jsonFounded.image;
     } catch (e) {
       return '';
-    }*/
+    }
     return '';
   }
 
   async merge(nfts1: string, nfts2: string): Promise<void> {
-    // promise resolve in one second
-    //await this.contract.connect(this.signer).breedTree(nfts1, nfts2);
+    await SmartContractService.loadContract(this.wallet)
+      .connect(this.wallet.accounts[0].address)
+      .breedTree(nfts1, nfts2);
   }
 
   async getAll(): Promise<Nft[]> {
-    /*const adress = await this.signer.getAddress();
+    const adress = this.wallet.accounts[0].address;
     const numberOfExistingToken = await this.getNumberOfExistingNft();
     const adresses: string[] = [];
     const tokenAsked: number[] = [];
@@ -50,7 +58,9 @@ export class MetamaskNftRepository implements NftRepository {
       tokenAsked.push(i);
     }
     const nftFounded: number[] = [];
-    const result = await this.contract.balanceOfBatch(adresses, tokenAsked);
+    const result = await SmartContractService.loadContract(this.wallet)
+      .connect(this.wallet.accounts[0].address)
+      .balanceOfBatch(adresses, tokenAsked);
     if (Array.isArray(result)) {
       result.forEach((element) => {
         if (ethers.BigNumber.from(element).toNumber() === 1) {
@@ -58,17 +68,19 @@ export class MetamaskNftRepository implements NftRepository {
         }
       });
     }
-    return nftFounded.map((id) => ({ id: id.toString() }));*/
-    return [{ id: '1' }, { id: '2' }];
+    return nftFounded.map((id) => ({ id: id.toString() }));
   }
 
   async getNumberOfExistingNft(): Promise<number> {
-    //const result = await this.contract.getTokenCount();
-    //return ethers.BigNumber.from(result).toNumber();
-    return 3;
+    const result = await SmartContractService.loadContract(
+      this.wallet
+    ).getTokenCount();
+    return ethers.BigNumber.from(result).toNumber();
   }
 
   async buyNft(): Promise<void> {
-    //const result = await this.contract.connect(this.signer).mintRandomTree();
+    await SmartContractService.loadContract(this.wallet)
+      .connect(this.wallet.accounts[0].address)
+      .mintRandomTree();
   }
 }

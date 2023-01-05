@@ -69,12 +69,11 @@ interface HeaderSearchProps {
     label: string;
     links: { link: string; label: string }[];
   }[];
-  account: string;
   // eslint-disable-next-line react/require-default-props
   moneyCount?: number;
 }
 
-export function HeaderMenu({ links, account, moneyCount }: HeaderSearchProps) {
+export function HeaderMenu({ links, moneyCount }: HeaderSearchProps) {
   const [opened, { toggle }] = useDisclosure(false);
   const { classes } = useStyles();
 
@@ -101,17 +100,6 @@ export function HeaderMenu({ links, account, moneyCount }: HeaderSearchProps) {
 
           <Group spacing={5} className={classes.links}>
             {items}
-            {account && (
-              <>
-                <IconUser />
-                <div
-                  style={{ textOverflow: 'ellipsis' }}
-                  className={classes.account}
-                >
-                  {account}
-                </div>
-              </>
-            )}
             {moneyCount && (
               <>
                 <IconCurrencyEthereum />

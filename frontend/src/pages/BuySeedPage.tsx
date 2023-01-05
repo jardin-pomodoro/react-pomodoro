@@ -6,27 +6,14 @@ import BuySeed from '../components/buy/BuySeed';
 import { HeaderMenu } from '../components/common/header';
 import MetamaskMoneyRepository from '../repositories/money/metamask-money.repository';
 import { GetMoneyCountService } from '../services/get-money-count.service';
-import { SmartContractService } from '../services/smart-contract.service';
 
 function BuySeedPage() {
-  const [account, setAccount] = useState<string | undefined>(undefined);
   const [moneyCount, setMoneyCount] = useState<number | undefined>(undefined);
   const [{ wallet }] = useConnectWallet();
-  useEffect(() => {
-    const getAdress = async () => {
-      if (wallet === null) return;
-      const accountFromSerice = await SmartContractService.loadContract(
-        wallet
-      ).signer.getAddress();
-      setAccount(accountFromSerice);
-    };
-    if (wallet) {
-      getAdress();
-    }
-  }, [wallet]);
 
   useEffect(() => {
     const getMoneyCount = async () => {
+      if (wallet === null) return;
       const getMoneyCountService = new GetMoneyCountService(
         new MetamaskMoneyRepository(wallet)
       );
@@ -45,7 +32,6 @@ function BuySeedPage() {
           { link: '/gallery', label: 'Gallery', links: [] },
           { link: '/buy', label: 'Acheter', links: [] },
         ]}
-        account={account || ''}
         moneyCount={moneyCount}
       />
       {wallet && <BuySeed />}
