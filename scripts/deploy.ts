@@ -32,7 +32,7 @@ function saveFrontendDeploymentInfo(contract: Contract) {
   const contractArtifact = artifacts.readArtifactSync('TreeCore');
   fs.writeFileSync(
     path.join(frontendDir, 'greeter.json'),
-    JSON.stringify(contractArtifact, null, 2),
+    JSON.stringify(contractArtifact.abi, null, 2),
   );
 }
 
