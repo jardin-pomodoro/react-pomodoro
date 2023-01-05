@@ -15,11 +15,10 @@ import {
 } from '@mantine/core';
 import { useState, useEffect } from 'react';
 import { BuyFirstNftService } from '../services/buy-first-nft.service';
-import { ethers } from 'ethers';
-import { contractAbi, treeToken } from '../utils/constants';
 import { MetamaskNftRepository } from '../repositories/nft/metamask-nft.repository';
 import { GetNftsService } from '../services/get-nfts.service';
 import { Nft } from '../core/nft';
+import { useConnectWallet } from '@web3-onboard/react';
 
 const useStyles = createStyles((theme) => ({
   center_button: {
@@ -46,36 +45,31 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export const BuyFirstNft = async ({ provider, signer, nfts }: any) => {
-  const buyFirstNftService = new BuyFirstNftService(
-    new MetamaskNftRepository(
-      provider,
-      signer,
-      new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
-    )
-  );
-  await buyFirstNftService.handle(nfts);
-};
-
-export default function BuyNft({ provider, signer }: any) {
+export default function BuyNft() {
   const { classes } = useStyles();
   const [transactionSuccess, setTransactionSuccess] = useState(false);
   const [nfts, setNfts] = useState<Nft[]>([]);
+  const [{ wallet }] = useConnectWallet();
+
+  const BuyFirstNft = async () => {
+    if (wallet === null) return;
+    const buyFirstNftService = new BuyFirstNftService(
+      new MetamaskNftRepository(wallet)
+    );
+    await buyFirstNftService.handle(nfts);
+  };
 
   useEffect(() => {
+    if (wallet === null) return;
     const getNftsService = new GetNftsService(
-      new MetamaskNftRepository(
-        provider,
-        signer,
-        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
-      )
+      new MetamaskNftRepository(wallet)
     );
 
     const getNfts = async () => {
       setNfts(await getNftsService.handle());
     };
     getNfts();
-  }, [provider, signer]);
+  }, [wallet]);
 
   return (
     <Container mt="lg">
@@ -128,10 +122,7 @@ export default function BuyNft({ provider, signer }: any) {
               <Text fs="italic" fz="l" align="center">
                 Acheter votre première NFT pour commencer votre périple
               </Text>
-              <Button
-                onClick={() => BuyFirstNft({ provider, signer, nfts })}
-                color="teal"
-              >
+              <Button onClick={() => BuyFirstNft()} color="teal">
                 Acheter 0.1 Matic
               </Button>
             </Center>

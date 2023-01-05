@@ -16,7 +16,6 @@ function Home({ provider, signer }: any) {
           { link: '/gallery', label: 'Gallery', links: [] },
           { link: '/buy', label: 'Acheter', links: [] },
         ]}
-        account={account || ''}
       />
       <h1>Hello World !</h1>
     </>

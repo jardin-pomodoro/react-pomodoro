@@ -5,40 +5,26 @@ import { MyGallery } from '../components/gallery/MyGallery';
 import MetamaskMoneyRepository from '../repositories/money/metamask-money.repository';
 import { GetMoneyCountService } from '../services/get-money-count.service';
 import { contractAbi, treeToken } from '../utils/constants';
+import { useConnectWallet } from '@web3-onboard/react';
 
-function Gallery({ provider, signer }: any) {
-  const [account, setAccount] = useState<string | undefined>(undefined);
+function Gallery() {
   const [moneyCount, setMoneyCount] = useState<number | undefined>(undefined);
-  useEffect(() => {
-    const getAdress = async () => {
-      const accountFromSerice = await signer.getAddress();
-      setAccount(accountFromSerice);
-    };
-    if (provider && signer) {
-      getAdress();
-    }
-  }, [provider, signer]);
+
+  const [{ wallet }] = useConnectWallet();
 
   useEffect(() => {
     const getMoneyCount = async () => {
+      if (wallet === null) return;
       const getMoneyCountService = new GetMoneyCountService(
-        new MetamaskMoneyRepository(
-          provider,
-          signer,
-          new ethers.Contract(
-            treeToken.Token,
-            contractAbi,
-            provider.getSigner(0)
-          )
-        )
+        new MetamaskMoneyRepository(wallet)
       );
       const money = await getMoneyCountService.handle();
       setMoneyCount(money);
     };
-    if (provider && signer) {
+    if (wallet) {
       getMoneyCount();
     }
-  }, [provider, signer]);
+  }, [wallet]);
 
   return (
     <>
@@ -48,10 +34,9 @@ function Gallery({ provider, signer }: any) {
           { link: '/gallery', label: 'Gallery', links: [] },
           { link: '/buy', label: 'Acheter', links: [] },
         ]}
-        account={account || ''}
         moneyCount={moneyCount}
       />
-      {provider && signer && <MyGallery provider={provider} signer={signer} />}
+      {wallet && <MyGallery  />}
     </>
   );
 }
