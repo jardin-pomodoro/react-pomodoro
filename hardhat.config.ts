@@ -2,7 +2,7 @@ import { HardhatUserConfig } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
 import assert from 'assert';
 import { config as dotenvConfig } from 'dotenv';
-
+import 'solidity-coverage'
 dotenvConfig();
 
 const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;

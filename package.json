@@ -23,5 +23,9 @@
       "package/frontend"
     ]
   },
-  "packageManager": "pnpm"
+  "packageManager": "pnpm",
+  "dependencies": {
+    "ganache-cli": "^6.12.2",
+    "solidity-coverage": "^0.8.2"
+  }
 }

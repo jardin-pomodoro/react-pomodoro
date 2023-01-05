@@ -27,8 +27,7 @@ contract TreeToken is  ERC1155Supply, Ownable {
     }
 
     function withdraw() public payable onlyOwner {
-        (bool os,) = payable(msg.sender).call{value : address(this).balance}("");
-        require(os);
+        payable(msg.sender).call{value : address(this).balance}("");
     }
 
     function uri(uint256 _tokenId) override public view returns (string memory) {
