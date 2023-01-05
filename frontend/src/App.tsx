@@ -13,17 +13,7 @@ import LoadingMatamaskAccount from './pages/LoadingMetamaskAccount';
 import {
   ConnectToWalletResponse,
   ConnectToWalletService,
-} from './services/connect-to-wallet.service';
-import { contractAbi, treeToken } from './utils/constants';
-import { GetNftsService } from './services/get-nfts.service';
-import BuyNft from './pages/BuyNft';
-import { useRepositoryStore, useServiceStore, useWalletStore } from './stores';
-import {
-  MetamaskMoneyRepository,
-  MetamaskNftRepository,
-  MetamaskSeedRepository,
-} from './repositories';
-import {
+  GetNftsService,
   BuyFirstNftService,
   BuySeedService,
   GetFreeSeedService,
@@ -33,6 +23,14 @@ import {
   GetSeedPriceService,
   ImproveTrunkNftService,
 } from './services';
+import { contractAbi, treeToken } from './utils/constants';
+import BuyNft from './pages/BuyNft';
+import { useRepositoryStore, useServiceStore, useWalletStore } from './stores';
+import {
+  MetamaskMoneyRepository,
+  MetamaskNftRepository,
+  MetamaskSeedRepository,
+} from './repositories';
 
 declare global {
   interface Window {
@@ -163,7 +161,10 @@ export function App() {
   return (
     <Routes>
       {loadAccount && (
-        <Route path="*" element={<LoadingMatamaskAccount message={loadingMessage} />} />
+        <Route
+          path="*"
+          element={<LoadingMatamaskAccount message={loadingMessage} />}
+        />
       )}
       {!loadAccount && isNftOwner && (
         <>

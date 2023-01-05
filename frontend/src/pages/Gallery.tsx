@@ -9,12 +9,13 @@ function Gallery() {
   const { provider, signer } = useWalletStore();
   const [account, setAccount] = useState<string | undefined>(undefined);
   const [moneyCount, setMoneyCount] = useState<number | undefined>(undefined);
-  const getMoneyCountService = useServiceStore((state) => state.services.get('GetMoneyCountService')) as GetMoneyCountService;
+  const getMoneyCountService = useServiceStore((state) =>
+    state.services.get('GetMoneyCountService')
+  ) as GetMoneyCountService;
   useEffect(() => {
     const getAdress = async () => {
       if (!signer) {
-        throw new Error("signer is null");
-        
+        throw new Error('signer is null');
       }
       const accountFromSerice = await signer.getAddress();
       setAccount(accountFromSerice);
@@ -32,7 +33,7 @@ function Gallery() {
     if (provider && signer) {
       getMoneyCount();
     }
-  }, [provider, signer]);
+  }, [provider, signer, getMoneyCountService]);
 
   return (
     <>

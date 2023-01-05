@@ -1,15 +1,14 @@
 import { Button } from '@mantine/core';
 import { useCallback, useEffect, useState } from 'react';
 import { HeaderMenu } from '../components/common/header';
-import type { PlantTreeService } from '../services';
-import { useServiceStore, useWalletStore } from '../stores';
+import { useWalletStore } from '../stores';
 
 function Home() {
   const [account, setAccount] = useState<string | undefined>(undefined);
   const { provider, signer } = useWalletStore();
-  const PlanTreeService = useServiceStore((state) =>
+  /* const PlanTreeService = useServiceStore((state) =>
     state.services.get('PlantTreeService')
-  ) as PlantTreeService;
+  ) as PlantTreeService; */
   const saveAccount = useCallback(async () => {
     const address = await signer?.getAddress();
     setAccount(address);

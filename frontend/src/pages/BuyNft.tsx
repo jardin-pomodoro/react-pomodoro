@@ -63,14 +63,16 @@ export default function BuyNft() {
   const { classes } = useStyles();
   const [transactionSuccess, setTransactionSuccess] = useState(false);
   const [nfts, setNfts] = useState<Nft[]>([]);
-  const getNftsService = useServiceStore((state) => state.services.get('GetNftsService')) as GetNftsService;
+  const getNftsService = useServiceStore((state) =>
+    state.services.get('GetNftsService')
+  ) as GetNftsService;
 
   useEffect(() => {
     const getNfts = async () => {
       setNfts(await getNftsService.handle());
     };
     getNfts();
-  }, [provider, signer]);
+  }, [provider, signer, getNftsService]);
 
   return (
     <Container mt="lg">
