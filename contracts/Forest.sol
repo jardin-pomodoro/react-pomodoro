@@ -4,20 +4,20 @@ contract Forest {
     struct PlantedTree {
         uint256 tokenId;
         uint256 startTime;
-        uint8 growingTime;
+        uint256 growingTime;
     }
 
     mapping(address => PlantedTree) plantedTrees;
 
-    function getGrowingTime(uint8 _trunkStat) private pure returns (uint8) {
+    function getGrowingTime(uint256 _trunkStat) private pure returns (uint256) {
         return _trunkStat / 2;
     }
 
-    function getProducedTokens(uint8 _leavesStat) private pure returns (uint8) {
+    function getProducedTokens(uint256 _leavesStat) private pure returns (uint256) {
         return _leavesStat * 2;
     }
 
-    function plantTree(uint256 _tokenId, uint8 _trunkStat) internal {
+    function plantTree(uint256 _tokenId, uint256 _trunkStat) internal {
         plantedTrees[msg.sender] = PlantedTree(_tokenId, block.timestamp, getGrowingTime(_trunkStat));
     }
 
@@ -25,11 +25,11 @@ contract Forest {
         return plantedTrees[msg.sender];
     }
 
-    function collectTree(uint8 _leavesStat) internal returns (uint8) {
+    function collectTree(uint _leavesStat) internal returns (uint256) {
         PlantedTree memory plantedTree = plantedTrees[msg.sender];
-        require(block.timestamp - plantedTree.startTime / 3600 > plantedTree.growingTime);
+        require((block.timestamp - plantedTree.startTime) / 3600 > plantedTree.growingTime);
         delete plantedTrees[msg.sender];
-        uint8 tokens = getProducedTokens(_leavesStat);
+        uint256 tokens = getProducedTokens(_leavesStat);
         return tokens;
     }
 }
