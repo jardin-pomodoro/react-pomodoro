@@ -1,11 +1,10 @@
 pragma solidity ^0.8.17;
 
-import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Burnable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-contract TreeToken is ERC1155, Ownable, ERC1155Burnable {
+contract TreeToken is  ERC1155Supply, Ownable {
     string public name = "Tree Collection";
     address public CONTRACT_OWNER;
     uint256 internal TREE_TOKEN = 0;

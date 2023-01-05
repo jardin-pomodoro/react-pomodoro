@@ -8,9 +8,12 @@ import "./ForestSeeds.sol";
 
 
 contract TreeCore is TreeToken, BreedTree, Forest, TreeStats, ForestSeeds {
+    event TreeMinted(address indexed to, uint _tokenId);
+
     function createTree(uint childSeed) private {
         uint256 tokenId = mintTree(msg.sender, childSeed);
         addTreeStats(tokenId, getTreeRarity(childSeed));
+        emit TreeMinted(msg.sender, tokenId);
     }
 
     function breedTree(uint256 _tokenId1, uint256 _tokenId2) external {
@@ -91,8 +94,8 @@ contract TreeCore is TreeToken, BreedTree, Forest, TreeStats, ForestSeeds {
     }
 
     function mintRandomTree() external payable {
-        require(tokenId <= 10000, "Max supply reached");
-        require(msg.value >= 0.1 ether, "Wrong amount");
+        require(tokenId <= 10000, "Max available mints reached");
+        require(msg.value >= 0.1 ether, "You must add a value of at least 0.1 ether");
         uint seed = uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender, tokenId))) % 1000000;
         createTree(seed);
     }
