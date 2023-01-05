@@ -4,8 +4,8 @@ pragma solidity ^0.8.9;
 import "hardhat/console.sol";
 
 contract GardenToken {
-    string public name = "Nospy Token";
-    string public symbol = "NPT";
+    string public name = "Garden Token";
+    string public symbol = "GDT";
 
     // The fixed amount of tokens that will be created.
     uint256 public totalSupply = 1000000;
