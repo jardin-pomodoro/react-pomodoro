@@ -25,7 +25,7 @@ contract ForestSeeds {
         }
     }
 
-    function updateSeeds(uint256 _tokenId) internal {
+    function updateSeeds(uint256 _tokenId) public {
         if (userSeeds[_tokenId].lastUpdate / 86400 < block.timestamp / 86400) {
             userSeeds[_tokenId].seeds = 4;
             userSeeds[_tokenId].lastUpdate = block.timestamp;
@@ -41,7 +41,7 @@ contract ForestSeeds {
         return 2 * (userSeeds[_tokenId].boughtSeeds + 1);
     }
 
-    function addSeed(uint256 _tokenId, uint256 amount) internal {
+    function addSeeds(uint256 _tokenId, uint256 amount) internal {
         userSeeds[_tokenId].boughtSeeds += amount;
     }
 }
