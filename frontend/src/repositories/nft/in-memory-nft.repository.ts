@@ -15,6 +15,10 @@ export class InMemoryNftRepository implements NftRepository {
     { id: '3993103103' },
   ];
 
+  plantTree(parentTree: number): Promise<void> {
+    return Promise.resolve(undefined); // TODO
+  }
+
   async getAll(): Promise<Nft[]> {
     console.log('result de getAll', InMemoryNftRepository.nfts);
     return InMemoryNftRepository.nfts;

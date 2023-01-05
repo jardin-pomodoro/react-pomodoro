@@ -13,9 +13,9 @@ import LoadingMatamaskAccount from './pages/LoadingMetamaskAccount';
 import {
   ConnectToWalletResponse,
   ConnectToWalletService,
-} from './services/connect-to-wallet.service';
+} from './services';
 import { contractAbi, treeToken } from './utils/constants';
-import { GetNftsService } from './services/get-nfts.service';
+import { GetNftsService } from './services';
 import BuyNft from './pages/BuyNft';
 import { useRepositoryStore, useServiceStore, useWalletStore } from './stores';
 import {
