@@ -1,9 +1,10 @@
+/* eslint-disable import/prefer-default-export */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ethers } from 'ethers';
 import { SeedFree } from '../../core/seed-free';
 import { SeedRepository } from '../../core/seed.repository';
 
-export default class MetamaskSeedRepository implements SeedRepository {
+export class MetamaskSeedRepository implements SeedRepository {
   constructor(
     private provider: ethers.providers.Web3Provider,
     private signer: ethers.Signer,

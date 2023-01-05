@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import BuySeed from '../components/buy/BuySeed';
 import { HeaderMenu } from '../components/common/header';
-import MetamaskMoneyRepository from '../repositories/money/metamask-money.repository';
+import { MetamaskMoneyRepository } from '../repositories';
 import { GetMoneyCountService } from '../services/get-money-count.service';
 import { contractAbi, treeToken } from '../utils/constants';
 

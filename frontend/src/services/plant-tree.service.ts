@@ -1,10 +1,10 @@
 /* eslint-disable import/prefer-default-export */
 import { NftRepository } from '../core/nft.repository';
 
-export class GetNumberOfNftService {
+export class PlantTreeService {
   constructor(private readonly nftRepository: NftRepository) {}
 
-  async handle(): Promise<number> {
-    return this.nftRepository.getNumberOfExistingNft();
+  async handle(parentTree: number): Promise<void> {
+    await this.nftRepository.plantTree(parentTree);
   }
 }
