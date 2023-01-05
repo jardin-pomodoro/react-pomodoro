@@ -20,6 +20,7 @@ import { contractAbi, treeToken } from '../utils/constants';
 import { MetamaskNftRepository } from '../repositories/nft/metamask-nft.repository';
 import { GetNftsService } from '../services/get-nfts.service';
 import { Nft } from '../core/nft';
+import { useServiceStore, useWalletStore } from '../stores';
 
 const useStyles = createStyles(() => ({
   center_button: {
@@ -57,20 +58,14 @@ export const BuyFirstNft = async ({ provider, signer, nfts }: any) => {
   await buyFirstNftService.handle(nfts);
 };
 
-export default function BuyNft({ provider, signer }: any) {
+export default function BuyNft() {
+  const { provider, signer } = useWalletStore();
   const { classes } = useStyles();
   const [transactionSuccess, setTransactionSuccess] = useState(false);
   const [nfts, setNfts] = useState<Nft[]>([]);
+  const getNftsService = useServiceStore((state) => state.services.get('GetNftsService')) as GetNftsService;
 
   useEffect(() => {
-    const getNftsService = new GetNftsService(
-      new MetamaskNftRepository(
-        provider,
-        signer,
-        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
-      )
-    );
-
     const getNfts = async () => {
       setNfts(await getNftsService.handle());
     };

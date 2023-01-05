@@ -60,8 +60,15 @@ function BuySeed({ provider, signer }: any) {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const { classes } = useStyles();
-  const getSeedPriceService = useServiceStore((state) => state.services.get('GetFreeSeedService')) as GetSeedPriceService;
-  const getNtfsService  = useServiceStore((state) => state.services.get('GetNftsService')) as GetNftsService;
+  const getSeedPriceService = useServiceStore((state) =>
+    state.services.get('GetFreeSeedService')
+  ) as GetSeedPriceService;
+  const getNtfsService = useServiceStore((state) =>
+    state.services.get('GetNftsService')
+  ) as GetNftsService;
+  const buySeedService = useServiceStore((state) =>
+    state.services.get('BuySeedService')
+  ) as BuySeedService;
 
   useEffect(() => {
     const getSeePrice = async () => {
@@ -102,7 +109,6 @@ function BuySeed({ provider, signer }: any) {
   }, [days, hours, minutes, seconds]);
 
   const buy = async (tokenId: string) => {
-    const buySeedService = useServiceStore((state) => state.services.get('BuySeedService')) as BuySeedService;
     await buySeedService.handle({ tokenId, amount: 1 });
     setTransactionSuccess(true);
     setOpened(false);

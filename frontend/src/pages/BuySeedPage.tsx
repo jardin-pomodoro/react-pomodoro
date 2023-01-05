@@ -1,17 +1,21 @@
 import { useEffect, useState } from 'react';
-import { ethers } from 'ethers';
 import BuySeed from '../components/buy/BuySeed';
 import { HeaderMenu } from '../components/common/header';
-import { MetamaskMoneyRepository } from '../repositories';
-import { GetMoneyCountService } from '../services/get-money-count.service';
-import { contractAbi, treeToken } from '../utils/constants';
+import type { GetMoneyCountService } from '../services';
+import { useServiceStore, useWalletStore } from '../stores';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function BuySeedPage({ provider, signer }: any) {
+function BuySeedPage() {
+  const { provider, signer } = useWalletStore();
   const [account, setAccount] = useState<string | undefined>(undefined);
   const [moneyCount, setMoneyCount] = useState<number | undefined>(undefined);
+  const getMoneyCountService = useServiceStore((state) => state.services.get('GetMoneyCountService')) as GetMoneyCountService;
   useEffect(() => {
     const getAdress = async () => {
+      if (!signer) {
+        throw new Error("signer is null");
+        
+      }
       const accountFromSerice = await signer.getAddress();
       setAccount(accountFromSerice);
     };
@@ -22,17 +26,6 @@ function BuySeedPage({ provider, signer }: any) {
 
   useEffect(() => {
     const getMoneyCount = async () => {
-      const getMoneyCountService = new GetMoneyCountService(
-        new MetamaskMoneyRepository(
-          provider,
-          signer,
-          new ethers.Contract(
-            treeToken.Token,
-            contractAbi,
-            provider.getSigner(0)
-          )
-        )
-      );
       const money = await getMoneyCountService.handle();
       setMoneyCount(money);
     };

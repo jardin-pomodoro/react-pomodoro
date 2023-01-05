@@ -74,11 +74,26 @@ export function App() {
     addService('BuyFirstNftService', new BuyFirstNftService(nftRepository));
     addService('BuySeedService', new BuySeedService(seedRepository));
     addService('BuySeedService', new BuySeedService(seedRepository));
-    addService('GetMoneyCountService', new GetMoneyCountService(moneyRepository));
-    addService('GetNftMetadataService', new GetNftMetadataService(nftRepository));
-    addService('GetNumberOfNftService', new GetNumberOfNftService(nftRepository));
-    addService('ImproveTrunkNftService', new ImproveTrunkNftService(nftRepository));
-    addService('ImproveTrunkNftService', new ImproveTrunkNftService(nftRepository));
+    addService(
+      'GetMoneyCountService',
+      new GetMoneyCountService(moneyRepository)
+    );
+    addService(
+      'GetNftMetadataService',
+      new GetNftMetadataService(nftRepository)
+    );
+    addService(
+      'GetNumberOfNftService',
+      new GetNumberOfNftService(nftRepository)
+    );
+    addService(
+      'ImproveTrunkNftService',
+      new ImproveTrunkNftService(nftRepository)
+    );
+    addService(
+      'ImproveTrunkNftService',
+      new ImproveTrunkNftService(nftRepository)
+    );
     addService('GetSeedPriceService', new GetSeedPriceService(seedRepository));
     addService('GetNftsService', new GetNftsService(nftRepository));
     addService('GetFreeSeedService', new GetFreeSeedService(seedRepository));
@@ -148,30 +163,18 @@ export function App() {
   return (
     <Routes>
       {loadAccount && (
-        <Route
-          path="*"
-          element={<LoadingMatamaskAccount message={loadingMessage} />}
-        />
+        <Route path="*" element={<LoadingMatamaskAccount message={loadingMessage} />} />
       )}
       {!loadAccount && isNftOwner && (
         <>
-          <Route
-            path="/buy"
-            element={<BuySeed provider={provider} signer={signer} />}
-          />
-          <Route
-            path="/gallery"
-            element={<Gallery provider={provider} signer={signer} />}
-          />
+          <Route path="/buy" element={<BuySeed />} />
+          <Route path="/gallery" element={<Gallery />} />
           <Route path="/" element={<Home />} />
           <Route path="*" element={<NotFound />} />
         </>
       )}
       {!loadAccount && !isNftOwner && provider && signer && (
-        <Route
-          path="*"
-          element={<BuyNft provider={provider} signer={signer} />}
-        />
+        <Route path="*" element={<BuyNft />} />
       )}
     </Routes>
   );

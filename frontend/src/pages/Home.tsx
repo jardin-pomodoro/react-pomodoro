@@ -1,13 +1,15 @@
 import { Button } from '@mantine/core';
 import { useCallback, useEffect, useState } from 'react';
 import { HeaderMenu } from '../components/common/header';
-import { PlantTreeService } from '../services';
+import type { PlantTreeService } from '../services';
 import { useServiceStore, useWalletStore } from '../stores';
 
 function Home() {
   const [account, setAccount] = useState<string | undefined>(undefined);
   const { provider, signer } = useWalletStore();
-  const PlanTreeService = useServiceStore((state) => state.services.get('PlantTreeService')) as PlantTreeService;
+  const PlanTreeService = useServiceStore((state) =>
+    state.services.get('PlantTreeService')
+  ) as PlantTreeService;
   const saveAccount = useCallback(async () => {
     const address = await signer?.getAddress();
     setAccount(address);
@@ -18,7 +20,7 @@ function Home() {
   }, [provider, signer, saveAccount]);
 
   const plantTree = () => {
-    PlantTreeService;// todo faire un truc avec
+    // todo faire un truc avec
   };
 
   return (
