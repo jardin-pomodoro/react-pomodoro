@@ -32,18 +32,8 @@ export function App() {
     undefined | ethers.providers.Web3Provider
   >(undefined);
   const [signer, setSigner] = useState<undefined | ethers.Signer>(undefined);
-  const [loadAccount, setLoadAccount] = useState(false);
   const connectedWallets = useWallets();
-  const [
-    { wallet, connecting },
-    connect,
-    disconnect,
-    updateBalances,
-    setWalletModules,
-  ] = useConnectWallet();
-  const [walletService, setWalletService] = useState<undefined | WalletState>(
-    undefined
-  );
+  const [{ wallet, connecting }, connect] = useConnectWallet();
   const [web3Onboard, setWeb3Onboard] = useState<any>(null);
 
   const initializeEthers = async () => {

@@ -33,37 +33,28 @@ export const initWeb3Onboard = init({
 export class SmartContractService {
   private static growTreeContract: Contract;
 
-  private static wallet: WalletState;
-
-  static loadContract(wallet: WalletState | null): {
-    growTreeContract: Contract;
-  } {
-    if (this.growTreeContract) {
-      return { growTreeContract: this.growTreeContract };
-    }
+  static loadContract(wallet: WalletState | null): Contract {
     if (!wallet) {
       throw new Error('Wallet is not defined');
     }
+    if (!this.growTreeContract) {
+      const smartContractAddress = treeToken.Token as string;
+      const abi = contractAbi;
 
-    const smartContractAddress = treeToken.Token as string;
-    const abi = contractAbi;
+      const provider = new ethers.providers.Web3Provider(
+        wallet.provider,
+        'any'
+      );
+      const signer = provider.getSigner();
 
-    const provider = new ethers.providers.Web3Provider(wallet.provider, 'any');
-    const signer = provider.getSigner();
-
-    this.growTreeContract = new ethers.Contract(
-      smartContractAddress,
-      abi,
-      signer
-    );
-    return { growTreeContract: this.growTreeContract };
-  }
-
-  static loadWallet(wallet?: WalletState): WalletState {
-    if (!SmartContractService.wallet && wallet) {
-      SmartContractService.wallet = wallet;
+      this.growTreeContract = new ethers.Contract(
+        smartContractAddress,
+        abi,
+        signer
+      );
     }
-    return SmartContractService.wallet;
+
+    return this.growTreeContract;
   }
 
   static listenToEvent(

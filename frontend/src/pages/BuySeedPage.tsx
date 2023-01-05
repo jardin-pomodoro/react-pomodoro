@@ -12,22 +12,18 @@ function BuySeedPage() {
   const [account, setAccount] = useState<string | undefined>(undefined);
   const [moneyCount, setMoneyCount] = useState<number | undefined>(undefined);
   const [{ wallet }] = useConnectWallet();
-  const [walletService, setWalletService] = useState<undefined | WalletState>(
-    undefined
-  );
   useEffect(() => {
     const getAdress = async () => {
+      if (wallet === null) return;
       const accountFromSerice = await SmartContractService.loadContract(
         wallet
-      ).growTreeContract.signer.getAddress();
+      ).signer.getAddress();
       setAccount(accountFromSerice);
     };
     if (wallet) {
       getAdress();
     }
-    setWalletService(SmartContractService.loadWallet());
-    console.log('walletService', walletService);
-  }, [walletService, wallet]);
+  }, [wallet]);
 
   useEffect(() => {
     const getMoneyCount = async () => {
@@ -52,7 +48,7 @@ function BuySeedPage() {
         account={account || ''}
         moneyCount={moneyCount}
       />
-      {walletService && <BuySeed />}
+      {wallet && <BuySeed />}
     </>
   );
 }

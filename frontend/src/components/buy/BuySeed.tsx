@@ -61,15 +61,13 @@ function BuySeed() {
   const [seconds, setSeconds] = useState(0);
   const [{ wallet }] = useConnectWallet();
   const { classes } = useStyles();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const getSeedPriceService = new GetSeedPriceService(
-    new MetamaskSeedRepository(wallet)
-  );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const getNftsService = new GetNftsService(new MetamaskNftRepository(wallet));
 
   useEffect(() => {
     const getSeePrice = async () => {
+      if (wallet === null) return;
+      const getSeedPriceService = new GetSeedPriceService(
+        new MetamaskSeedRepository(wallet)
+      );
       const seedPriceFromService = await getSeedPriceService.handle();
       setSeedPrice(seedPriceFromService);
     };
@@ -79,6 +77,10 @@ function BuySeed() {
 
   useEffect(() => {
     const getNfts = async () => {
+      if (wallet === null) return;
+      const getNftsService = new GetNftsService(
+        new MetamaskNftRepository(wallet)
+      );
       const nftsFromService = await getNftsService.handle();
       const nftsFormatted = nftsFromService.map((nft) => nft.id);
       setNfts(nftsFormatted);

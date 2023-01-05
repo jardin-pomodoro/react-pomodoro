@@ -1,3 +1,4 @@
+import { WalletState } from '@web3-onboard/core';
 import { ethers } from 'ethers';
 import MoneyRepository from '../../core/money.repository';
 import { SmartContractService } from '../../services/smart-contract.service';
@@ -7,8 +8,8 @@ export default class MetamaskMoneyRepository implements MoneyRepository {
 
   async getBalance(): Promise<number> {
     const money = await SmartContractService.loadContract(this.wallet)
-      .growTreeContract.connect(this.wallet.SignerWithAddress)
-      .balanceOf(this.wallet.SignerWithAddress, 0);
+      .connect(this.wallet.accounts[0].address)
+      .balanceOf(this.wallet.accounts[0].address, 0);
     return Number(ethers.BigNumber.from(money).toNumber());
   }
 }
