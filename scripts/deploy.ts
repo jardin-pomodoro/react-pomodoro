@@ -9,12 +9,12 @@ async function main() {
   console.log('Deploying contracts with the account:', deployer.address);
   console.log('Account balance:', (await deployer.getBalance()).toString());
 
-  const contractFactory = await ethers.getContractFactory('GardenToken');
-  const gardenTokenContract = await contractFactory.deploy();
+  const contractFactory = await ethers.getContractFactory('TreeCore');
+  const treeCoreContract = await contractFactory.deploy();
 
-  console.log('Garden Token address:', gardenTokenContract.address);
+  console.log('Tree Core address:', treeCoreContract.address);
 
-  saveFrontendDeploymentInfo(gardenTokenContract);
+  saveFrontendDeploymentInfo(treeCoreContract);
 }
 
 function saveFrontendDeploymentInfo(contract: Contract) {
@@ -29,9 +29,9 @@ function saveFrontendDeploymentInfo(contract: Contract) {
     JSON.stringify({ Token: contract.address }, undefined, 2),
   );
 
-  const contractArtifact = artifacts.readArtifactSync('GardenToken');
+  const contractArtifact = artifacts.readArtifactSync('TreeCore');
   fs.writeFileSync(
-    path.join(frontendDir, 'GardenToken.json'),
+    path.join(frontendDir, 'TreeCore.json'),
     JSON.stringify(contractArtifact, null, 2),
   );
 }
