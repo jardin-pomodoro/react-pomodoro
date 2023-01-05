@@ -12,7 +12,7 @@ contract TreeStats {
     mapping(uint256 => TreeUpgrade) treeStats;
 
     function generateMaxUpgrades(uint rarity) private pure returns (uint) {
-        return rarity / 6;
+        return (rarity / 6) + 1;
     }
 
     function addTreeStats(uint256 _tokenId, uint treeRarity) internal {
@@ -28,11 +28,11 @@ contract TreeStats {
     }
 
     function getLeavesUpgradeCost(uint256 _tokenId, uint leavesBaseStates) public view returns (uint) {
-        return treeStats[_tokenId].leavesUpgrade + leavesBaseStates / treeStats[_tokenId].maxUpgrades;
+        return 50 * ((leavesBaseStates + treeStats[_tokenId].leavesUpgrade + 1) / treeStats[_tokenId].maxUpgrades).pow(2);
     }
 
     function getTrunkUpgradeCost(uint256 _tokenId, uint trunkBaseStats) public view returns (uint) {
-        return treeStats[_tokenId].trunkUpgrade + trunkBaseStats / treeStats[_tokenId].maxUpgrades;
+        return 50 * ((trunkBaseStats + treeStats[_tokenId].trunkUpgrade + 1) / treeStats[_tokenId].maxUpgrades).pow(2);
     }
 
     function upgradeTrunk(uint256 _tokenId) internal {
