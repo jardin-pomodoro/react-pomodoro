@@ -88,20 +88,33 @@ describe('TreeCore contract', () => {
   });
 
   describe('Owner actions', () => {
-    it('Should set the baseURI', async () => {
+    it('Should set the baseURI when owner called', async () => {
       const {contract, owner} = await loadFixture(deployTokenFixture);
 
       await contract.connect(owner).setURI("https://tree.com/");
 
       expect(await contract.baseTokenURI()).to.equal("https://tree.com/");
     });
-    it('Should withdraw funds', async () => {
+    it('Should not set the baseURI when non owner called', async () => {
+      const {contract, addr1} = await loadFixture(deployTokenFixture);
+
+      await expect(contract.connect(addr1).setURI("https://tree.com/"))
+          .to.revertedWith("Ownable: caller is not the owner");
+    });
+    it('Should withdraw funds when owner called', async () => {
       const {contract, owner} = await loadFixture(deployTokenFixture);
       await setBalance(contract.address, ethers.utils.parseEther("1"));
 
       await expect(
           await contract.connect(owner).withdraw()
       ).to.changeEtherBalances([contract, owner], [ethers.utils.parseEther("-1"), ethers.utils.parseEther("1")]);
+    });
+    it('Should not withdraw funds when non owner called', async () => {
+      const {contract, addr1} = await loadFixture(deployTokenFixture);
+      await setBalance(contract.address, ethers.utils.parseEther("1"));
+
+      await expect(contract.connect(addr1).withdraw())
+          .to.revertedWith("Ownable: caller is not the owner");
     });
   });
 
