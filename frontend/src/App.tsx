@@ -13,17 +13,7 @@ import LoadingMatamaskAccount from './pages/LoadingMetamaskAccount';
 import {
   ConnectToWalletResponse,
   ConnectToWalletService,
-} from './services';
-import { contractAbi, treeToken } from './utils/constants';
-import { GetNftsService } from './services';
-import BuyNft from './pages/BuyNft';
-import { useRepositoryStore, useServiceStore, useWalletStore } from './stores';
-import {
-  MetamaskMoneyRepository,
-  MetamaskNftRepository,
-  MetamaskSeedRepository,
-} from './repositories';
-import {
+  GetNftsService,
   BuyFirstNftService,
   BuySeedService,
   GetFreeSeedService,
@@ -33,6 +23,14 @@ import {
   GetSeedPriceService,
   ImproveTrunkNftService,
 } from './services';
+import { contractAbi, treeToken } from './utils/constants';
+import BuyNft from './pages/BuyNft';
+import { useRepositoryStore, useServiceStore, useWalletStore } from './stores';
+import {
+  MetamaskMoneyRepository,
+  MetamaskNftRepository,
+  MetamaskSeedRepository,
+} from './repositories';
 
 declare global {
   interface Window {
