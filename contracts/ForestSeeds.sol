@@ -12,7 +12,7 @@ contract ForestSeeds {
 
     mapping(uint256 => ForestSeed) private userSeeds;
 
-    function register(uint256 _tokenId) internal {
+    function registerSeeds(uint256 _tokenId) internal {
         userSeeds[_tokenId] = ForestSeed(4, 0, block.timestamp);
     }
 

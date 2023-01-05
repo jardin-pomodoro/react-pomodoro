@@ -15,7 +15,7 @@ contract TreeStats {
         return (rarity / 6) + 1;
     }
 
-    function addTreeStats(uint256 _tokenId, uint treeRarity) internal {
+    function registerStats(uint256 _tokenId, uint treeRarity) internal {
         treeStats[_tokenId] = TreeUpgrade(generateMaxUpgrades(treeRarity), 0, 0);
     }
 

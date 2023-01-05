@@ -4,13 +4,17 @@ pragma solidity ^0.8.0;
 contract BreedTree {
     mapping(uint256 => uint8) private treeBreeds;
 
+    function registerBreed(uint256 _tokenId) internal {
+        treeBreeds[_tokenId] = 0;
+    }
+
     function mutate(uint seed) private view returns (uint) {
         uint mutation = uint256(keccak256(abi.encodePacked(block.difficulty, seed))) % seed;
         uint op = uint256(keccak256(abi.encodePacked(block.difficulty, seed))) % 2;
         if(op == 1) {
-            return mutation - seed % 1000000;
+            return (seed - mutation) % 1000000;
         }
-        return mutation + seed % 1000000;
+        return (mutation + seed) % 1000000;
     }
 
     function breed(uint seed1, uint seed2) private pure returns (uint) {
@@ -34,7 +38,7 @@ contract BreedTree {
     }
 
     function canTreeBreed(uint256 _tokenId) internal view {
-        require(treeBreeds[_tokenId] < 2, "Tree already breed");
+        require(treeBreeds[_tokenId] < 2, "Breeding limit reached");
     }
 
     function treeBreedCost(uint treeRarity1, uint treeRarity2) public pure returns (uint) {

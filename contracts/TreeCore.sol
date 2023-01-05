@@ -14,8 +14,9 @@ contract TreeCore is TreeToken, BreedTree, Forest, TreeStats, ForestSeeds {
 
     function createTree(uint childSeed) private {
         uint256 _tokenId = mintTree(msg.sender, childSeed);
-        addTreeStats(_tokenId, getTreeRarity(childSeed));
-        register(_tokenId);
+        registerStats(_tokenId, getTreeRarity(childSeed));
+        registerSeeds(_tokenId);
+        registerBreed(_tokenId);
         emit TreeMinted(msg.sender, _tokenId);
     }
 
