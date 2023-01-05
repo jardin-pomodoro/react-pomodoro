@@ -18,9 +18,10 @@ export default class MetamaskSeedRepository implements SeedRepository {
   }
 
   async buySeed(tokenId: string, amount: number): Promise<void> {
-    await SmartContractService.loadContract(this.wallet)
-      .connect(this.wallet.accounts[0].address)
-      .buySeeds(tokenId, amount);
+    await SmartContractService.loadContract(this.wallet).buySeeds(
+      tokenId,
+      amount
+    );
   }
 
   async getPrice(): Promise<number> {
