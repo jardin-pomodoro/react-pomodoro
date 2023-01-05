@@ -163,7 +163,10 @@ export function App() {
   return (
     <Routes>
       {loadAccount && (
-        <Route path="*" element={<LoadingMatamaskAccount message={loadingMessage} />} />
+        <Route
+          path="*"
+          element={<LoadingMatamaskAccount message={loadingMessage} />}
+        />
       )}
       {!loadAccount && isNftOwner && (
         <>
