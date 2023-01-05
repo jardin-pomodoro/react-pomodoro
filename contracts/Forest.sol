@@ -27,7 +27,7 @@ contract Forest {
 
     function collectTree(uint8 _leavesStat) internal returns (uint8) {
         PlantedTree memory plantedTree = plantedTrees[msg.sender];
-        require(block.timestamp - plantedTree.startTime / 3600 > plantedTree.growingTime);
+        require((block.timestamp - plantedTree.startTime) / 3600 > plantedTree.growingTime);
         delete plantedTrees[msg.sender];
         uint8 tokens = getProducedTokens(_leavesStat);
         return tokens;

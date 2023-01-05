@@ -45,6 +45,7 @@ contract TreeToken is  ERC1155Supply, Ownable {
     }
 
     function getSeed(uint256 _tokenId) public view returns (uint) {
+        require(_tokenId > 0, "Token ID invalid");
         return treeSeeds[_tokenId];
     }
 
