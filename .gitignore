@@ -113,9 +113,3 @@ typechain-types/
 cache/
 
 .idea/
-
-artifacts/
-
-typechain-types/
-
-cache/
