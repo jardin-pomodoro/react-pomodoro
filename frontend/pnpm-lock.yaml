@@ -19,6 +19,7 @@ specifiers:
   '@typescript-eslint/parser': ^5.43.0
   '@vitejs/plugin-react': ^2.2.0
   '@web3-onboard/core': ^2.12.1
+  '@web3-onboard/injected-wallets': ^2.4.0
   '@web3-onboard/react': ^2.5.3
   eslint: ^8.27.0
   eslint-config-airbnb: ^19.0.4
@@ -54,6 +55,7 @@ dependencies:
   '@rive-app/react-canvas': 3.0.33_react@18.2.0
   '@tabler/icons': 1.117.0_biqbaboplfbrettd7655fr4n2y
   '@web3-onboard/core': 2.12.1
+  '@web3-onboard/injected-wallets': 2.4.0
   '@web3-onboard/react': 2.5.3_react@18.2.0
   ethers: 5.7.2
   react: 18.2.0
@@ -1932,6 +1934,17 @@ packages:
       rxjs: 7.8.0
       svelte: 3.55.0
       svelte-i18n: 3.6.0_svelte@3.55.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
+
+  /@web3-onboard/injected-wallets/2.4.0:
+    resolution: {integrity: sha512-v27NdfD5vemPTNhqk+7gpMYXuTDsHTSPWWdJt6ybJoks6GlRSgF1fnCkmERNzo3+9S97fEKrzHrlSkpsFgn2Mw==}
+    dependencies:
+      '@web3-onboard/common': 2.2.3
+      joi: 17.7.0
+      lodash.uniqby: 4.7.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -4111,6 +4124,10 @@ packages:
 
   /lodash.partition/4.6.0:
     resolution: {integrity: sha512-35L3dSF3Q6V1w5j6V3NhNlQjzsRDC/pYKCTdYTmwqSib+Q8ponkAmt/PwEOq3EmI38DSCl+SkIVwLd+uSlVdrg==}
+    dev: false
+
+  /lodash.uniqby/4.7.0:
+    resolution: {integrity: sha512-e/zcLx6CSbmaEgFHCA7BnoQKyCtKMxnuWrJygbwPs/AIn+IMKl66L8/s+wBUn5LRw2pZx3bUHibiV1b6aTWIww==}
     dev: false
 
   /lodash/4.17.21:

@@ -15,6 +15,7 @@ import {
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
+import { useConnectWallet } from '@web3-onboard/react';
 import { BuySeedService } from '../../services/buy-seed.service';
 import { GetNftsService } from '../../services/get-nfts.service';
 import { GetSeedPriceService } from '../../services/get-seed-price.service';
@@ -47,7 +48,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-function BuySeed({ provider, signer }: any) {
+function BuySeed() {
   const [seedPrice, setSeedPrice] = useState(0);
   const [tokenIdValue, setTokenIdValue] = useState('');
   const initalNfts: string[] = [];
@@ -58,23 +59,14 @@ function BuySeed({ provider, signer }: any) {
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
+  const [{ wallet }] = useConnectWallet();
   const { classes } = useStyles();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const getSeedPriceService = new GetSeedPriceService(
-    new MetamaskSeedRepository(
-      provider,
-      signer,
-      new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
-    )
+    new MetamaskSeedRepository(wallet)
   );
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const getNftsService = new GetNftsService(
-    new MetamaskNftRepository(
-      provider,
-      signer,
-      new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
-    )
-  );
+  const getNftsService = new GetNftsService(new MetamaskNftRepository(wallet));
 
   useEffect(() => {
     const getSeePrice = async () => {
@@ -83,7 +75,7 @@ function BuySeed({ provider, signer }: any) {
     };
     getSeePrice();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [provider, signer]);
+  }, [wallet]);
 
   useEffect(() => {
     const getNfts = async () => {
@@ -93,7 +85,7 @@ function BuySeed({ provider, signer }: any) {
     };
     getNfts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [provider, signer]);
+  }, [wallet]);
 
   useEffect(() => {
     const deadline = 'Februray, 01, 2023';
@@ -117,11 +109,7 @@ function BuySeed({ provider, signer }: any) {
 
   const buy = async (tokenId: string) => {
     const buySeedService = new BuySeedService(
-      new MetamaskSeedRepository(
-        provider,
-        signer,
-        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
-      )
+      new MetamaskSeedRepository(wallet)
     );
     await buySeedService.handle({ tokenId, amount: 1 });
     setTransactionSuccess(true);
