@@ -1,6 +1,8 @@
 pragma solidity ^0.8.0;
 
 contract TreeStats {
+    event TreeUpgraded(address indexed to, uint256 indexed _tokenId, TreeUpgrade stats);
+
     struct TreeUpgrade {
         uint maxUpgrades;
         uint leavesUpgrade;
@@ -35,10 +37,12 @@ contract TreeStats {
 
     function upgradeTrunk(uint256 _tokenId) internal {
         treeStats[_tokenId].trunkUpgrade++;
+        emit TreeUpgraded(msg.sender, _tokenId, treeStats[_tokenId]);
     }
 
     function upgradeLeaves(uint256 _tokenId) internal {
         treeStats[_tokenId].leavesUpgrade++;
+        emit TreeUpgraded(msg.sender, _tokenId, treeStats[_tokenId]);
     }
 
     function getTreeStats(uint256 _tokenId) public view returns (TreeUpgrade memory) {
