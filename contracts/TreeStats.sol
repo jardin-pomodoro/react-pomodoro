@@ -28,11 +28,11 @@ contract TreeStats {
     }
 
     function getLeavesUpgradeCost(uint256 _tokenId, uint leavesBaseStates) public view returns (uint) {
-        return 50 * ((leavesBaseStates + treeStats[_tokenId].leavesUpgrade + 1) / treeStats[_tokenId].maxUpgrades).pow(2);
+        return ((leavesBaseStates + treeStats[_tokenId].leavesUpgrade + 1) / treeStats[_tokenId].maxUpgrades) ** 2;
     }
 
     function getTrunkUpgradeCost(uint256 _tokenId, uint trunkBaseStats) public view returns (uint) {
-        return 50 * ((trunkBaseStats + treeStats[_tokenId].trunkUpgrade + 1) / treeStats[_tokenId].maxUpgrades).pow(2);
+        return ((trunkBaseStats + treeStats[_tokenId].trunkUpgrade + 1) / treeStats[_tokenId].maxUpgrades)**2;
     }
 
     function upgradeTrunk(uint256 _tokenId) internal {
