@@ -18,20 +18,20 @@ async function main() {
 }
 
 function saveFrontendDeploymentInfo(contract: Contract) {
-  const frontendDir = path.normalize(__dirname + '/../frontend/src/contracts');
+  const frontendDir = path.normalize(__dirname + '/../frontend/src/utils');
 
     if (!fs.existsSync(frontendDir)) {
         fs.mkdirSync(frontendDir);
     }
 
     fs.writeFileSync(
-        path.join(frontendDir, 'contract-address.json'),
+        path.join(frontendDir, 'tree-token.json'),
         JSON.stringify({Token: contract.address}, undefined, 2),
     );
 
   const contractArtifact = artifacts.readArtifactSync('TreeCore');
   fs.writeFileSync(
-    path.join(frontendDir, 'TreeCore.json'),
+    path.join(frontendDir, 'greeter.json'),
     JSON.stringify(contractArtifact, null, 2),
   );
 }
