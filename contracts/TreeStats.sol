@@ -2,18 +2,18 @@ pragma solidity ^0.8.0;
 
 contract TreeStats {
     struct TreeUpgrade {
-        uint8 maxUpgrades;
-        uint8 leavesUpgrade;
-        uint8 trunkUpgrade;
+        uint maxUpgrades;
+        uint leavesUpgrade;
+        uint trunkUpgrade;
     }
 
     mapping(uint256 => TreeUpgrade) treeStats;
 
-    function generateMaxUpgrades(uint8 rarity) private pure returns (uint8) {
-        return uint8(rarity / 6);
+    function generateMaxUpgrades(uint rarity) private pure returns (uint) {
+        return rarity / 6;
     }
 
-    function addTreeStats(uint256 _tokenId, uint8 treeRarity) internal {
+    function addTreeStats(uint256 _tokenId, uint treeRarity) internal {
         treeStats[_tokenId] = TreeUpgrade(generateMaxUpgrades(treeRarity), 0, 0);
     }
 
@@ -25,11 +25,11 @@ contract TreeStats {
         require(treeStats[_tokenId].leavesUpgrade <= treeStats[_tokenId].maxUpgrades, "Max leaves level reached for this token");
     }
 
-    function getLeavesUpgradeCost(uint256 _tokenId, uint8 leavesBaseStates) public view returns (uint8) {
+    function getLeavesUpgradeCost(uint256 _tokenId, uint leavesBaseStates) public view returns (uint) {
         return treeStats[_tokenId].leavesUpgrade + leavesBaseStates / treeStats[_tokenId].maxUpgrades;
     }
 
-    function getTrunkUpgradeCost(uint256 _tokenId, uint8 trunkBaseStats) public view returns (uint8) {
+    function getTrunkUpgradeCost(uint256 _tokenId, uint trunkBaseStats) public view returns (uint) {
         return treeStats[_tokenId].trunkUpgrade + trunkBaseStats / treeStats[_tokenId].maxUpgrades;
     }
 

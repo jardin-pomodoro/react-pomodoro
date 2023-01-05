@@ -4,10 +4,7 @@ import {ethers} from "hardhat";
 import {loadFixture} from "@nomicfoundation/hardhat-network-helpers";
 import {expect} from "chai";
 
-
-describe('TreeCore contract', () => {
-    const TREE_TOKEN_ID = 0;
-
+describe('ForestSeeds contract', () => {
     async function deployTokenFixture(): Promise<{
         contractFactory: ContractFactory;
         contract: Contract;
@@ -23,16 +20,10 @@ describe('TreeCore contract', () => {
         return {contractFactory, contract, owner, addr1, addr2};
     }
 
-    describe('Deployment', () => {
-        it('Should set the right owner', async () => {
-            const {contract, owner} = await loadFixture(deployTokenFixture);
+    it('Should have 4 seeds by default', async () => {
+        const {contract, owner} = await loadFixture(deployTokenFixture);
+        await contract.connect(owner).mintRandomTree({value: ethers.utils.parseEther("0.1")});
 
-            expect(await contract.owner()).to.equal(owner.address);
-        });
-        it('Should have 0 tokens as an initial supply', async () => {
-            const {contract} = await loadFixture(deployTokenFixture);
-
-            expect(await contract.totalSupply(TREE_TOKEN_ID)).to.equal(0);
-        });
+        expect(await contract.connect(owner).getSeeds(1)).to.equal(4);
     });
 });

@@ -37,7 +37,7 @@ contract BreedTree {
         require(treeBreeds[_tokenId] < 2, "Tree already breed");
     }
 
-    function treeBreedCost(uint8 treeRarity1, uint8 treeRarity2) public pure returns (uint8) {
+    function treeBreedCost(uint treeRarity1, uint treeRarity2) public pure returns (uint) {
         return (treeRarity1 + treeRarity2) / 2;
     }
 }
