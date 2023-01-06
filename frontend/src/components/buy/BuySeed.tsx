@@ -110,6 +110,7 @@ function BuySeed() {
   }, [days, hours, minutes, seconds]);
 
   const buy = async (tokenId: string) => {
+    if (wallet === null) return;
     const buySeedService = new BuySeedService(
       new MetamaskSeedRepository(wallet)
     );

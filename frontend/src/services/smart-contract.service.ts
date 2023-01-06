@@ -28,6 +28,23 @@ export const initWeb3Onboard = init({
       minimal: false,
     },
   },
+  notify: {
+    transactionHandler: (transaction) => {
+      console.log({ transaction });
+      if (transaction.eventCode === 'txPool') {
+        return {
+          // autoDismiss set to zero will persist the notification until the user excuses it
+          autoDismiss: 0,
+          // message: `Your transaction is pending, click <a href="https://rinkeby.etherscan.io/tx/${transaction.hash}" rel="noopener noreferrer" target="_blank">here</a> for more info.`,
+          // or you could use onClick for when someone clicks on the notification itself
+          onClick: () =>
+            window.open(
+              `https://mumbai.polygonscan.com/tx/${transaction.hash}`
+            ),
+        };
+      }
+    },
+  },
 });
 
 export class SmartContractService {
