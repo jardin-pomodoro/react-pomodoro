@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { ethers } from 'ethers';
 import MoneyRepository from '../../core/money.repository';
 

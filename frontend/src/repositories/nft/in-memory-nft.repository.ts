@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 /* eslint-disable class-methods-use-this */
-/* eslint-disable import/prefer-default-export */
 import { Nft } from '../../core/nft';
 import { NftRepository } from '../../core/nft.repository';
 

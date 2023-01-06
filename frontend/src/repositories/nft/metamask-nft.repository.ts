@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { ethers } from 'ethers';
 import { Nft } from '../../core/nft';
 import { NftRepository } from '../../core/nft.repository';

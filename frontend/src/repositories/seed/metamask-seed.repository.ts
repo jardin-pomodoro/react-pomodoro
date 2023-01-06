@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ethers } from 'ethers';
 import { SeedFree } from '../../core/seed-free';

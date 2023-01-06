@@ -2,7 +2,6 @@
 import { SeedFree } from '../../core/seed-free';
 import { SeedRepository } from '../../core/seed.repository';
 
-// eslint-disable-next-line import/prefer-default-export
 export class InMemorySeedRepository implements SeedRepository {
   private seedFree: SeedFree = {
     numberSeed: 0,

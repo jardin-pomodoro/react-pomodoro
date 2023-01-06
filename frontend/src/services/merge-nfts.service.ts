@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { NftRepository } from '../core/nft.repository';
 
 export class MergeNftsService {
