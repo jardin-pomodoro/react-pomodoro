@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { ethers } from 'ethers';
 import { WalletState } from '@web3-onboard/core';
 import { Nft } from '../../core/nft';

@@ -14,12 +14,10 @@ import {
   CloseButton,
 } from '@mantine/core';
 import { useState, useEffect } from 'react';
-import { BuyFirstNftService } from '../services/buy-first-nft.service';
-import { MetamaskNftRepository } from '../repositories/nft/metamask-nft.repository';
-import type { GetNftsService } from '../services/get-nfts.service';
-import { Nft } from '../core/nft';
 import { useConnectWallet } from '@web3-onboard/react';
-import { useServiceStore, useWalletStore } from '../stores';
+import type { GetNftsService } from '../services/get-nfts.service';
+import { BuyFirstNftService } from '../services/buy-first-nft.service';
+import { Nft } from '../core/nft';
 import { MapServices } from '../stores/singletonServiceStore';
 
 const useStyles = createStyles(() => ({

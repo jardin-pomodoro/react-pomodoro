@@ -1,7 +1,9 @@
-import { MetamaskNftRepository } from '../repositories';
-import MetamaskMoneyRepository from '../repositories/money/metamask-money.repository';
-import MetamaskSeedRepository from '../repositories/seed/metamask-seed.repository';
 import { WalletState } from '@web3-onboard/core';
+import {
+  MetamaskNftRepository,
+  MetamaskMoneyRepository,
+  MetamaskSeedRepository,
+} from '../repositories';
 import {
   BuyFirstNftService,
   BuySeedService,
@@ -17,7 +19,7 @@ import {
 export class MapServices {
   private static instance: MapServices;
 
-  private constructor(private services: Map<string, any>) {}
+  private constructor(private services: Map<string, object>) {}
 
   static getInstance(): MapServices {
     if (!MapServices.instance) {
@@ -26,13 +28,14 @@ export class MapServices {
     return MapServices.instance;
   }
 
-  addService(name: string, service: any) {
+  addService(name: string, service: object) {
     this.services.set(name, service);
   }
 
   getService(name: string) {
-    //console.log(this.services);
-    if (!this.services.has(name)) throw new Error(`Service ${name} not found`);
+    if (!this.services.has(name)) {
+      throw new Error(`Service ${name} not found`);
+    }
     return this.services.get(name);
   }
 }

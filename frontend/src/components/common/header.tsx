@@ -10,6 +10,7 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import './header.css';
 import { IconUser, IconCurrencyEthereum } from '@tabler/icons';
+import { Link } from 'react-router-dom';
 
 const useStyles = createStyles((theme) => ({
   inner: {
@@ -79,15 +80,9 @@ export function HeaderMenu({ links, moneyCount }: HeaderSearchProps) {
 
   const items = links.map((link) => {
     return (
-      <a
-        key={link.label}
-        href={link.link}
-        className={classes.link}
-        // eslint-disable-next-line no-console
-        onClick={(event) => console.log(event)}
-      >
+      <Link key={link.label} to={link.link} className={classes.link}>
         {link.label}
-      </a>
+      </Link>
     );
   });
 

@@ -1,17 +1,8 @@
-import React from 'react';
-import {
-  Button,
-  Card,
-  Text,
-  Group,
-  Badge,
-  Image,
-  Container,
-} from '@mantine/core';
+import { Button, Card, Text, Group, Image, Container } from '@mantine/core';
 import { useConnectWallet } from '@web3-onboard/react';
 
 export default function ConnectWallet() {
-  const [{}, connect] = useConnectWallet();
+  const [, connect] = useConnectWallet();
 
   return (
     <Container

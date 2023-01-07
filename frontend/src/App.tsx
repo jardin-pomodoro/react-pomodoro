@@ -1,41 +1,20 @@
+/* eslint-disable no-console */
 import { MantineProvider } from '@mantine/core';
-
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { ethers } from 'ethers';
 import { useConnectWallet, useWallets } from '@web3-onboard/react';
-import { WalletState } from '@web3-onboard/core';
+import { OnboardAPI } from '@web3-onboard/core';
 import { useState, useEffect, useCallback } from 'react';
+
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Gallery from './pages/Gallery';
 import BuySeed from './pages/BuySeedPage';
-import { InstallPlugin } from './pages/installPlugin';
 import LoadingMatamaskAccount from './pages/LoadingMetamaskAccount';
-import {
-  ConnectToWalletResponse,
-  ConnectToWalletService,
-  GetNftsService,
-  BuyFirstNftService,
-  BuySeedService,
-  GetFreeSeedService,
-  GetMoneyCountService,
-  GetNftMetadataService,
-  GetNumberOfNftService,
-  GetSeedPriceService,
-  ImproveTrunkNftService,
-} from './services';
 import BuyNft from './pages/BuyNft';
-import { useRepositoryStore, useServiceStore, useWalletStore } from './stores';
-import { MetamaskNftRepository } from './repositories';
 import ConnectWallet from './pages/ConnectWallet';
-import {
-  initWeb3Onboard,
-  SmartContractService,
-} from './services/smart-contract.service';
-import MetamaskMoneyRepository from './repositories/money/metamask-money.repository';
-import MetamaskSeedRepository from './repositories/seed/metamask-seed.repository';
+import { initWeb3Onboard } from './services/smart-contract.service';
 import { InitSingletonServiceStore } from './stores/singletonServiceStore';
+import { useAppStore, useNftStore, useWalletStore } from './stores';
 
 declare global {
   interface Window {
@@ -44,54 +23,23 @@ declare global {
 }
 
 export function App() {
-  const [isNftOwner, setIsNftOnwer] = useState(false);
-  const { addService } = useServiceStore();
-  const { addRepository } = useRepositoryStore();
   const connectedWallets = useWallets();
   const [{ wallet, connecting }, connect] = useConnectWallet();
-  const [servicesLoad, setServicesLoad] = useState<boolean>(false);
-  const [web3Onboard, setWeb3Onboard] = useState<any>(null);
+  const [, setWeb3Onboard] = useState<OnboardAPI | null>(null);
+  const nftStore = useNftStore();
+  const { hasNfts, setHasNfts, setErrorMessage } = useAppStore();
+  const { setWallet } = useWalletStore();
 
   const initBeans = useCallback(() => {
-    console.log('call initBeans');
-    console.log(wallet);
     if (!wallet) {
       return;
     }
     console.log('start initBeans');
-    const nftRepository = new MetamaskNftRepository(wallet);
-    const moneyRepository = new MetamaskMoneyRepository(wallet);
-    const seedRepository = new MetamaskSeedRepository(wallet);
-    addRepository(nftRepository);
-    addRepository(seedRepository);
-    addRepository(moneyRepository);
-    addService('BuyFirstNftService', new BuyFirstNftService(nftRepository));
-    addService('BuySeedService', new BuySeedService(seedRepository));
-    addService(
-      'GetMoneyCountService',
-      new GetMoneyCountService(moneyRepository)
-    );
-    addService(
-      'GetNftMetadataService',
-      new GetNftMetadataService(nftRepository)
-    );
-    addService(
-      'GetNumberOfNftService',
-      new GetNumberOfNftService(nftRepository)
-    );
-    addService(
-      'ImproveTrunkNftService',
-      new ImproveTrunkNftService(nftRepository)
-    );
-    addService('GetSeedPriceService', new GetSeedPriceService(seedRepository));
-    addService('GetNftsService', new GetNftsService(nftRepository));
-    addService('GetFreeSeedService', new GetFreeSeedService(seedRepository));
-    addService('ConnectToWalletService', new ConnectToWalletService());
     InitSingletonServiceStore(wallet);
-    setServicesLoad(true);
+    setWallet(wallet);
     console.log('end initBeans');
     console.log(wallet);
-  }, [wallet, addRepository, addService]);
+  }, [wallet, setWallet]);
 
   useEffect(() => {
     initBeans();
@@ -123,31 +71,20 @@ export function App() {
           const magicUserEmail = localStorage.getItem('magicUserEmail');
           if (!magicUserEmail || magicUserEmail !== email)
             localStorage.setItem('magicUserEmail', email);
-        } catch (err) {
-          throw err;
+        } catch (error: unknown) {
+          if (error && typeof error === 'object' && 'message' in error) {
+            setErrorMessage(error.message as string);
+            // todo mettre un system de store et de toast avec les erreur
+          }
         }
       }
       setMagicUser();
     }
-  }, [connectedWallets, wallet]);
-
-  useEffect(() => {
-    const checkNft = async () => {
-      if (wallet) {
-        const getNftService = new GetNftsService(
-          new MetamaskNftRepository(wallet)
-        );
-        const numberOfNft = await getNftService.handle();
-        if (numberOfNft.length > 0) {
-          setIsNftOnwer(true);
-        }
-      }
-    };
-    checkNft();
-  }, [connectedWallets, wallet]);
+  }, [connectedWallets, wallet, setErrorMessage]);
 
   useEffect(() => {
     const previouslyConnectedWallets = JSON.parse(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       window.localStorage.getItem('connectedWallets')!
     );
 
@@ -163,28 +100,32 @@ export function App() {
     }
   }, [connect]);
 
+  useEffect(() => {
+    if (!wallet) return;
+    nftStore.retieveNfts().then((isOwner) => {
+      if (isOwner) {
+        setHasNfts(true);
+      }
+    });
+  }, [connectedWallets, wallet, nftStore]);
+
+  if (!connecting && !wallet) {
+    return <ConnectWallet />;
+  }
+  if (connecting) {
+    return (
+      <LoadingMatamaskAccount message="le compte est entrain de charger" />
+    );
+  }
+  if (!hasNfts) {
+    return <BuyNft />;
+  }
   return (
     <Routes>
-      {!connecting && !wallet && <Route path="*" element={<ConnectWallet />} />}
-      {isNftOwner && wallet && servicesLoad && (
-        <>
-          <Route path="/buy" element={<BuySeed />} />
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path="/" element={<Home />} />
-          <Route path="*" element={<NotFound />} />
-        </>
-      )}
-      {!isNftOwner && wallet && servicesLoad && (
-        <Route path="*" element={<BuyNft />} />
-      )}
-      {connecting && (
-        <Route
-          path="*"
-          element={
-            <LoadingMatamaskAccount message="le compte est entrain de charger" />
-          }
-        />
-      )}
+      <Route path="/buy" element={<BuySeed />} />
+      <Route path="/gallery" element={<Gallery />} />
+      <Route path="/" element={<Home />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

@@ -16,11 +16,13 @@ import {
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { useConnectWallet } from '@web3-onboard/react';
-import { BuySeedService } from '../../services/buy-seed.service';
-import { GetNftsService } from '../../services/get-nfts.service';
-import { useServiceStore } from '../../stores';
-import { GetSeedPriceService } from '../../services';
+import {
+  GetSeedPriceService,
+  GetNftsService,
+  BuySeedService,
+} from '../../services';
 import { deadline } from '../../utils/constants';
+import { MapServices } from '../../stores/singletonServiceStore';
 
 const useStyles = createStyles(() => ({
   center_button: {
@@ -48,8 +50,8 @@ const useStyles = createStyles(() => ({
 }));
 
 function BuySeed() {
-// { ethers.providers.Web3provider, ethers.Signer }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // { ethers.providers.Web3provider, ethers.Signer }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [seedPrice, setSeedPrice] = useState(0);
   const [tokenIdValue, setTokenIdValue] = useState('');
   const initalNfts: string[] = [];
@@ -62,14 +64,14 @@ function BuySeed() {
   const [seconds, setSeconds] = useState(0);
   const [{ wallet }] = useConnectWallet();
   const { classes } = useStyles();
-  const getSeedPriceService = useServiceStore((state) =>
-    state.services.get('GetFreeSeedService')
+  const getSeedPriceService = MapServices.getInstance().getService(
+    'GetSeedPriceService'
   ) as GetSeedPriceService;
-  const getNtfsService = useServiceStore((state) =>
-    state.services.get('GetNftsService')
+  const getNftsService = MapServices.getInstance().getService(
+    'GetNftsService'
   ) as GetNftsService;
-  const buySeedService = useServiceStore((state) =>
-    state.services.get('BuySeedService')
+  const buySeedService = MapServices.getInstance().getService(
+    'BuySeedService'
   ) as BuySeedService;
 
   useEffect(() => {
@@ -83,7 +85,7 @@ function BuySeed() {
 
   useEffect(() => {
     const getNfts = async () => {
-      const nftsFromService = await getNtfsService.handle();
+      const nftsFromService = await getNftsService.handle();
       const nftsFormatted = nftsFromService.map((nft) => nft.id);
       setNfts(nftsFormatted);
     };

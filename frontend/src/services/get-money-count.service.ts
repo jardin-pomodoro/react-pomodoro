@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import MoneyRepository from '../core/money.repository';
 
 export class GetMoneyCountService {

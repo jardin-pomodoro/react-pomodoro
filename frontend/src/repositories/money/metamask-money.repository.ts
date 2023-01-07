@@ -1,10 +1,9 @@
 import { WalletState } from '@web3-onboard/core';
-/* eslint-disable import/prefer-default-export */
 import { ethers } from 'ethers';
 import MoneyRepository from '../../core/money.repository';
 import { SmartContractService } from '../../services/smart-contract.service';
 
-export default class MetamaskMoneyRepository implements MoneyRepository {
+export class MetamaskMoneyRepository implements MoneyRepository {
   constructor(private wallet: WalletState) {}
 
   async getBalance(): Promise<number> {
