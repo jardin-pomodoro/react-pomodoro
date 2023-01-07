@@ -30,5 +30,6 @@ module.exports = {
   rules: {
     'react/react-in-jsx-scope': 0,
     'import/prefer-default-export': 'off',
+    'react/no-unescaped-entities': 'off',
   },
 };
