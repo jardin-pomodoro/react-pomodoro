@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react/no-unescaped-entities */
 import {
   Container,
   Text,
@@ -9,18 +11,17 @@ import {
   Badge,
   Paper,
   Group,
-  Modal,
-  Radio,
   CloseButton,
 } from '@mantine/core';
 import { useState, useEffect } from 'react';
 import { BuyFirstNftService } from '../services/buy-first-nft.service';
 import { MetamaskNftRepository } from '../repositories/nft/metamask-nft.repository';
-import { GetNftsService } from '../services/get-nfts.service';
+import type { GetNftsService } from '../services/get-nfts.service';
 import { Nft } from '../core/nft';
 import { useConnectWallet } from '@web3-onboard/react';
+import { useServiceStore, useWalletStore } from '../stores';
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   center_button: {
     display: 'flex',
     flexDirection: 'column',
@@ -50,26 +51,32 @@ export default function BuyNft() {
   const [transactionSuccess, setTransactionSuccess] = useState(false);
   const [nfts, setNfts] = useState<Nft[]>([]);
   const [{ wallet }] = useConnectWallet();
+  const getNftsService = useServiceStore((state) =>
+    state.services.get('GetNftsService')
+  ) as GetNftsService;
+  const buyFirstNftService = useServiceStore((state) =>
+    state.services.get('GetNftsService')
+  ) as GetNftsService;
 
   const BuyFirstNft = async () => {
     if (wallet === null) return;
-    const buyFirstNftService = new BuyFirstNftService(
-      new MetamaskNftRepository(wallet)
-    );
+    // const buyFirstNftService = new BuyFirstNftService(
+    //   new MetamaskNftRepository(wallet)
+    // );
     await buyFirstNftService.handle(nfts);
   };
 
   useEffect(() => {
-    if (wallet === null) return;
-    const getNftsService = new GetNftsService(
-      new MetamaskNftRepository(wallet)
-    );
-
     const getNfts = async () => {
-      setNfts(await getNftsService.handle());
+      console.log('getNfts');
+      console.log(getNftsService);
+      console.log('getNfts fin');
+      const result = await getNftsService.handle();
+      setNfts(result);
     };
+    console.log('devant le getnfts');
     getNfts();
-  }, [wallet]);
+  }, [wallet, getNftsService]);
 
   return (
     <Container mt="lg">
@@ -107,7 +114,7 @@ export default function BuyNft() {
             20% de réduction
           </Badge>
         </Group>
-        <Text size="l">
+        <Text size="lg">
           Plus que 4 jours pour profiter de cette réduction exceptionnel
         </Text>
         <Text td="line-through">0.8 Matic</Text>

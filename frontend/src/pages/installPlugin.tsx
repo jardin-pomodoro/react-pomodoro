@@ -1,14 +1,9 @@
-import {
-  Loader,
-  Flex,
-  Container,
-  Paper,
-  Text,
-  createStyles,
-} from '@mantine/core';
+/* eslint-disable react/no-unescaped-entities */
+import { Container, createStyles, Text, Flex, Paper } from '@mantine/core';
 
-interface LoadingMatamaskAccountProps {
-  message: string;
+export interface ConnectWalletProps {
+  networkErrorMessage: string;
+  dismiss: () => void;
 }
 
 const useStyles = createStyles(() => ({
@@ -18,17 +13,15 @@ const useStyles = createStyles(() => ({
   },
 }));
 
-export default function LoadingMatamaskAccount({
-  message,
-}: LoadingMatamaskAccountProps) {
+// eslint-disable-next-line import/prefer-default-export
+export function InstallPlugin() {
   const { classes } = useStyles();
   return (
     <Container className={classes.container}>
       <Flex justify="center" align="center" direction="column" h="100%">
         <Paper withBorder p="lg" radius="md" mb="xs" ta="center" bg="teal">
-          <Loader color="white" size="xl" />
-          <Text size="xl" c="white">
-            {message}
+          <Text c="white">
+            Pour utilisé ce site vous avez besoin d'installer le plugin metamask
           </Text>
         </Paper>
       </Flex>

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable import/prefer-default-export */
 import { Nft } from '../../core/nft';
@@ -13,6 +14,10 @@ export class InMemoryNftRepository implements NftRepository {
     { id: '3891393913' },
     { id: '3993103103' },
   ];
+
+  plantTree(parentTree: number): Promise<void> {
+    return Promise.resolve(undefined); // TODO
+  }
 
   async getAll(): Promise<Nft[]> {
     console.log('result de getAll', InMemoryNftRepository.nfts);
@@ -52,6 +57,7 @@ export class InMemoryNftRepository implements NftRepository {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async getMetadata(nft: Nft): Promise<string> {
     throw new Error('Method not implemented.');
   }

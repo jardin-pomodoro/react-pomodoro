@@ -1,52 +1,98 @@
-import { Loader, MantineProvider } from '@mantine/core';
+import { MantineProvider } from '@mantine/core';
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { ethers } from 'ethers';
-import { useState, useEffect } from 'react';
 import { useConnectWallet, useWallets } from '@web3-onboard/react';
 import { WalletState } from '@web3-onboard/core';
+import { useState, useEffect, useCallback } from 'react';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Gallery from './pages/Gallery';
 import BuySeed from './pages/BuySeedPage';
 import { InstallPlugin } from './pages/installPlugin';
 import LoadingMatamaskAccount from './pages/LoadingMetamaskAccount';
-import GetNumberOfNftService from './services/get-number-of-nft.service';
 import {
   ConnectToWalletResponse,
   ConnectToWalletService,
-} from './services/connect-to-wallet.service';
-import { MetamaskNftRepository } from './repositories/nft/metamask-nft.repository';
-import { contractAbi, treeToken } from './utils/constants';
-import { GetNftsService } from './services/get-nfts.service';
+  GetNftsService,
+  BuyFirstNftService,
+  BuySeedService,
+  GetFreeSeedService,
+  GetMoneyCountService,
+  GetNftMetadataService,
+  GetNumberOfNftService,
+  GetSeedPriceService,
+  ImproveTrunkNftService,
+} from './services';
 import BuyNft from './pages/BuyNft';
+import { useRepositoryStore, useServiceStore, useWalletStore } from './stores';
+import { MetamaskNftRepository } from './repositories';
 import ConnectWallet from './pages/ConnectWallet';
 import {
   initWeb3Onboard,
   SmartContractService,
 } from './services/smart-contract.service';
+import MetamaskMoneyRepository from './repositories/money/metamask-money.repository';
+import MetamaskSeedRepository from './repositories/seed/metamask-seed.repository';
+import { InitSingletonServiceStore } from './stores/singletonServiceStore';
+
+declare global {
+  interface Window {
+    ethereum?: import('ethers').providers.ExternalProvider;
+  }
+}
 
 export function App() {
-  const [provider, setProvider] = useState<
-    undefined | ethers.providers.Web3Provider
-  >(undefined);
-  const [signer, setSigner] = useState<undefined | ethers.Signer>(undefined);
+  const [isNftOwner, setIsNftOnwer] = useState(false);
+  const { addService } = useServiceStore();
+  const { addRepository } = useRepositoryStore();
   const connectedWallets = useWallets();
   const [{ wallet, connecting }, connect] = useConnectWallet();
   const [web3Onboard, setWeb3Onboard] = useState<any>(null);
 
-  const initializeEthers = async () => {
-    const localProvider = new ethers.providers.Web3Provider(window.ethereum);
-    await localProvider.send('eth_requestAccounts', []);
-    const localSigner = localProvider.getSigner();
-    setProvider(localProvider);
-    setSigner(localSigner);
-  };
+  const initBeans = useCallback(() => {
+    if (!wallet) {
+      return;
+    }
+    console.log('start initBeans');
+    // const nftRepository = new MetamaskNftRepository(wallet);
+    // const moneyRepository = new MetamaskMoneyRepository(wallet);
+    // const seedRepository = new MetamaskSeedRepository(wallet);
+    // addRepository(nftRepository);
+    // addRepository(seedRepository);
+    // addRepository(moneyRepository);
+    // addService('BuyFirstNftService', new BuyFirstNftService(nftRepository));
+    // addService('BuySeedService', new BuySeedService(seedRepository));
+    // addService(
+    //   'GetMoneyCountService',
+    //   new GetMoneyCountService(moneyRepository)
+    // );
+    // addService(
+    //   'GetNftMetadataService',
+    //   new GetNftMetadataService(nftRepository)
+    // );
+    // addService(
+    //   'GetNumberOfNftService',
+    //   new GetNumberOfNftService(nftRepository)
+    // );
+    // addService(
+    //   'ImproveTrunkNftService',
+    //   new ImproveTrunkNftService(nftRepository)
+    // );
+    // addService('GetSeedPriceService', new GetSeedPriceService(seedRepository));
+    // addService('GetNftsService', new GetNftsService(nftRepository));
+    // addService('GetFreeSeedService', new GetFreeSeedService(seedRepository));
+    // addService('ConnectToWalletService', new ConnectToWalletService());
+    InitSingletonServiceStore(wallet);
+    console.log('end initBeans');
+    console.log(wallet);
+  }, [wallet]);
 
   useEffect(() => {
     setWeb3Onboard(initWeb3Onboard);
-  }, []);
+    initBeans();
+  }, [initBeans]);
 
   useEffect(() => {
     if (!connectedWallets.length) return;
@@ -82,6 +128,20 @@ export function App() {
   }, [connectedWallets, wallet]);
 
   useEffect(() => {
+    const checkNft = async () => {
+      if (wallet) {
+        const getNftService = new GetNftsService(
+          new MetamaskNftRepository(wallet)
+        );
+        const numberOfNft = await getNftService.handle();
+        if (numberOfNft.length > 0) {
+          setIsNftOnwer(true);
+        }
+      }
+    };
+  }, [connectedWallets, wallet]);
+
+  useEffect(() => {
     const previouslyConnectedWallets = JSON.parse(
       window.localStorage.getItem('connectedWallets')!
     );
@@ -101,26 +161,15 @@ export function App() {
   return (
     <Routes>
       {!connecting && !wallet && <Route path="*" element={<ConnectWallet />} />}
-      {wallet && (
+      {isNftOwner && wallet && (
         <>
           <Route path="/buy" element={<BuySeed />} />
-          <Route
-            path="/gallery"
-            element={<Gallery provider={provider} signer={signer} />}
-          />
-          <Route
-            path="/"
-            element={<Home provider={provider} signer={signer} />}
-          />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/" element={<Home />} />
           <Route path="*" element={<NotFound />} />
         </>
       )}
-      {wallet && (
-        <Route
-          path="*"
-          element={<BuyNft provider={provider} signer={signer} />}
-        />
-      )}
+      {!isNftOwner && wallet && <Route path="*" element={<BuyNft />} />}
       {connecting && (
         <Route
           path="*"

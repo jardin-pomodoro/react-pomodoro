@@ -58,9 +58,9 @@ export class MetamaskNftRepository implements NftRepository {
       tokenAsked.push(i);
     }
     const nftFounded: number[] = [];
-    const result = await SmartContractService.loadContract(this.wallet)
-      .connect(this.wallet.accounts[0].address)
-      .balanceOfBatch(adresses, tokenAsked);
+    const result = await SmartContractService.loadContract(
+      this.wallet
+    ).balanceOfBatch(adresses, tokenAsked);
     if (Array.isArray(result)) {
       result.forEach((element) => {
         if (ethers.BigNumber.from(element).toNumber() === 1) {
@@ -79,8 +79,20 @@ export class MetamaskNftRepository implements NftRepository {
   }
 
   async buyNft(): Promise<void> {
-    await SmartContractService.loadContract(this.wallet)
-      .connect(this.wallet.accounts[0].address)
-      .mintRandomTree();
+    const contract = SmartContractService.loadContract(this.wallet);
+    const result = await contract.mintRandomTree({
+      value: ethers.utils.parseEther('0.1'),
+    });
+    // eslint-disable-next-line no-console
+    console.log(result);
+  }
+
+  async plantTree(parentTree: number): Promise<void> {
+    const contract = SmartContractService.loadContract(this.wallet).connect(
+      this.wallet.accounts[0].address
+    );
+    const result = await contract.plantTree(parentTree);
+    // eslint-disable-next-line no-console
+    console.log(result);
   }
 }

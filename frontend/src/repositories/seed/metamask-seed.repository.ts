@@ -1,8 +1,9 @@
+/* eslint-disable import/prefer-default-export */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ethers } from 'ethers';
+import { WalletState } from '@web3-onboard/core';
 import { SeedFree } from '../../core/seed-free';
 import { SeedRepository } from '../../core/seed.repository';
-import { WalletState } from '@web3-onboard/core';
 import { SmartContractService } from '../../services/smart-contract.service';
 
 export default class MetamaskSeedRepository implements SeedRepository {

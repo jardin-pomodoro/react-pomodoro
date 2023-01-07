@@ -6,24 +6,25 @@ import BuySeed from '../components/buy/BuySeed';
 import { HeaderMenu } from '../components/common/header';
 import MetamaskMoneyRepository from '../repositories/money/metamask-money.repository';
 import { GetMoneyCountService } from '../services/get-money-count.service';
+import { useServiceStore, useWalletStore } from '../stores';
 
 function BuySeedPage() {
   const [moneyCount, setMoneyCount] = useState<number | undefined>(undefined);
   const [{ wallet }] = useConnectWallet();
 
+  const getMoneyCountService = useServiceStore((state) =>
+    state.services.get('GetMoneyCountService')
+  ) as GetMoneyCountService;
+
   useEffect(() => {
     const getMoneyCount = async () => {
-      if (wallet === null) return;
-      const getMoneyCountService = new GetMoneyCountService(
-        new MetamaskMoneyRepository(wallet)
-      );
       const money = await getMoneyCountService.handle();
       setMoneyCount(money);
     };
     if (wallet) {
       getMoneyCount();
     }
-  }, [wallet]);
+  }, [wallet, getMoneyCountService]);
   return (
     <>
       <HeaderMenu

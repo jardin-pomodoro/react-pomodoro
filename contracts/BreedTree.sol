@@ -5,12 +5,12 @@ contract BreedTree {
     mapping(uint256 => uint8) private treeBreeds;
 
     function mutate(uint seed) private view returns (uint) {
-        uint mutations = seed;
-        for (uint8 i = 0; i < 32; i++) {
-            uint mutation = uint256(keccak256(abi.encodePacked(block.timestamp, seed, i))) % 5 - 2;
-            mutations = mutations + mutation * 10 ** i;
+        uint mutation = uint256(keccak256(abi.encodePacked(block.difficulty, seed))) % seed;
+        uint op = uint256(keccak256(abi.encodePacked(block.difficulty, seed))) % 2;
+        if(op == 1) {
+            return mutation - seed % 1000000;
         }
-        return mutations;
+        return mutation + seed % 1000000;
     }
 
     function breed(uint seed1, uint seed2) private pure returns (uint) {
@@ -37,7 +37,7 @@ contract BreedTree {
         require(treeBreeds[_tokenId] < 2, "Tree already breed");
     }
 
-    function treeBreedCost(uint8 treeRarity1, uint8 treeRarity2) public pure returns (uint8) {
+    function treeBreedCost(uint treeRarity1, uint treeRarity2) public pure returns (uint) {
         return (treeRarity1 + treeRarity2) / 2;
     }
 }

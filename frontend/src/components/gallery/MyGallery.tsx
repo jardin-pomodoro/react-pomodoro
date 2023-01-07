@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable import/prefer-default-export */
 import {
   Container,
@@ -45,7 +46,7 @@ interface FeaturesCardUI {
   imageMetadata?: string;
 }
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   banner_body: {
     display: 'flex',
     flexDirection: 'column',
@@ -130,6 +131,8 @@ const loadFeatureCardProps = async (
 };
 
 export function MyGallery() {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const initialNfts: Nft[] = [];
   const initialFeatureCardProps: FeaturesCardUI[] = [];
   const [featuresCardProps, setFeaturesCardProps] = useState(

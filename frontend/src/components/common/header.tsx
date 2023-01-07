@@ -83,6 +83,7 @@ export function HeaderMenu({ links, moneyCount }: HeaderSearchProps) {
         key={link.label}
         href={link.link}
         className={classes.link}
+        // eslint-disable-next-line no-console
         onClick={(event) => console.log(event)}
       >
         {link.label}

@@ -1,5 +1,4 @@
 /* eslint-disable import/prefer-default-export */
-
 import { NftRepository } from '../core/nft.repository';
 import { Nft } from '../core/nft';
 

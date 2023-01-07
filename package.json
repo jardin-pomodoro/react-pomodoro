@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "test": "hardhat test",
+    "coverage": "hardhat coverage",
     "compile": "hardhat compile",
     "deploy": "hardhat run scripts/deploy.ts",
     "deploy:mumbai": "hardhat run scripts/deploy.ts --network mumbai",
@@ -11,6 +12,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.7",
     "@nomicfoundation/hardhat-toolbox": "^2.0.0",
     "@openzeppelin/contracts": "^4.8.0",
     "chai": "^4.3.7",
@@ -24,6 +26,7 @@
   },
   "packageManager": "pnpm",
   "dependencies": {
-    "web3": "^1.8.1"
+    "ganache-cli": "^6.12.2",
+    "solidity-coverage": "^0.8.2"
   }
 }
