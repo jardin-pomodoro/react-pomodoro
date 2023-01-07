@@ -10,15 +10,9 @@ import Gallery from './pages/Gallery';
 import BuySeed from './pages/BuySeedPage';
 import { InstallPlugin } from './pages/installPlugin';
 import LoadingMatamaskAccount from './pages/LoadingMetamaskAccount';
-import {
-  ConnectToWalletResponse,
-  ConnectToWalletService,
-  GetNftsService,
-} from './services';
-import { contractAbi, treeToken } from './utils/constants';
+import { ConnectToWalletResponse, ConnectToWalletService } from './services';
 import BuyNft from './pages/BuyNft';
-import { useServiceStore, useWalletStore } from './stores';
-import { initDeps } from './init-dependency';
+import { useWalletStore, useAppStore, useNftStore } from './stores';
 
 declare global {
   interface Window {
@@ -27,23 +21,16 @@ declare global {
 }
 
 export function App() {
-  const [loadingMessage, setLoadingMessage] = useState('');
-  const [loadAccount, setLoadAccount] = useState(false);
-  const [isNftOwner, setIsNftOnwer] = useState(false);
   const { provider, signer, setProvider, setSigner } = useWalletStore();
-  const { setService } = useServiceStore();
-
-  const initBeans = () => {
-    if (!provider || !signer) {
-      throw new Error('provider or signer not set');
-    }
-    const contract = new ethers.Contract(
-      treeToken.Token,
-      contractAbi,
-      provider.getSigner(0)
-    );
-    initDeps(setService, provider, signer, contract);
-  };
+  const nftStore = useNftStore();
+  const {
+    isLoading,
+    hasNfts,
+    errorMessage,
+    setIsLoading,
+    setHasNfts,
+    setErrorMessage,
+  } = useAppStore();
 
   const initializeEthers = async () => {
     if (!window.ethereum) {
@@ -56,22 +43,10 @@ export function App() {
     setSigner(localSigner);
   };
 
-  const checkNft = async () => {
-    const getNftService = undefined;
-    if (!provider || !signer || !getNftService) {
-      console.log('cannot check nft service unavailable', getNftService);
-      return;
-    }
-    const numberOfNft = await getNftService.handle();
-    if (numberOfNft.length > 0) {
-      setIsNftOnwer(true);
-    }
-  };
-
   useEffect(() => {
     const initConnection = async (): Promise<void> => {
       try {
-        setLoadAccount(true);
+        setIsLoading(true);
 
         const connectToWalletService = new ConnectToWalletService();
         const result = await connectToWalletService.connect();
@@ -81,14 +56,13 @@ export function App() {
 
         if (result === ConnectToWalletResponse.OK) {
           await initializeEthers();
-          initBeans();
-          await checkNft();
+          setHasNfts(await nftStore.retieveNfts());
         }
 
-        setLoadAccount(false);
+        setIsLoading(false);
       } catch (error: unknown) {
         if (error && typeof error === 'object' && 'message' in error) {
-          setLoadingMessage(error.message as string);
+          setErrorMessage(error.message as string);
           // todo mettre un system de store et de toast avec les erreur
         }
       }
@@ -100,13 +74,13 @@ export function App() {
 
   return (
     <Routes>
-      {loadAccount && (
+      {isLoading && (
         <Route
           path="*"
-          element={<LoadingMatamaskAccount message={loadingMessage} />}
+          element={<LoadingMatamaskAccount message={errorMessage} />}
         />
       )}
-      {!loadAccount && isNftOwner && (
+      {!isLoading && hasNfts && (
         <>
           <Route path="/buy" element={<BuySeed />} />
           <Route path="/gallery" element={<Gallery />} />
@@ -114,7 +88,7 @@ export function App() {
           <Route path="*" element={<NotFound />} />
         </>
       )}
-      {!loadAccount && !isNftOwner && provider && signer && (
+      {!hasNfts && !hasNfts && provider && signer && (
         <Route path="*" element={<BuyNft />} />
       )}
     </Routes>

@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import type { ethers } from 'ethers';
 import create from 'zustand';
 
