@@ -3,7 +3,7 @@ import { MantineProvider } from '@mantine/core';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { ethers } from 'ethers';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Gallery from './pages/Gallery';
@@ -17,7 +17,7 @@ import {
 } from './services';
 import { contractAbi, treeToken } from './utils/constants';
 import BuyNft from './pages/BuyNft';
-import { useRepositoryStore, useServiceStore, useWalletStore } from './stores';
+import { useServiceStore, useWalletStore } from './stores';
 import { initDeps } from './init-dependency';
 
 declare global {
@@ -31,15 +31,9 @@ export function App() {
   const [loadAccount, setLoadAccount] = useState(false);
   const [isNftOwner, setIsNftOnwer] = useState(false);
   const { provider, signer, setProvider, setSigner } = useWalletStore();
-  const { addService } = useServiceStore();
-  const { addRepository } = useRepositoryStore();
-  const getNftService = useServiceStore((state) =>
-    state.services.get('GetNftsService')
-  ) as GetNftsService | undefined;
+  const { setService } = useServiceStore();
 
-  const connectToWalletService = new ConnectToWalletService();
-
-  const initBeans = useCallback(() => {
+  const initBeans = () => {
     if (!provider || !signer) {
       throw new Error('provider or signer not set');
     }
@@ -48,10 +42,10 @@ export function App() {
       contractAbi,
       provider.getSigner(0)
     );
-    initDeps(addService, addRepository, provider, signer, contract);
-  }, [provider, signer, addRepository, addService]);
+    initDeps(setService, provider, signer, contract);
+  };
 
-  const initializeEthers = useCallback(async () => {
+  const initializeEthers = async () => {
     if (!window.ethereum) {
       throw new Error('ether does not exist');
     }
@@ -60,16 +54,26 @@ export function App() {
     const localSigner = localProvider.getSigner();
     setProvider(localProvider);
     setSigner(localSigner);
-    initBeans();
-  }, [initBeans, setProvider, setSigner]);
+  };
+
+  const checkNft = async () => {
+    const getNftService = undefined;
+    if (!provider || !signer || !getNftService) {
+      console.log('cannot check nft service unavailable', getNftService);
+      return;
+    }
+    const numberOfNft = await getNftService.handle();
+    if (numberOfNft.length > 0) {
+      setIsNftOnwer(true);
+    }
+  };
 
   useEffect(() => {
     const initConnection = async (): Promise<void> => {
       try {
         setLoadAccount(true);
-        if (!connectToWalletService) {
-          throw new Error('connect to wallet failed');
-        }
+
+        const connectToWalletService = new ConnectToWalletService();
         const result = await connectToWalletService.connect();
         connectToWalletService.listenAccountChanged(() => {
           window.location.reload();
@@ -77,6 +81,8 @@ export function App() {
 
         if (result === ConnectToWalletResponse.OK) {
           await initializeEthers();
+          initBeans();
+          await checkNft();
         }
 
         setLoadAccount(false);
@@ -87,21 +93,10 @@ export function App() {
         }
       }
     };
-    initConnection();
-  }, [initializeEthers]);
-
-  useEffect(() => {
-    const checkNft = async () => {
-      if (!provider || !signer || !getNftService) {
-        return;
-      }
-      const numberOfNft = await getNftService.handle();
-      if (numberOfNft.length > 0) {
-        setIsNftOnwer(true);
-      }
-    };
-    checkNft();
-  }, [provider, signer, getNftService]);
+    if (!provider || !signer) {
+      initConnection();
+    }
+  }, [provider, signer]);
 
   return (
     <Routes>

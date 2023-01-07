@@ -17,8 +17,7 @@ import {
 } from './services';
 
 export function initDeps(
-  addService: (name: string, service: object) => void,
-  addRepository: (repository: object) => void,
+  setService: (services: Map<string, object>) => void,
   provider: ethers.providers.Web3Provider,
   signer: ethers.Signer,
   contract: ethers.ethers.Contract
@@ -30,21 +29,29 @@ export function initDeps(
     contract
   );
   const seedRepository = new MetamaskSeedRepository(provider, signer, contract);
-  addRepository(nftRepository);
-  addRepository(seedRepository);
-  addRepository(moneyRepository);
-  addService('BuyFirstNftService', new BuyFirstNftService(nftRepository));
-  addService('BuySeedService', new BuySeedService(seedRepository));
-  addService('BuySeedService', new BuySeedService(seedRepository));
-  addService('GetMoneyCountService', new GetMoneyCountService(moneyRepository));
-  addService('GetNftMetadataService', new GetNftMetadataService(nftRepository));
-  addService('GetNumberOfNftService', new GetNumberOfNftService(nftRepository));
-  addService(
+  const services: Map<string, object> = new Map();
+  services.set('BuyFirstNftService', new BuyFirstNftService(nftRepository));
+  services.set('BuySeedService', new BuySeedService(seedRepository));
+  services.set('BuySeedService', new BuySeedService(seedRepository));
+  services.set(
+    'GetMoneyCountService',
+    new GetMoneyCountService(moneyRepository)
+  );
+  services.set(
+    'GetNftMetadataService',
+    new GetNftMetadataService(nftRepository)
+  );
+  services.set(
+    'GetNumberOfNftService',
+    new GetNumberOfNftService(nftRepository)
+  );
+  services.set(
     'ImproveTrunkNftService',
     new ImproveTrunkNftService(nftRepository)
   );
-  addService('GetSeedPriceService', new GetSeedPriceService(seedRepository));
-  addService('GetNftsService', new GetNftsService(nftRepository));
-  addService('GetFreeSeedService', new GetFreeSeedService(seedRepository));
+  services.set('GetSeedPriceService', new GetSeedPriceService(seedRepository));
+  services.set('GetNftsService', new GetNftsService(nftRepository));
+  services.set('GetFreeSeedService', new GetFreeSeedService(seedRepository));
+  setService(services);
   console.log('init finish');
 }
