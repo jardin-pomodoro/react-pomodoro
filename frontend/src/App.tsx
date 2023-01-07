@@ -27,7 +27,13 @@ export function App() {
   const [{ wallet, connecting }, connect] = useConnectWallet();
   const [, setWeb3Onboard] = useState<OnboardAPI | null>(null);
   const nftStore = useNftStore();
-  const { hasNfts, setHasNfts, setErrorMessage } = useAppStore();
+  const { hasNfts, setHasNfts, setErrorMessage } = useAppStore((state) => {
+    return {
+      hasNfts: state.hasNfts,
+      setHasNfts: state.setHasNfts,
+      setErrorMessage: state.setErrorMessage,
+    };
+  });
   const { setWallet } = useWalletStore();
 
   const initBeans = useCallback(() => {
