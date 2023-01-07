@@ -1,13 +1,27 @@
-import { useEffect, useState } from 'react';
+import { Button } from '@mantine/core';
+import { useCallback, useEffect, useState } from 'react';
 import { HeaderMenu } from '../components/common/header';
+import { useWalletStore } from '../stores';
 
-function Home({ provider, signer }: any) {
+function Home() {
   const [account, setAccount] = useState<string | undefined>(undefined);
+  const { provider, signer } = useWalletStore();
+  /* const PlanTreeService = useServiceStore((state) =>
+    state.services.get('PlantTreeService')
+  ) as PlantTreeService; */
+  const saveAccount = useCallback(async () => {
+    const address = await signer?.getAddress();
+    setAccount(address);
+  }, [signer]);
+
   useEffect(() => {
-    signer?.getAddress().then((address: string) => {
-      setAccount(address);
-    });
-  }, [provider, signer]);
+    saveAccount();
+  }, [provider, signer, saveAccount]);
+
+  const plantTree = () => {
+    // todo faire un truc avec
+  };
+
   return (
     <>
       <HeaderMenu
@@ -19,6 +33,7 @@ function Home({ provider, signer }: any) {
         account={account || ''}
       />
       <h1>Hello World !</h1>
+      <Button onClick={plantTree}>plant a tree</Button>
     </>
   );
 

@@ -11,7 +11,7 @@ interface LoadingMatamaskAccountProps {
   message: string;
 }
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   container: {
     width: '100%',
     height: '50vh',

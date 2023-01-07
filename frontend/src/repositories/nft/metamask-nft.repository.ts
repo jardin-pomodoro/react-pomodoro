@@ -70,7 +70,18 @@ export class MetamaskNftRepository implements NftRepository {
   }
 
   async buyNft(): Promise<void> {
-    const result = await this.contract.connect(this.signer).mintRandomTree();
+    const contract = this.contract.connect(this.signer);
+    const result = await contract.mintRandomTree({
+      value: ethers.utils.parseEther('0.1'),
+    });
+    // eslint-disable-next-line no-console
+    console.log(result);
+  }
+
+  async plantTree(parentTree: number): Promise<void> {
+    const contract = this.contract.connect(this.signer);
+    const result = await contract.plantTree(parentTree);
+    // eslint-disable-next-line no-console
     console.log(result);
   }
 }

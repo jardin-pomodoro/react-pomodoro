@@ -2,6 +2,8 @@ pragma solidity ^0.8.0;
 
 
 contract ForestSeeds {
+    event SeedRefreshed(address indexed to, uint256 _tokenId, uint256 _seedCount);
+
     struct ForestSeed {
         uint256 seeds;
         uint256 boughtSeeds;
@@ -9,6 +11,10 @@ contract ForestSeeds {
     }
 
     mapping(uint256 => ForestSeed) private userSeeds;
+
+    function register(uint256 _tokenId) internal {
+        userSeeds[_tokenId] = ForestSeed(4, 0, block.timestamp);
+    }
 
     function consumeSeed(uint256 _tokenId) internal {
         if (userSeeds[_tokenId].seeds > 0) {
@@ -19,10 +25,11 @@ contract ForestSeeds {
         }
     }
 
-    function updateSeeds(uint256 _tokenId) internal {
+    function updateSeeds(uint256 _tokenId) public {
         if (userSeeds[_tokenId].lastUpdate / 86400 < block.timestamp / 86400) {
             userSeeds[_tokenId].seeds = 4;
             userSeeds[_tokenId].lastUpdate = block.timestamp;
+            emit SeedRefreshed(msg.sender, _tokenId, getSeeds(_tokenId));
         }
     }
 
@@ -34,7 +41,7 @@ contract ForestSeeds {
         return 2 * (userSeeds[_tokenId].boughtSeeds + 1);
     }
 
-    function addSeed(uint256 _tokenId, uint256 amount) internal {
+    function addSeeds(uint256 _tokenId, uint256 amount) internal {
         userSeeds[_tokenId].boughtSeeds += amount;
     }
 }

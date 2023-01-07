@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react/no-unescaped-entities */
 import {
   Container,
   Text,
@@ -9,19 +11,18 @@ import {
   Badge,
   Paper,
   Group,
-  Modal,
-  Radio,
   CloseButton,
 } from '@mantine/core';
 import { useState, useEffect } from 'react';
-import { BuyFirstNftService } from '../services/buy-first-nft.service';
 import { ethers } from 'ethers';
+import { BuyFirstNftService } from '../services/buy-first-nft.service';
 import { contractAbi, treeToken } from '../utils/constants';
 import { MetamaskNftRepository } from '../repositories/nft/metamask-nft.repository';
 import { GetNftsService } from '../services/get-nfts.service';
 import { Nft } from '../core/nft';
+import { useServiceStore, useWalletStore } from '../stores';
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   center_button: {
     display: 'flex',
     flexDirection: 'column',
@@ -57,25 +58,21 @@ export const BuyFirstNft = async ({ provider, signer, nfts }: any) => {
   await buyFirstNftService.handle(nfts);
 };
 
-export default function BuyNft({ provider, signer }: any) {
+export default function BuyNft() {
+  const { provider, signer } = useWalletStore();
   const { classes } = useStyles();
   const [transactionSuccess, setTransactionSuccess] = useState(false);
   const [nfts, setNfts] = useState<Nft[]>([]);
+  const getNftsService = useServiceStore((state) =>
+    state.services.get('GetNftsService')
+  ) as GetNftsService;
 
   useEffect(() => {
-    const getNftsService = new GetNftsService(
-      new MetamaskNftRepository(
-        provider,
-        signer,
-        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
-      )
-    );
-
     const getNfts = async () => {
       setNfts(await getNftsService.handle());
     };
     getNfts();
-  }, [provider, signer]);
+  }, [provider, signer, getNftsService]);
 
   return (
     <Container mt="lg">
@@ -113,7 +110,7 @@ export default function BuyNft({ provider, signer }: any) {
             20% de réduction
           </Badge>
         </Group>
-        <Text size="l">
+        <Text size="lg">
           Plus que 4 jours pour profiter de cette réduction exceptionnel
         </Text>
         <Text td="line-through">0.8 Matic</Text>
