@@ -49,49 +49,53 @@ export function App() {
   const { addRepository } = useRepositoryStore();
   const connectedWallets = useWallets();
   const [{ wallet, connecting }, connect] = useConnectWallet();
+  const [servicesLoad, setServicesLoad] = useState<boolean>(false);
   const [web3Onboard, setWeb3Onboard] = useState<any>(null);
 
   const initBeans = useCallback(() => {
+    console.log('call initBeans');
+    console.log(wallet);
     if (!wallet) {
       return;
     }
     console.log('start initBeans');
-    // const nftRepository = new MetamaskNftRepository(wallet);
-    // const moneyRepository = new MetamaskMoneyRepository(wallet);
-    // const seedRepository = new MetamaskSeedRepository(wallet);
-    // addRepository(nftRepository);
-    // addRepository(seedRepository);
-    // addRepository(moneyRepository);
-    // addService('BuyFirstNftService', new BuyFirstNftService(nftRepository));
-    // addService('BuySeedService', new BuySeedService(seedRepository));
-    // addService(
-    //   'GetMoneyCountService',
-    //   new GetMoneyCountService(moneyRepository)
-    // );
-    // addService(
-    //   'GetNftMetadataService',
-    //   new GetNftMetadataService(nftRepository)
-    // );
-    // addService(
-    //   'GetNumberOfNftService',
-    //   new GetNumberOfNftService(nftRepository)
-    // );
-    // addService(
-    //   'ImproveTrunkNftService',
-    //   new ImproveTrunkNftService(nftRepository)
-    // );
-    // addService('GetSeedPriceService', new GetSeedPriceService(seedRepository));
-    // addService('GetNftsService', new GetNftsService(nftRepository));
-    // addService('GetFreeSeedService', new GetFreeSeedService(seedRepository));
-    // addService('ConnectToWalletService', new ConnectToWalletService());
+    const nftRepository = new MetamaskNftRepository(wallet);
+    const moneyRepository = new MetamaskMoneyRepository(wallet);
+    const seedRepository = new MetamaskSeedRepository(wallet);
+    addRepository(nftRepository);
+    addRepository(seedRepository);
+    addRepository(moneyRepository);
+    addService('BuyFirstNftService', new BuyFirstNftService(nftRepository));
+    addService('BuySeedService', new BuySeedService(seedRepository));
+    addService(
+      'GetMoneyCountService',
+      new GetMoneyCountService(moneyRepository)
+    );
+    addService(
+      'GetNftMetadataService',
+      new GetNftMetadataService(nftRepository)
+    );
+    addService(
+      'GetNumberOfNftService',
+      new GetNumberOfNftService(nftRepository)
+    );
+    addService(
+      'ImproveTrunkNftService',
+      new ImproveTrunkNftService(nftRepository)
+    );
+    addService('GetSeedPriceService', new GetSeedPriceService(seedRepository));
+    addService('GetNftsService', new GetNftsService(nftRepository));
+    addService('GetFreeSeedService', new GetFreeSeedService(seedRepository));
+    addService('ConnectToWalletService', new ConnectToWalletService());
     InitSingletonServiceStore(wallet);
+    setServicesLoad(true);
     console.log('end initBeans');
     console.log(wallet);
-  }, [wallet]);
+  }, [wallet, addRepository, addService]);
 
   useEffect(() => {
-    setWeb3Onboard(initWeb3Onboard);
     initBeans();
+    setWeb3Onboard(initWeb3Onboard);
   }, [initBeans]);
 
   useEffect(() => {
@@ -139,6 +143,7 @@ export function App() {
         }
       }
     };
+    checkNft();
   }, [connectedWallets, wallet]);
 
   useEffect(() => {
@@ -161,7 +166,7 @@ export function App() {
   return (
     <Routes>
       {!connecting && !wallet && <Route path="*" element={<ConnectWallet />} />}
-      {isNftOwner && wallet && (
+      {isNftOwner && wallet && servicesLoad && (
         <>
           <Route path="/buy" element={<BuySeed />} />
           <Route path="/gallery" element={<Gallery />} />
@@ -169,7 +174,9 @@ export function App() {
           <Route path="*" element={<NotFound />} />
         </>
       )}
-      {!isNftOwner && wallet && <Route path="*" element={<BuyNft />} />}
+      {!isNftOwner && wallet && servicesLoad && (
+        <Route path="*" element={<BuyNft />} />
+      )}
       {connecting && (
         <Route
           path="*"

@@ -10,9 +10,9 @@ export default class MetamaskSeedRepository implements SeedRepository {
   constructor(private wallet: WalletState) {}
 
   async getSeedFree(): Promise<SeedFree> {
-    const seedFree = await SmartContractService.loadContract(this.wallet)
-      .connect(this.wallet.accounts[0].address)
-      .getSeedFree();
+    const seedFree = await SmartContractService.loadContract(
+      this.wallet
+    ).getSeedFree();
     return {
       numberSeed: Number(ethers.BigNumber.from(seedFree).toNumber()),
     };
@@ -26,9 +26,9 @@ export default class MetamaskSeedRepository implements SeedRepository {
   }
 
   async getPrice(): Promise<number> {
-    const value = await SmartContractService.loadContract(this.wallet)
-      .connect(this.wallet.accounts[0].address)
-      .getSeedCost(this.wallet.accounts[0].address);
+    const value = await SmartContractService.loadContract(
+      this.wallet
+    ).getSeedCost(this.wallet.accounts[0].address);
 
     return Number(ethers.BigNumber.from(value).toNumber());
   }

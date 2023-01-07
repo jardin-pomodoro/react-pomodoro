@@ -20,6 +20,7 @@ import type { GetNftsService } from '../services/get-nfts.service';
 import { Nft } from '../core/nft';
 import { useConnectWallet } from '@web3-onboard/react';
 import { useServiceStore, useWalletStore } from '../stores';
+import { MapServices } from '../stores/singletonServiceStore';
 
 const useStyles = createStyles(() => ({
   center_button: {
@@ -51,30 +52,23 @@ export default function BuyNft() {
   const [transactionSuccess, setTransactionSuccess] = useState(false);
   const [nfts, setNfts] = useState<Nft[]>([]);
   const [{ wallet }] = useConnectWallet();
-  const getNftsService = useServiceStore((state) =>
-    state.services.get('GetNftsService')
+  const getNftsService = MapServices.getInstance().getService(
+    'GetNftsService'
   ) as GetNftsService;
-  const buyFirstNftService = useServiceStore((state) =>
-    state.services.get('GetNftsService')
-  ) as GetNftsService;
+  const buyFirstNftService = MapServices.getInstance().getService(
+    'BuyFirstNftService'
+  ) as BuyFirstNftService;
 
   const BuyFirstNft = async () => {
     if (wallet === null) return;
-    // const buyFirstNftService = new BuyFirstNftService(
-    //   new MetamaskNftRepository(wallet)
-    // );
     await buyFirstNftService.handle(nfts);
   };
 
   useEffect(() => {
     const getNfts = async () => {
-      console.log('getNfts');
-      console.log(getNftsService);
-      console.log('getNfts fin');
       const result = await getNftsService.handle();
       setNfts(result);
     };
-    console.log('devant le getnfts');
     getNfts();
   }, [wallet, getNftsService]);
 

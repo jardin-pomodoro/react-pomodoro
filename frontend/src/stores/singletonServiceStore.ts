@@ -31,7 +31,8 @@ export class MapServices {
   }
 
   getService(name: string) {
-    if (!this.services.has(name)) throw new Error('Service not found');
+    //console.log(this.services);
+    if (!this.services.has(name)) throw new Error(`Service ${name} not found`);
     return this.services.get(name);
   }
 }
