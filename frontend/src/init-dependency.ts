@@ -11,7 +11,6 @@ import {
   GetSeedPriceService,
   GetNftMetadataService,
   GetFreeSeedService,
-  ConnectToWalletService,
   ImproveTrunkNftService,
   GetNumberOfNftService,
   GetMoneyCountService,
@@ -47,6 +46,5 @@ export function initDeps(
   addService('GetSeedPriceService', new GetSeedPriceService(seedRepository));
   addService('GetNftsService', new GetNftsService(nftRepository));
   addService('GetFreeSeedService', new GetFreeSeedService(seedRepository));
-  addService('ConnectToWalletService', new ConnectToWalletService());
   console.log('init finish');
 }

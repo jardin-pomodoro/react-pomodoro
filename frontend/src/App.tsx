@@ -37,9 +37,7 @@ export function App() {
     state.services.get('GetNftsService')
   ) as GetNftsService | undefined;
 
-  const connectToWalletService = useServiceStore((state) =>
-    state.services.get('ConnectToWalletService')
-  ) as ConnectToWalletService;
+  const connectToWalletService = new ConnectToWalletService();
 
   const initBeans = useCallback(() => {
     if (!provider || !signer) {
