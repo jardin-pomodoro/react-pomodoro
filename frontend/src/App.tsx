@@ -1,3 +1,4 @@
+/* eslint-disable no-inner-declarations */
 /* eslint-disable no-console */
 import { MantineProvider } from '@mantine/core';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -68,7 +69,6 @@ export function App() {
       const [magicWalletProvider] = connectedWallets.filter(
         (providerWallet) => providerWallet.label === 'Magic Wallet'
       );
-      // eslint-disable-next-line no-inner-declarations
       async function setMagicUser() {
         // eslint-disable-next-line no-useless-catch
         try {
@@ -95,7 +95,6 @@ export function App() {
     );
 
     if (previouslyConnectedWallets?.length) {
-      // eslint-disable-next-line no-inner-declarations
       async function setWalletFromLocalStorage() {
         const walletConnected = await connect({
           autoSelect: previouslyConnectedWallets[0],
