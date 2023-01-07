@@ -27,14 +27,12 @@ export function App() {
   const connectedWallets = useWallets();
   const [{ wallet, connecting }, connect] = useConnectWallet();
   const [, setWeb3Onboard] = useState<OnboardAPI | null>(null);
-  const nftStore = useNftStore();
-  const { hasNfts, setHasNfts, setErrorMessage } = useAppStore((state) => {
-    return {
-      hasNfts: state.hasNfts,
-      setHasNfts: state.setHasNfts,
-      setErrorMessage: state.setErrorMessage,
-    };
-  });
+  const retrieveNfts = useNftStore((store) => store.retrieveNfts);
+  const { hasNfts, setHasNfts, setErrorMessage } = useAppStore((state) => ({
+    hasNfts: state.hasNfts,
+    setHasNfts: state.setHasNfts,
+    setErrorMessage: state.setErrorMessage,
+  }));
   const { setWallet } = useWalletStore();
 
   const initBeans = useCallback(() => {
@@ -107,12 +105,12 @@ export function App() {
 
   useEffect(() => {
     if (!wallet) return;
-    nftStore.retieveNfts().then((isOwner) => {
+    retrieveNfts().then((isOwner) => {
       if (isOwner) {
         setHasNfts(true);
       }
     });
-  }, [connectedWallets, wallet, nftStore]);
+  }, [connectedWallets, wallet, retrieveNfts, setHasNfts]);
 
   if (!connecting && !wallet) {
     return <ConnectWallet />;
