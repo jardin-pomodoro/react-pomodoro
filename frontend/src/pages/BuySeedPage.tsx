@@ -33,7 +33,7 @@ function BuySeedPage() {
     if (provider && signer) {
       getMoneyCount();
     }
-  }, [provider, signer, getMoneyCountService]);
+  }, [provider, signer]);
   return (
     <>
       <HeaderMenu

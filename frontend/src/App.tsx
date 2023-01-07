@@ -14,23 +14,11 @@ import {
   ConnectToWalletResponse,
   ConnectToWalletService,
   GetNftsService,
-  BuyFirstNftService,
-  BuySeedService,
-  GetFreeSeedService,
-  GetMoneyCountService,
-  GetNftMetadataService,
-  GetNumberOfNftService,
-  GetSeedPriceService,
-  ImproveTrunkNftService,
 } from './services';
 import { contractAbi, treeToken } from './utils/constants';
 import BuyNft from './pages/BuyNft';
 import { useRepositoryStore, useServiceStore, useWalletStore } from './stores';
-import {
-  MetamaskMoneyRepository,
-  MetamaskNftRepository,
-  MetamaskSeedRepository,
-} from './repositories';
+import { initDeps } from './init-dependency';
 
 declare global {
   interface Window {
@@ -45,6 +33,13 @@ export function App() {
   const { provider, signer, setProvider, setSigner } = useWalletStore();
   const { addService } = useServiceStore();
   const { addRepository } = useRepositoryStore();
+  const getNftService = useServiceStore((state) =>
+    state.services.get('GetNftsService')
+  ) as GetNftsService | undefined;
+
+  const connectToWalletService = useServiceStore((state) =>
+    state.services.get('ConnectToWalletService')
+  ) as ConnectToWalletService;
 
   const initBeans = useCallback(() => {
     if (!provider || !signer) {
@@ -55,48 +50,8 @@ export function App() {
       contractAbi,
       provider.getSigner(0)
     );
-    const nftRepository = new MetamaskNftRepository(provider, signer, contract);
-    const moneyRepository = new MetamaskMoneyRepository(
-      provider,
-      signer,
-      contract
-    );
-    const seedRepository = new MetamaskSeedRepository(
-      provider,
-      signer,
-      contract
-    );
-    addRepository(nftRepository);
-    addRepository(seedRepository);
-    addRepository(moneyRepository);
-    addService('BuyFirstNftService', new BuyFirstNftService(nftRepository));
-    addService('BuySeedService', new BuySeedService(seedRepository));
-    addService('BuySeedService', new BuySeedService(seedRepository));
-    addService(
-      'GetMoneyCountService',
-      new GetMoneyCountService(moneyRepository)
-    );
-    addService(
-      'GetNftMetadataService',
-      new GetNftMetadataService(nftRepository)
-    );
-    addService(
-      'GetNumberOfNftService',
-      new GetNumberOfNftService(nftRepository)
-    );
-    addService(
-      'ImproveTrunkNftService',
-      new ImproveTrunkNftService(nftRepository)
-    );
-    addService(
-      'ImproveTrunkNftService',
-      new ImproveTrunkNftService(nftRepository)
-    );
-    addService('GetSeedPriceService', new GetSeedPriceService(seedRepository));
-    addService('GetNftsService', new GetNftsService(nftRepository));
-    addService('GetFreeSeedService', new GetFreeSeedService(seedRepository));
-    addService('ConnectToWalletService', new ConnectToWalletService());
-  }, [addRepository, addService, signer, provider]);
+    initDeps(addService, addRepository, provider, signer, contract);
+  }, [provider, signer, addRepository, addService]);
 
   const initializeEthers = useCallback(async () => {
     if (!window.ethereum) {
@@ -112,11 +67,13 @@ export function App() {
 
   useEffect(() => {
     const initConnection = async (): Promise<void> => {
-      const connectToWalletservice = new ConnectToWalletService();
       try {
         setLoadAccount(true);
-        const result = await connectToWalletservice.connect();
-        connectToWalletservice.listenAccountChanged(() => {
+        if (!connectToWalletService) {
+          throw new Error('connect to wallet failed');
+        }
+        const result = await connectToWalletService.connect();
+        connectToWalletService.listenAccountChanged(() => {
           window.location.reload();
         });
 
@@ -137,26 +94,16 @@ export function App() {
 
   useEffect(() => {
     const checkNft = async () => {
-      if (provider && signer) {
-        const getNftService = new GetNftsService(
-          new MetamaskNftRepository(
-            provider,
-            signer,
-            new ethers.Contract(
-              treeToken.Token,
-              contractAbi,
-              provider.getSigner(0)
-            )
-          )
-        );
-        const numberOfNft = await getNftService.handle();
-        if (numberOfNft.length > 0) {
-          setIsNftOnwer(true);
-        }
+      if (!provider || !signer || !getNftService) {
+        return;
+      }
+      const numberOfNft = await getNftService.handle();
+      if (numberOfNft.length > 0) {
+        setIsNftOnwer(true);
       }
     };
     checkNft();
-  }, [provider, signer]);
+  }, [provider, signer, getNftService]);
 
   return (
     <Routes>

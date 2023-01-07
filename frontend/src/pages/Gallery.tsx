@@ -33,7 +33,7 @@ function Gallery() {
     if (provider && signer) {
       getMoneyCount();
     }
-  }, [provider, signer, getMoneyCountService]);
+  }, [provider, signer]);
 
   return (
     <>
