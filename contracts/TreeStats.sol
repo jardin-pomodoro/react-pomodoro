@@ -1,4 +1,4 @@
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.17;
 
 contract TreeStats {
     event TreeUpgraded(address indexed to, uint256 indexed _tokenId, TreeUpgrade stats);
@@ -15,7 +15,7 @@ contract TreeStats {
         return (rarity / 6) + 1;
     }
 
-    function addTreeStats(uint256 _tokenId, uint treeRarity) internal {
+    function registerStats(uint256 _tokenId, uint treeRarity) internal {
         treeStats[_tokenId] = TreeUpgrade(generateMaxUpgrades(treeRarity), 0, 0);
     }
 
@@ -32,7 +32,7 @@ contract TreeStats {
     }
 
     function getTrunkUpgradeCost(uint256 _tokenId, uint trunkBaseStats) public view returns (uint) {
-        return ((trunkBaseStats + treeStats[_tokenId].trunkUpgrade + 1) / treeStats[_tokenId].maxUpgrades)**2;
+        return ((trunkBaseStats + treeStats[_tokenId].trunkUpgrade + 1) / treeStats[_tokenId].maxUpgrades) ** 2;
     }
 
     function upgradeTrunk(uint256 _tokenId) internal {
