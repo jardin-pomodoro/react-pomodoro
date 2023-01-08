@@ -1,4 +1,4 @@
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.17;
 
 
 contract BreedTree {
@@ -43,5 +43,9 @@ contract BreedTree {
 
     function treeBreedCost(uint treeRarity1, uint treeRarity2) public pure returns (uint) {
         return (treeRarity1 + treeRarity2) / 2;
+    }
+
+    function breedCount(uint _tokenId) public view returns (uint8) {
+        return treeBreeds[_tokenId];
     }
 }

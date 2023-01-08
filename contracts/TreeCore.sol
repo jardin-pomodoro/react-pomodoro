@@ -67,7 +67,7 @@ contract TreeCore is TreeToken, BreedTree, Forest, TreeStats, ForestSeeds {
         require(balanceOf(msg.sender, _tokenId) == 1, "Not the owner of the tree");
         canUpgradeLeaves(_tokenId);
         uint seed = getSeed(_tokenId);
-        uint cost = getLeavesUpgradeCost(_tokenId,getSeedLeavesStats(seed));
+        uint cost = getLeavesUpgradeCost(_tokenId, getSeedLeavesStats(seed));
         require(balanceOf(msg.sender, TREE_TOKEN) >= cost, "Not enough tokens to upgrade");
         _burn(msg.sender, TREE_TOKEN, cost);
         upgradeLeaves(_tokenId);
