@@ -14,7 +14,7 @@ export class InMemoryNftRepository implements NftRepository {
     { id: '3993103103' },
   ];
 
-  plantTree(parentTree: number): Promise<void> {
+  async plantTree(parentTree: number): Promise<void> {
     return Promise.resolve(undefined); // TODO
   }
 

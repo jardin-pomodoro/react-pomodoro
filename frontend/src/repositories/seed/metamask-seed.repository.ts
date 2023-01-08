@@ -31,4 +31,11 @@ export class MetamaskSeedRepository implements SeedRepository {
 
     return Number(ethers.BigNumber.from(value).toNumber());
   }
+
+  async getSeed(tokenId: number): Promise<number> {
+    const value = await SmartContractService.loadContract(this.wallet).getSeed(
+      tokenId
+    );
+    return Number(ethers.BigNumber.from(value).toNumber());
+  }
 }

@@ -3,6 +3,7 @@ import { WalletState } from '@web3-onboard/core';
 import { Nft } from '../../core/nft';
 import { NftRepository } from '../../core/nft.repository';
 import { SmartContractService } from '../../services/smart-contract.service';
+import { NftUpgradeStats } from '../../core/nft-upgrade-stats';
 
 interface NftMetadata {
   name: string;
@@ -92,5 +93,38 @@ export class MetamaskNftRepository implements NftRepository {
     const result = await contract.plantTree(parentTree);
     // eslint-disable-next-line no-console
     console.log(result);
+  }
+
+  async getLeavesUpgradePrice(nft: Nft, baseStat: number): Promise<number> {
+    const result = await SmartContractService.loadContract(
+      this.wallet
+    ).getLeavesUpgradeCost(nft.id, baseStat);
+    return ethers.BigNumber.from(result).toNumber();
+  }
+
+  async getTrunkUpgradePrice(nft: Nft, baseStat: number): Promise<number> {
+    const result = await SmartContractService.loadContract(
+      this.wallet
+    ).getTrunkUpgradeCost(nft.id, baseStat);
+    return ethers.BigNumber.from(result).toNumber();
+  }
+
+  async getUpgradeStats(nft: Nft): Promise<NftUpgradeStats> {
+    const result = await SmartContractService.loadContract(
+      this.wallet
+    ).getTreeStats(nft.id);
+
+    return {
+      maxUpgrade: ethers.BigNumber.from(result.maxUpgrades).toNumber(),
+      leavesUpgrade: ethers.BigNumber.from(result.leavesUpgrade).toNumber(),
+      trunkUpgrade: ethers.BigNumber.from(result.trunkUpgrade).toNumber(),
+    };
+  }
+
+  async getBreedCount(nft: Nft): Promise<number> {
+    const result = await SmartContractService.loadContract(
+      this.wallet
+    ).breedCount(nft.id);
+    return ethers.BigNumber.from(result).toNumber();
   }
 }

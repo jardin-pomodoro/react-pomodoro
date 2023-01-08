@@ -22,6 +22,9 @@ import { MetamaskNftRepository } from '../../repositories/nft/metamask-nft.repos
 import { contractAbi, treeToken } from '../../utils/constants';
 import { GetNftMetadataService } from '../../services/get-nft-metadata.service';
 import { useConnectWallet } from '@web3-onboard/react';
+import { GetNftDetailsService } from '../../services/get-nft-details.service';
+import { GetSeedService } from '../../services/get-seed.service';
+import { MetamaskSeedRepository } from '../../repositories/seed/metamask-seed.repository';
 
 interface BannerProps {
   backgroundColor: string;
@@ -131,7 +134,7 @@ const loadFeatureCardProps = async (
 };
 
 export function MyGallery() {
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
   const initialNfts: Nft[] = [];
   const initialFeatureCardProps: FeaturesCardUI[] = [];
@@ -260,6 +263,13 @@ export function MyGallery() {
     const getNftsService = new GetNftsService(
       new MetamaskNftRepository(wallet)
     );
+    const getSeedService = new GetSeedService(
+      new MetamaskSeedRepository(wallet)
+    );
+    const getNftDetails = new GetNftDetailsService(
+      new MetamaskNftRepository(wallet),
+      getSeedService
+    );
     const getNfts = async () => {
       const nfts = await getNftsService.handle();
       const nftsUi = await Promise.all(
@@ -273,6 +283,7 @@ export function MyGallery() {
             title: nft.id,
             imageMetadata: nftMetadata,
           };
+          console.log(await getNftDetails.handle(Number(nft.id)));
           return nftE;
         })
       );
@@ -330,6 +341,7 @@ export function MyGallery() {
                 <FeaturesCard
                   improveButtonShow={nft.improveButtonShow}
                   backgroundColor={nft.backgroundColor}
+                  imageUrl={nft.imageMetadata}
                   textColor={nft.textColor}
                   title={nft.title}
                   textButtonMerge={nft.textButtonMerge}

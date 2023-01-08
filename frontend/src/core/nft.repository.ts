@@ -1,4 +1,5 @@
 import { Nft } from './nft';
+import { NftUpgradeStats } from './nft-upgrade-stats';
 
 // eslint-disable-next-line import/prefer-default-export
 export abstract class NftRepository {
@@ -10,4 +11,8 @@ export abstract class NftRepository {
   abstract getMetadata(nft: Nft): Promise<string>;
   abstract buyNft(): Promise<void>;
   abstract plantTree(parentTree: string): Promise<void>;
+  abstract getLeavesUpgradePrice(nft: Nft, baseStat: number): Promise<number>;
+  abstract getTrunkUpgradePrice(nft: Nft, baseStat: number): Promise<number>;
+  abstract getUpgradeStats(nft: Nft): Promise<NftUpgradeStats>;
+  abstract getBreedCount(nft: Nft): Promise<number>;
 }
