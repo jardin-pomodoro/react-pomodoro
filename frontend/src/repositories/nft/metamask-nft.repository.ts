@@ -15,15 +15,15 @@ export class MetamaskNftRepository implements NftRepository {
   constructor(private wallet: WalletState) {}
 
   async improveLeaves(nft: Nft): Promise<void> {
-    await SmartContractService.loadContract(this.wallet)
-      .connect(this.wallet.accounts[0].address)
-      .upgradeTreeLeaves(nft.id);
+    await SmartContractService.loadContract(this.wallet).upgradeTreeLeaves(
+      nft.id
+    );
   }
 
   async improveTrunk(nft: Nft): Promise<void> {
-    await SmartContractService.loadContract(this.wallet)
-      .connect(this.wallet.accounts[0].address)
-      .upgradeTreeTrunk(nft.id);
+    await SmartContractService.loadContract(this.wallet).upgradeTreeTrunk(
+      nft.id
+    );
   }
 
   async getMetadata(nft: Nft): Promise<string> {
@@ -40,9 +40,10 @@ export class MetamaskNftRepository implements NftRepository {
   }
 
   async merge(nfts1: string, nfts2: string): Promise<void> {
-    await SmartContractService.loadContract(this.wallet)
-      .connect(this.wallet.accounts[0].address)
-      .breedTree(nfts1, nfts2);
+    await SmartContractService.loadContract(this.wallet).breedTree(
+      nfts1,
+      nfts2
+    );
   }
 
   async getAll(): Promise<Nft[]> {
