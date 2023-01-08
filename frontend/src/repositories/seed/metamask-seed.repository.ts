@@ -1,12 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ethers } from 'ethers';
 import { WalletState } from '@web3-onboard/core';
-import { SeedFree } from '../../core/seed-free';
+import { Seed, SeedFree } from '../../core/seed-free';
 import { SeedRepository } from '../../core/seed.repository';
 import { SmartContractService } from '../../services/smart-contract.service';
 
 export class MetamaskSeedRepository implements SeedRepository {
   constructor(private wallet: WalletState) {}
+
+  getAllSeed(): Promise<Seed[]> {
+    throw new Error('Method not implemented.');
+  }
 
   async getSeedFree(): Promise<SeedFree> {
     const seedFree = await SmartContractService.loadContract(
