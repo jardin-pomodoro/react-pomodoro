@@ -77,7 +77,7 @@ describe('TreeStats contract', () => {
                 .mintRandomTree({value: ethers.utils.parseEther("0.1")});
 
             await expect(contract.connect(owner).upgradeTreeTrunk(1))
-                .to.reverted;
+                .to.revertedWith("Not enough tokens to upgrade");
         });
         it('Should not upgrade the leaves when not enough tokens', async () => {
             const {contract, owner} = await deployTokenFixture();
@@ -85,25 +85,23 @@ describe('TreeStats contract', () => {
                 .mintRandomTree({value: ethers.utils.parseEther("0.1")});
 
             await expect(contract.connect(owner).upgradeTreeLeaves(1))
-                .to.reverted;
+                .to.revertedWith("Not enough tokens to upgrade");
         });
         it('Should not upgrade the trunk when not owner', async () => {
             const {contract, owner, addr1} = await deployTokenFixture();
             await contract.connect(owner)
                 .mintRandomTree({value: ethers.utils.parseEther("0.1")});
-            await contract.connect(owner).addTokens(200);
 
             await expect(contract.connect(addr1).upgradeTreeTrunk(1))
-                .to.reverted;
+                .to.revertedWith("Not the owner of the tree");
         });
         it('Should not upgrade the leaves when not owner', async () => {
             const {contract, owner, addr1} = await deployTokenFixture();
             await contract.connect(owner)
                 .mintRandomTree({value: ethers.utils.parseEther("0.1")});
-            await contract.connect(owner).addTokens(200);
 
             await expect(contract.connect(addr1).upgradeTreeLeaves(1))
-                .to.reverted;
+                .to.revertedWith("Not the owner of the tree");
         });
     });
 });

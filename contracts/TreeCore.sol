@@ -1,4 +1,4 @@
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.17;
 
 import "./TreeToken.sol";
 import "./BreedTree.sol";
@@ -27,6 +27,7 @@ contract TreeCore is TreeToken, BreedTree, Forest, TreeStats, ForestSeeds {
         canTreeBreed(_tokenId1);
         canTreeBreed(_tokenId2);
         uint breedCost = treeBreedCost(getTreeRarity(getSeed(_tokenId1)), getTreeRarity(getSeed(_tokenId2)));
+        require(balanceOf(msg.sender, TREE_TOKEN) >= breedCost, "Not enough tokens to upgrade");
         _burn(msg.sender, TREE_TOKEN, breedCost);
         uint childSeed = breedTrees(_tokenId1, _tokenId2, getSeed(_tokenId1), getSeed(_tokenId2));
         createTree(childSeed);
@@ -57,6 +58,7 @@ contract TreeCore is TreeToken, BreedTree, Forest, TreeStats, ForestSeeds {
         canUpgradeTrunk(_tokenId);
         uint seed = getSeed(_tokenId);
         uint cost = getTrunkUpgradeCost(_tokenId, getSeedTrunkStats(seed));
+        require(balanceOf(msg.sender, TREE_TOKEN) >= cost, "Not enough tokens to upgrade");
         _burn(msg.sender, TREE_TOKEN, cost);
         upgradeTrunk(_tokenId);
     }
@@ -66,6 +68,7 @@ contract TreeCore is TreeToken, BreedTree, Forest, TreeStats, ForestSeeds {
         canUpgradeLeaves(_tokenId);
         uint seed = getSeed(_tokenId);
         uint cost = getLeavesUpgradeCost(_tokenId,getSeedLeavesStats(seed));
+        require(balanceOf(msg.sender, TREE_TOKEN) >= cost, "Not enough tokens to upgrade");
         _burn(msg.sender, TREE_TOKEN, cost);
         upgradeLeaves(_tokenId);
     }

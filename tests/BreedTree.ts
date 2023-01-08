@@ -28,7 +28,7 @@ describe('BreedTree contract', () => {
             .mintRandomTree({value: ethers.utils.parseEther("0.1")});
 
         await expect(contract.connect(owner).breedTree(1, 2))
-            .to.reverted;
+            .to.revertedWith("Not enough tokens to upgrade");
     });
     it('Should not breed a tree with itself', async () => {
         const {contract, owner} = await deployTokenFixture();
