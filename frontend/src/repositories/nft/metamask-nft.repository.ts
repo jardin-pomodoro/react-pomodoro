@@ -31,14 +31,12 @@ export class MetamaskNftRepository implements NftRepository {
       .connect(this.wallet.accounts[0].address)
       .uri(nft.id);
     try {
-      const jsonFounded: NftMetadata = await (
-        await fetch(uriAssociated)
-      ).json();
+      const httpResponse = await fetch(uriAssociated);
+      const jsonFounded: NftMetadata = await httpResponse.json();
       return jsonFounded.image;
     } catch (e) {
       return '';
     }
-    return '';
   }
 
   async merge(nfts1: string, nfts2: string): Promise<void> {
@@ -86,7 +84,7 @@ export class MetamaskNftRepository implements NftRepository {
     console.log(result);
   }
 
-  async plantTree(parentTree: number): Promise<void> {
+  async plantTree(parentTree: string): Promise<void> {
     const contract = SmartContractService.loadContract(this.wallet).connect(
       this.wallet.accounts[0].address
     );

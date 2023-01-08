@@ -1,3 +1,4 @@
+/* eslint-disable no-inner-declarations */
 /* eslint-disable no-console */
 import { MantineProvider } from '@mantine/core';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -26,14 +27,12 @@ export function App() {
   const connectedWallets = useWallets();
   const [{ wallet, connecting }, connect] = useConnectWallet();
   const [, setWeb3Onboard] = useState<OnboardAPI | null>(null);
-  const nftStore = useNftStore();
-  const { hasNfts, setHasNfts, setErrorMessage } = useAppStore((state) => {
-    return {
-      hasNfts: state.hasNfts,
-      setHasNfts: state.setHasNfts,
-      setErrorMessage: state.setErrorMessage,
-    };
-  });
+  const retrieveNfts = useNftStore((store) => store.retrieveNfts);
+  const { hasNfts, setHasNfts, setErrorMessage } = useAppStore((state) => ({
+    hasNfts: state.hasNfts,
+    setHasNfts: state.setHasNfts,
+    setErrorMessage: state.setErrorMessage,
+  }));
   const { setWallet } = useWalletStore();
 
   const initBeans = useCallback(() => {
@@ -68,7 +67,6 @@ export function App() {
       const [magicWalletProvider] = connectedWallets.filter(
         (providerWallet) => providerWallet.label === 'Magic Wallet'
       );
-      // eslint-disable-next-line no-inner-declarations
       async function setMagicUser() {
         // eslint-disable-next-line no-useless-catch
         try {
@@ -95,7 +93,6 @@ export function App() {
     );
 
     if (previouslyConnectedWallets?.length) {
-      // eslint-disable-next-line no-inner-declarations
       async function setWalletFromLocalStorage() {
         const walletConnected = await connect({
           autoSelect: previouslyConnectedWallets[0],
@@ -108,12 +105,12 @@ export function App() {
 
   useEffect(() => {
     if (!wallet) return;
-    nftStore.retieveNfts().then((isOwner) => {
+    retrieveNfts().then((isOwner) => {
       if (isOwner) {
         setHasNfts(true);
       }
     });
-  }, [connectedWallets, wallet, nftStore]);
+  }, [connectedWallets, wallet, retrieveNfts, setHasNfts]);
 
   if (!connecting && !wallet) {
     return <ConnectWallet />;
