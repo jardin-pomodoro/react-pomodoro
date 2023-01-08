@@ -19,7 +19,6 @@ import type { GetNftsService } from '../services/get-nfts.service';
 import { BuyFirstNftService } from '../services/buy-first-nft.service';
 import { Nft } from '../core/nft';
 import { MapServices } from '../stores/singletonServiceStore';
-import Animtion from '../components/animation';
 
 const useStyles = createStyles(() => ({
   center_button: {
@@ -140,7 +139,6 @@ export default function BuyNft() {
           </Grid.Col>
         </Grid>
       </div>
-      <Animtion />
     </Container>
   );
 }
