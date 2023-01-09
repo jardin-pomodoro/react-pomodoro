@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 /* eslint-disable class-methods-use-this */
-/* eslint-disable import/prefer-default-export */
 import { Nft } from '../../core/nft';
 import { NftRepository } from '../../core/nft.repository';
 
@@ -15,7 +14,7 @@ export class InMemoryNftRepository implements NftRepository {
     { id: '3993103103' },
   ];
 
-  plantTree(parentTree: number): Promise<void> {
+  async plantTree(parentTree: number): Promise<void> {
     return Promise.resolve(undefined); // TODO
   }
 

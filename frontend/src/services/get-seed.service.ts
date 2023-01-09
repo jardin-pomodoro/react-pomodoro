@@ -1,9 +1,9 @@
 import { SeedRepository } from '../core/seed.repository';
 
-export class GetSeedPriceService {
+export class GetSeedService {
   constructor(private readonly seedRepository: SeedRepository) {}
 
-  async handle(): Promise<number> {
-    return this.seedRepository.getPrice();
+  async handle(tokenId: number): Promise<number> {
+    return this.seedRepository.getSeed(tokenId);
   }
 }

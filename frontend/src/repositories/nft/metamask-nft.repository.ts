@@ -1,7 +1,9 @@
-/* eslint-disable import/prefer-default-export */
 import { ethers } from 'ethers';
+import { WalletState } from '@web3-onboard/core';
 import { Nft } from '../../core/nft';
 import { NftRepository } from '../../core/nft.repository';
+import { SmartContractService } from '../../services/smart-contract.service';
+import { NftUpgradeStats } from '../../core/nft-upgrade-stats';
 
 interface NftMetadata {
   name: string;
@@ -11,26 +13,27 @@ interface NftMetadata {
 }
 
 export class MetamaskNftRepository implements NftRepository {
-  constructor(
-    private provider: ethers.providers.Web3Provider,
-    private signer: ethers.Signer,
-    private contract: ethers.Contract
-  ) {}
+  constructor(private wallet: WalletState) {}
 
   async improveLeaves(nft: Nft): Promise<void> {
-    await this.contract.connect(this.signer).upgradeTreeLeaves(nft.id);
+    await SmartContractService.loadContract(this.wallet).upgradeTreeLeaves(
+      nft.id
+    );
   }
 
   async improveTrunk(nft: Nft): Promise<void> {
-    await this.contract.connect(this.signer).upgradeTreeTrunk(nft.id);
+    await SmartContractService.loadContract(this.wallet).upgradeTreeTrunk(
+      nft.id
+    );
   }
 
   async getMetadata(nft: Nft): Promise<string> {
-    const uriAssociated = await this.contract.connect(this.signer).uri(nft.id);
+    const uriAssociated = await SmartContractService.loadContract(this.wallet)
+      .connect(this.wallet.accounts[0].address)
+      .uri(nft.id);
     try {
-      const jsonFounded: NftMetadata = await (
-        await fetch(uriAssociated)
-      ).json();
+      const httpResponse = await fetch(uriAssociated);
+      const jsonFounded: NftMetadata = await httpResponse.json();
       return jsonFounded.image;
     } catch (e) {
       return '';
@@ -38,13 +41,14 @@ export class MetamaskNftRepository implements NftRepository {
   }
 
   async merge(nfts1: string, nfts2: string): Promise<void> {
-    // promise resolve in one second
-
-    await this.contract.connect(this.signer).breedTree(nfts1, nfts2);
+    await SmartContractService.loadContract(this.wallet).breedTree(
+      nfts1,
+      nfts2
+    );
   }
 
   async getAll(): Promise<Nft[]> {
-    const adress = await this.signer.getAddress();
+    const adress = this.wallet.accounts[0].address;
     const numberOfExistingToken = await this.getNumberOfExistingNft();
     const adresses: string[] = [];
     const tokenAsked: number[] = [];
@@ -53,7 +57,9 @@ export class MetamaskNftRepository implements NftRepository {
       tokenAsked.push(i);
     }
     const nftFounded: number[] = [];
-    const result = await this.contract.balanceOfBatch(adresses, tokenAsked);
+    const result = await SmartContractService.loadContract(
+      this.wallet
+    ).balanceOfBatch(adresses, tokenAsked);
     if (Array.isArray(result)) {
       result.forEach((element) => {
         if (ethers.BigNumber.from(element).toNumber() === 1) {
@@ -65,12 +71,14 @@ export class MetamaskNftRepository implements NftRepository {
   }
 
   async getNumberOfExistingNft(): Promise<number> {
-    const result = await this.contract.getTokenCount();
+    const result = await SmartContractService.loadContract(
+      this.wallet
+    ).getTokenCount();
     return ethers.BigNumber.from(result).toNumber();
   }
 
   async buyNft(): Promise<void> {
-    const contract = this.contract.connect(this.signer);
+    const contract = SmartContractService.loadContract(this.wallet);
     const result = await contract.mintRandomTree({
       value: ethers.utils.parseEther('0.1'),
     });
@@ -78,10 +86,45 @@ export class MetamaskNftRepository implements NftRepository {
     console.log(result);
   }
 
-  async plantTree(parentTree: number): Promise<void> {
-    const contract = this.contract.connect(this.signer);
+  async plantTree(parentTree: string): Promise<void> {
+    const contract = SmartContractService.loadContract(this.wallet).connect(
+      this.wallet.accounts[0].address
+    );
     const result = await contract.plantTree(parentTree);
     // eslint-disable-next-line no-console
     console.log(result);
+  }
+
+  async getLeavesUpgradePrice(nft: Nft, baseStat: number): Promise<number> {
+    const result = await SmartContractService.loadContract(
+      this.wallet
+    ).getLeavesUpgradeCost(nft.id, baseStat);
+    return ethers.BigNumber.from(result).toNumber();
+  }
+
+  async getTrunkUpgradePrice(nft: Nft, baseStat: number): Promise<number> {
+    const result = await SmartContractService.loadContract(
+      this.wallet
+    ).getTrunkUpgradeCost(nft.id, baseStat);
+    return ethers.BigNumber.from(result).toNumber();
+  }
+
+  async getUpgradeStats(nft: Nft): Promise<NftUpgradeStats> {
+    const result = await SmartContractService.loadContract(
+      this.wallet
+    ).getTreeStats(nft.id);
+
+    return {
+      maxUpgrade: ethers.BigNumber.from(result.maxUpgrades).toNumber(),
+      leavesUpgrade: ethers.BigNumber.from(result.leavesUpgrade).toNumber(),
+      trunkUpgrade: ethers.BigNumber.from(result.trunkUpgrade).toNumber(),
+    };
+  }
+
+  async getBreedCount(nft: Nft): Promise<number> {
+    const result = await SmartContractService.loadContract(
+      this.wallet
+    ).breedCount(nft.id);
+    return ethers.BigNumber.from(result).toNumber();
   }
 }

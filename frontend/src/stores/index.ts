@@ -1,3 +1,4 @@
 export * from './walletStore';
-export * from './serviceStore';
-export * from './repositoryStore';
+export * from './appStore';
+export * from './nftStore';
+export * from './singletonServiceStore';

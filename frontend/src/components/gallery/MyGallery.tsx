@@ -21,6 +21,10 @@ import { FeaturesCard } from './card';
 import { MetamaskNftRepository } from '../../repositories/nft/metamask-nft.repository';
 import { contractAbi, treeToken } from '../../utils/constants';
 import { GetNftMetadataService } from '../../services/get-nft-metadata.service';
+import { useConnectWallet } from '@web3-onboard/react';
+import { GetNftDetailsService } from '../../services/get-nft-details.service';
+import { GetSeedService } from '../../services/get-seed.service';
+import { MetamaskSeedRepository } from '../../repositories/seed/metamask-seed.repository';
 
 interface BannerProps {
   backgroundColor: string;
@@ -129,13 +133,15 @@ const loadFeatureCardProps = async (
   });
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function MyGallery({ provider, signer }: any) {
+export function MyGallery() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const initialNfts: Nft[] = [];
   const initialFeatureCardProps: FeaturesCardUI[] = [];
   const [featuresCardProps, setFeaturesCardProps] = useState(
     initialFeatureCardProps
   );
+  const [{ wallet }] = useConnectWallet();
   const [selectedNfts, setSelectedNfts] = useState(initialNfts);
   const [bannerProps, setBannerProps] = useState({
     backgroundColor: '#4B8673',
@@ -181,22 +187,15 @@ export function MyGallery({ provider, signer }: any) {
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const mergeTwoNfts = async () => {
+    if (!wallet) return;
     if (selectedNfts.length !== 2) return;
     const getNftsService = new GetNftsService(
-      new MetamaskNftRepository(
-        provider,
-        signer,
-        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
-      )
+      new MetamaskNftRepository(wallet)
     );
     const nft1 = selectedNfts[0];
     const nft2 = selectedNfts[1];
     const mergeNftsService = new MergeNftsService(
-      new MetamaskNftRepository(
-        provider,
-        signer,
-        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
-      )
+      new MetamaskNftRepository(wallet)
     );
     try {
       await mergeNftsService.handle({ nft1: nft1.id, nft2: nft2.id });
@@ -220,19 +219,12 @@ export function MyGallery({ provider, signer }: any) {
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const improveLeavesNft = async (id: string) => {
+    if (!wallet) return;
     const improveNftService = new ImproveLeavesNftService(
-      new MetamaskNftRepository(
-        provider,
-        signer,
-        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
-      )
+      new MetamaskNftRepository(wallet)
     );
     const getNftsService = new GetNftsService(
-      new MetamaskNftRepository(
-        provider,
-        signer,
-        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
-      )
+      new MetamaskNftRepository(wallet)
     );
     const nft: Nft = { id };
     await improveNftService.handle({ nft });
@@ -246,19 +238,12 @@ export function MyGallery({ provider, signer }: any) {
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const improveTrunkNft = async (id: string) => {
+    if (!wallet) return;
     const improveNftService = new ImproveLeavesNftService(
-      new MetamaskNftRepository(
-        provider,
-        signer,
-        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
-      )
+      new MetamaskNftRepository(wallet)
     );
     const getNftsService = new GetNftsService(
-      new MetamaskNftRepository(
-        provider,
-        signer,
-        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
-      )
+      new MetamaskNftRepository(wallet)
     );
     const nft: Nft = { id };
     await improveNftService.handle({ nft });
@@ -271,19 +256,19 @@ export function MyGallery({ provider, signer }: any) {
   };
 
   useEffect(() => {
+    if (!wallet) return;
     const getNftMetadataService = new GetNftMetadataService(
-      new MetamaskNftRepository(
-        provider,
-        signer,
-        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
-      )
+      new MetamaskNftRepository(wallet)
     );
     const getNftsService = new GetNftsService(
-      new MetamaskNftRepository(
-        provider,
-        signer,
-        new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
-      )
+      new MetamaskNftRepository(wallet)
+    );
+    const getSeedService = new GetSeedService(
+      new MetamaskSeedRepository(wallet)
+    );
+    const getNftDetails = new GetNftDetailsService(
+      new MetamaskNftRepository(wallet),
+      getSeedService
     );
     const getNfts = async () => {
       const nfts = await getNftsService.handle();
@@ -298,13 +283,14 @@ export function MyGallery({ provider, signer }: any) {
             title: nft.id,
             imageMetadata: nftMetadata,
           };
+          console.log(await getNftDetails.handle(Number(nft.id)));
           return nftE;
         })
       );
       setFeaturesCardProps(nftsUi);
     };
     getNfts();
-  }, [provider, signer]);
+  }, [wallet]);
 
   return (
     <div className="gallery-body">
@@ -355,6 +341,7 @@ export function MyGallery({ provider, signer }: any) {
                 <FeaturesCard
                   improveButtonShow={nft.improveButtonShow}
                   backgroundColor={nft.backgroundColor}
+                  imageUrl={nft.imageMetadata}
                   textColor={nft.textColor}
                   title={nft.title}
                   textButtonMerge={nft.textButtonMerge}

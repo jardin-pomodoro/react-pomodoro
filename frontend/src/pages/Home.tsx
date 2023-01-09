@@ -1,26 +1,25 @@
-import { Button } from '@mantine/core';
-import { useCallback, useEffect, useState } from 'react';
+import { Button, Text, Modal } from '@mantine/core';
+import { useState } from 'react';
 import { HeaderMenu } from '../components/common/header';
-import { useWalletStore } from '../stores';
+import { Animation } from '../components';
+import { useNftStore } from '../stores';
 
 function Home() {
-  const [account, setAccount] = useState<string | undefined>(undefined);
-  const { provider, signer } = useWalletStore();
   /* const PlanTreeService = useServiceStore((state) =>
     state.services.get('PlantTreeService')
   ) as PlantTreeService; */
-  const saveAccount = useCallback(async () => {
-    const address = await signer?.getAddress();
-    setAccount(address);
-  }, [signer]);
 
-  useEffect(() => {
-    saveAccount();
-  }, [provider, signer, saveAccount]);
-
-  const plantTree = () => {
-    // todo faire un truc avec
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const [showAnimation, setAnimation] = useState<boolean>(false);
+  const plantATree = useNftStore((store) => store.plantATree);
+  const handleClick = () => {
+    plantATree();
+    console.log('tree seeded');
   };
+
+  const openModal = () => setModalOpen(true);
+  const closeModal = () => setModalOpen(false);
+  const toggleAnimation = () => setAnimation(!showAnimation);
 
   return (
     <>
@@ -30,14 +29,17 @@ function Home() {
           { link: '/gallery', label: 'Gallery', links: [] },
           { link: '/buy', label: 'Acheter', links: [] },
         ]}
-        account={account || ''}
       />
       <h1>Hello World !</h1>
-      <Button onClick={plantTree}>plant a tree</Button>
+      <Button onClick={handleClick}>plant a tree</Button>
+      <Button onClick={openModal}>open modal</Button>
+      <Button onClick={toggleAnimation}>toggle animation</Button>
+      <Modal centered opened={isModalOpen} onClose={closeModal}>
+        <Text>Les seeds Possible</Text>
+      </Modal>
+      {showAnimation && <Animation />}
     </>
   );
-
-  // return <Rive src="/tree.riv" />;
 }
 
 export default Home;

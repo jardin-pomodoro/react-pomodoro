@@ -15,11 +15,14 @@ import {
   CloseButton,
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
-import { BuySeedService } from '../../services/buy-seed.service';
-import { GetNftsService } from '../../services/get-nfts.service';
-import { useServiceStore } from '../../stores';
-import { GetSeedPriceService } from '../../services';
+import { useConnectWallet } from '@web3-onboard/react';
+import {
+  GetSeedPriceService,
+  GetNftsService,
+  BuySeedService,
+} from '../../services';
 import { deadline } from '../../utils/constants';
+import { MapServices } from '../../stores/singletonServiceStore';
 
 const useStyles = createStyles(() => ({
   center_button: {
@@ -46,9 +49,9 @@ const useStyles = createStyles(() => ({
   },
 }));
 
-// { ethers.providers.Web3provider, ethers.Signer }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function BuySeed({ provider, signer }: any) {
+function BuySeed() {
+  // { ethers.providers.Web3provider, ethers.Signer }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [seedPrice, setSeedPrice] = useState(0);
   const [tokenIdValue, setTokenIdValue] = useState('');
   const initalNfts: string[] = [];
@@ -59,15 +62,16 @@ function BuySeed({ provider, signer }: any) {
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
+  const [{ wallet }] = useConnectWallet();
   const { classes } = useStyles();
-  const getSeedPriceService = useServiceStore((state) =>
-    state.services.get('GetFreeSeedService')
+  const getSeedPriceService = MapServices.getInstance().getService(
+    'GetSeedPriceService'
   ) as GetSeedPriceService;
-  const getNtfsService = useServiceStore((state) =>
-    state.services.get('GetNftsService')
+  const getNftsService = MapServices.getInstance().getService(
+    'GetNftsService'
   ) as GetNftsService;
-  const buySeedService = useServiceStore((state) =>
-    state.services.get('BuySeedService')
+  const buySeedService = MapServices.getInstance().getService(
+    'BuySeedService'
   ) as BuySeedService;
 
   useEffect(() => {
@@ -77,17 +81,17 @@ function BuySeed({ provider, signer }: any) {
     };
     getSeePrice();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [provider, signer]);
+  }, [wallet]);
 
   useEffect(() => {
     const getNfts = async () => {
-      const nftsFromService = await getNtfsService.handle();
+      const nftsFromService = await getNftsService.handle();
       const nftsFormatted = nftsFromService.map((nft) => nft.id);
       setNfts(nftsFormatted);
     };
     getNfts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [provider, signer]);
+  }, [wallet]);
 
   useEffect(() => {
     const getTime = (_deadline: string) => {

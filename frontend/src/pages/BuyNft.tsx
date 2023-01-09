@@ -14,13 +14,11 @@ import {
   CloseButton,
 } from '@mantine/core';
 import { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
+import { useConnectWallet } from '@web3-onboard/react';
+import type { GetNftsService } from '../services/get-nfts.service';
 import { BuyFirstNftService } from '../services/buy-first-nft.service';
-import { contractAbi, treeToken } from '../utils/constants';
-import { MetamaskNftRepository } from '../repositories/nft/metamask-nft.repository';
-import { GetNftsService } from '../services/get-nfts.service';
 import { Nft } from '../core/nft';
-import { useServiceStore, useWalletStore } from '../stores';
+import { MapServices } from '../stores/singletonServiceStore';
 
 const useStyles = createStyles(() => ({
   center_button: {
@@ -47,32 +45,30 @@ const useStyles = createStyles(() => ({
   },
 }));
 
-export const BuyFirstNft = async ({ provider, signer, nfts }: any) => {
-  const buyFirstNftService = new BuyFirstNftService(
-    new MetamaskNftRepository(
-      provider,
-      signer,
-      new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
-    )
-  );
-  await buyFirstNftService.handle(nfts);
-};
-
 export default function BuyNft() {
-  const { provider, signer } = useWalletStore();
   const { classes } = useStyles();
   const [transactionSuccess, setTransactionSuccess] = useState(false);
   const [nfts, setNfts] = useState<Nft[]>([]);
-  const getNftsService = useServiceStore((state) =>
-    state.services.get('GetNftsService')
+  const [{ wallet }] = useConnectWallet();
+  const getNftsService = MapServices.getInstance().getService(
+    'GetNftsService'
   ) as GetNftsService;
+  const buyFirstNftService = MapServices.getInstance().getService(
+    'BuyFirstNftService'
+  ) as BuyFirstNftService;
+
+  const BuyFirstNft = async () => {
+    if (wallet === null) return;
+    await buyFirstNftService.handle(nfts);
+  };
 
   useEffect(() => {
     const getNfts = async () => {
-      setNfts(await getNftsService.handle());
+      const result = await getNftsService.handle();
+      setNfts(result);
     };
     getNfts();
-  }, [provider, signer, getNftsService]);
+  }, [wallet, getNftsService]);
 
   return (
     <Container mt="lg">
@@ -125,10 +121,7 @@ export default function BuyNft() {
               <Text fs="italic" fz="l" align="center">
                 Acheter votre première NFT pour commencer votre périple
               </Text>
-              <Button
-                onClick={() => BuyFirstNft({ provider, signer, nfts })}
-                color="teal"
-              >
+              <Button onClick={() => BuyFirstNft()} color="teal">
                 Acheter 0.1 Matic
               </Button>
             </Center>

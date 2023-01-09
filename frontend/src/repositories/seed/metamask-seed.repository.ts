@@ -1,37 +1,41 @@
-/* eslint-disable import/prefer-default-export */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ethers } from 'ethers';
+import { WalletState } from '@web3-onboard/core';
 import { SeedFree } from '../../core/seed-free';
 import { SeedRepository } from '../../core/seed.repository';
+import { SmartContractService } from '../../services/smart-contract.service';
 
 export class MetamaskSeedRepository implements SeedRepository {
-  constructor(
-    private provider: ethers.providers.Web3Provider,
-    private signer: ethers.Signer,
-    private contract: ethers.Contract
-  ) {}
+  constructor(private wallet: WalletState) {}
 
   async getSeedFree(): Promise<SeedFree> {
-    const seedFree = await this.contract.connect(this.signer).getSeedFree();
+    const seedFree = await SmartContractService.loadContract(
+      this.wallet
+    ).getSeedFree();
     return {
       numberSeed: Number(ethers.BigNumber.from(seedFree).toNumber()),
     };
   }
 
   async buySeed(tokenId: string, amount: number): Promise<void> {
-    await this.contract.connect(this.signer).buySeeds(tokenId, amount);
-    // return new Promise((resolve) => {
-    //   setTimeout(() => {
-    //     resolve();
-    //   }, 2000);
-    // });
+    await SmartContractService.loadContract(this.wallet).buySeeds(
+      tokenId,
+      amount
+    );
   }
 
   async getPrice(): Promise<number> {
-    const value = await this.contract
-      .connect(this.signer)
-      .getSeedCost(this.signer.getAddress());
+    const value = await SmartContractService.loadContract(
+      this.wallet
+    ).getSeedCost(this.wallet.accounts[0].address);
 
+    return Number(ethers.BigNumber.from(value).toNumber());
+  }
+
+  async getSeed(tokenId: number): Promise<number> {
+    const value = await SmartContractService.loadContract(this.wallet).getSeed(
+      tokenId
+    );
     return Number(ethers.BigNumber.from(value).toNumber());
   }
 }

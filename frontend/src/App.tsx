@@ -1,36 +1,22 @@
+/* eslint-disable no-inner-declarations */
+/* eslint-disable no-console */
 import { MantineProvider } from '@mantine/core';
-
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { ethers } from 'ethers';
+import { useConnectWallet, useWallets } from '@web3-onboard/react';
+import { OnboardAPI } from '@web3-onboard/core';
 import { useState, useEffect, useCallback } from 'react';
+
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Gallery from './pages/Gallery';
 import BuySeed from './pages/BuySeedPage';
-import { InstallPlugin } from './pages/installPlugin';
 import LoadingMatamaskAccount from './pages/LoadingMetamaskAccount';
-import {
-  ConnectToWalletResponse,
-  ConnectToWalletService,
-  GetNftsService,
-  BuyFirstNftService,
-  BuySeedService,
-  GetFreeSeedService,
-  GetMoneyCountService,
-  GetNftMetadataService,
-  GetNumberOfNftService,
-  GetSeedPriceService,
-  ImproveTrunkNftService,
-} from './services';
-import { contractAbi, treeToken } from './utils/constants';
 import BuyNft from './pages/BuyNft';
-import { useRepositoryStore, useServiceStore, useWalletStore } from './stores';
-import {
-  MetamaskMoneyRepository,
-  MetamaskNftRepository,
-  MetamaskSeedRepository,
-} from './repositories';
+import ConnectWallet from './pages/ConnectWallet';
+import { initWeb3Onboard } from './services/smart-contract.service';
+import { InitSingletonServiceStore } from './stores/singletonServiceStore';
+import { useAppStore, useNftStore, useWalletStore } from './stores';
+import ViewNft from './pages/ViewNft';
 
 declare global {
   interface Window {
@@ -39,144 +25,113 @@ declare global {
 }
 
 export function App() {
-  const [loadingMessage, setLoadingMessage] = useState('');
-  const [loadAccount, setLoadAccount] = useState(false);
-  const [isNftOwner, setIsNftOnwer] = useState(false);
-  const { provider, signer, setProvider, setSigner } = useWalletStore();
-  const { addService } = useServiceStore();
-  const { addRepository } = useRepositoryStore();
+  const connectedWallets = useWallets();
+  const [{ wallet, connecting }, connect] = useConnectWallet();
+  const [, setWeb3Onboard] = useState<OnboardAPI | null>(null);
+  const retrieveNfts = useNftStore((store) => store.retrieveNfts);
+  const { hasNfts, setHasNfts, setErrorMessage } = useAppStore((state) => ({
+    hasNfts: state.hasNfts,
+    setHasNfts: state.setHasNfts,
+    setErrorMessage: state.setErrorMessage,
+  }));
+  const { setWallet } = useWalletStore();
 
   const initBeans = useCallback(() => {
-    if (!provider || !signer) {
-      throw new Error('provider or signer not set');
+    if (!wallet) {
+      return;
     }
-    const contract = new ethers.Contract(
-      treeToken.Token,
-      contractAbi,
-      provider.getSigner(0)
-    );
-    const nftRepository = new MetamaskNftRepository(provider, signer, contract);
-    const moneyRepository = new MetamaskMoneyRepository(
-      provider,
-      signer,
-      contract
-    );
-    const seedRepository = new MetamaskSeedRepository(
-      provider,
-      signer,
-      contract
-    );
-    addRepository(nftRepository);
-    addRepository(seedRepository);
-    addRepository(moneyRepository);
-    addService('BuyFirstNftService', new BuyFirstNftService(nftRepository));
-    addService('BuySeedService', new BuySeedService(seedRepository));
-    addService('BuySeedService', new BuySeedService(seedRepository));
-    addService(
-      'GetMoneyCountService',
-      new GetMoneyCountService(moneyRepository)
-    );
-    addService(
-      'GetNftMetadataService',
-      new GetNftMetadataService(nftRepository)
-    );
-    addService(
-      'GetNumberOfNftService',
-      new GetNumberOfNftService(nftRepository)
-    );
-    addService(
-      'ImproveTrunkNftService',
-      new ImproveTrunkNftService(nftRepository)
-    );
-    addService(
-      'ImproveTrunkNftService',
-      new ImproveTrunkNftService(nftRepository)
-    );
-    addService('GetSeedPriceService', new GetSeedPriceService(seedRepository));
-    addService('GetNftsService', new GetNftsService(nftRepository));
-    addService('GetFreeSeedService', new GetFreeSeedService(seedRepository));
-    addService('ConnectToWalletService', new ConnectToWalletService());
-  }, [addRepository, addService, signer, provider]);
+    console.log('start initBeans');
+    InitSingletonServiceStore(wallet);
+    setWallet(wallet);
+    console.log('end initBeans');
+    console.log(wallet);
+  }, [wallet, setWallet]);
 
-  const initializeEthers = useCallback(async () => {
-    if (!window.ethereum) {
-      throw new Error('ether does not exist');
-    }
-    const localProvider = new ethers.providers.Web3Provider(window.ethereum);
-    await localProvider.send('eth_requestAccounts', []);
-    const localSigner = localProvider.getSigner();
-    setProvider(localProvider);
-    setSigner(localSigner);
+  useEffect(() => {
     initBeans();
-  }, [initBeans, setProvider, setSigner]);
+    setWeb3Onboard(initWeb3Onboard);
+  }, [initBeans]);
 
   useEffect(() => {
-    const initConnection = async (): Promise<void> => {
-      const connectToWalletservice = new ConnectToWalletService();
-      try {
-        setLoadAccount(true);
-        const result = await connectToWalletservice.connect();
-        connectToWalletservice.listenAccountChanged(() => {
-          window.location.reload();
+    if (!connectedWallets.length) return;
+
+    const connectedWalletsLabelArray = connectedWallets.map(
+      ({ label }) => label
+    );
+    window.localStorage.setItem(
+      'connectedWallets',
+      JSON.stringify(connectedWalletsLabelArray)
+    );
+
+    // Check for Magic Wallet user session
+    if (connectedWalletsLabelArray.includes('Magic Wallet')) {
+      const [magicWalletProvider] = connectedWallets.filter(
+        (providerWallet) => providerWallet.label === 'Magic Wallet'
+      );
+      async function setMagicUser() {
+        // eslint-disable-next-line no-useless-catch
+        try {
+          const { email } = (
+            (await magicWalletProvider.instance) as any
+          ).user.getMetadata();
+          const magicUserEmail = localStorage.getItem('magicUserEmail');
+          if (!magicUserEmail || magicUserEmail !== email)
+            localStorage.setItem('magicUserEmail', email);
+        } catch (error: unknown) {
+          if (error && typeof error === 'object' && 'message' in error) {
+            setErrorMessage(error.message as string);
+            // todo mettre un system de store et de toast avec les erreur
+          }
+        }
+      }
+      setMagicUser();
+    }
+  }, [connectedWallets, wallet, setErrorMessage]);
+
+  useEffect(() => {
+    const previouslyConnectedWallets = JSON.parse(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      window.localStorage.getItem('connectedWallets')!
+    );
+
+    if (previouslyConnectedWallets?.length) {
+      async function setWalletFromLocalStorage() {
+        const walletConnected = await connect({
+          autoSelect: previouslyConnectedWallets[0],
         });
-
-        if (result === ConnectToWalletResponse.OK) {
-          await initializeEthers();
-        }
-
-        setLoadAccount(false);
-      } catch (error: unknown) {
-        if (error && typeof error === 'object' && 'message' in error) {
-          setLoadingMessage(error.message as string);
-          // todo mettre un system de store et de toast avec les erreur
-        }
+        console.log('connected wallets: ', walletConnected);
       }
-    };
-    initConnection();
-  }, [initializeEthers]);
+      setWalletFromLocalStorage();
+    }
+  }, [connect]);
 
   useEffect(() => {
-    const checkNft = async () => {
-      if (provider && signer) {
-        const getNftService = new GetNftsService(
-          new MetamaskNftRepository(
-            provider,
-            signer,
-            new ethers.Contract(
-              treeToken.Token,
-              contractAbi,
-              provider.getSigner(0)
-            )
-          )
-        );
-        const numberOfNft = await getNftService.handle();
-        if (numberOfNft.length > 0) {
-          setIsNftOnwer(true);
-        }
+    if (!wallet) return;
+    retrieveNfts().then((isOwner) => {
+      if (isOwner) {
+        setHasNfts(true);
       }
-    };
-    checkNft();
-  }, [provider, signer]);
+    });
+  }, [connectedWallets, wallet, retrieveNfts, setHasNfts]);
 
+  if (!connecting && !wallet) {
+    return <ConnectWallet />;
+  }
+  if (connecting) {
+    return (
+      <LoadingMatamaskAccount message="le compte est entrain de charger" />
+    );
+  }
+  if (!hasNfts) {
+    return <BuyNft />;
+  }
   return (
     <Routes>
-      {loadAccount && (
-        <Route
-          path="*"
-          element={<LoadingMatamaskAccount message={loadingMessage} />}
-        />
-      )}
-      {!loadAccount && isNftOwner && (
-        <>
-          <Route path="/buy" element={<BuySeed />} />
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path="/" element={<Home />} />
-          <Route path="*" element={<NotFound />} />
-        </>
-      )}
-      {!loadAccount && !isNftOwner && provider && signer && (
-        <Route path="*" element={<BuyNft />} />
-      )}
+      <Route path="/buy" element={<BuySeed />} />
+      <Route path="/gallery" element={<Gallery />} />
+      <Route path="/gallery/:id" element={<ViewNft  />} />
+      <Route path="/" element={<Home />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
@@ -191,8 +146,7 @@ export function WrappedApp() {
       }}
     >
       <BrowserRouter>
-        {window.ethereum && <App />}
-        {!window.ethereum && <InstallPlugin />}
+        <App />
       </BrowserRouter>
     </MantineProvider>
   );
