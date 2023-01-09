@@ -8,14 +8,20 @@ import { SmartContractService } from '../../services/smart-contract.service';
 export class MetamaskSeedRepository implements SeedRepository {
   constructor(private wallet: WalletState) {}
 
-  getAllSeed(): Promise<Seed[]> {
-    throw new Error('Method not implemented.');
+  async getAllSeed(): Promise<Seed[]> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const seeds: any[] = await SmartContractService.loadContract(
+      this.wallet
+    ).getSeeds(this.wallet.accounts[0].address);
+    return seeds.map((seed) => ({
+      numberSeed: seed,
+    }));
   }
 
   async getSeedFree(): Promise<SeedFree> {
     const seedFree = await SmartContractService.loadContract(
       this.wallet
-    ).getSeedFree();
+    ).getSeeds();
     return {
       numberSeed: Number(ethers.BigNumber.from(seedFree).toNumber()),
     };

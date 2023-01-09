@@ -49,7 +49,7 @@ export function App() {
   useEffect(() => {
     initBeans();
     setWeb3Onboard(initWeb3Onboard);
-  }, [initBeans]);
+  }, [initBeans, wallet]);
 
   useEffect(() => {
     if (!connectedWallets.length) return;

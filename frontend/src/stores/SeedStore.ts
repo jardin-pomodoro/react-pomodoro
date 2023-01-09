@@ -1,14 +1,14 @@
 import create from 'zustand';
-import { Seed } from '../core/seed-free';
+import { Nft, Seed, SeedRepository } from '../core';
 import { MetamaskSeedRepository } from '../repositories';
 import { GetSeedsService } from '../services';
 import { useWalletStore } from './walletStore';
 
 export interface SeedsStore {
   seeds: Seed[];
-  getSeeds: () => Promise<void>;
+  getSeeds: (tree: Nft) => Promise<void>;
 }
-function getRepo(): MetamaskSeedRepository {
+function getRepo(): SeedRepository {
   const { wallet } = useWalletStore.getState();
   if (wallet === null) {
     throw new Error('Repository is undefined');

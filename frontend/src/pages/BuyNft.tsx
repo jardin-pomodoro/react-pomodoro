@@ -15,10 +15,10 @@ import {
 } from '@mantine/core';
 import { useState, useEffect } from 'react';
 import { useConnectWallet } from '@web3-onboard/react';
-import type { GetNftsService } from '../services/get-nfts.service';
+import { GetNftsService } from '../services/get-nfts.service';
 import { BuyFirstNftService } from '../services/buy-first-nft.service';
 import { Nft } from '../core/nft';
-import { MapServices } from '../stores/singletonServiceStore';
+import { MetamaskNftRepository } from '../repositories';
 
 const useStyles = createStyles(() => ({
   center_button: {
@@ -50,25 +50,24 @@ export default function BuyNft() {
   const [transactionSuccess, setTransactionSuccess] = useState(false);
   const [nfts, setNfts] = useState<Nft[]>([]);
   const [{ wallet }] = useConnectWallet();
-  const getNftsService = MapServices.getInstance().getService(
-    'GetNftsService'
-  ) as GetNftsService;
-  const buyFirstNftService = MapServices.getInstance().getService(
-    'BuyFirstNftService'
-  ) as BuyFirstNftService;
 
   const BuyFirstNft = async () => {
     if (wallet === null) return;
+    const nftRepo = new MetamaskNftRepository(wallet);
+    const buyFirstNftService = new BuyFirstNftService(nftRepo);
     await buyFirstNftService.handle(nfts);
   };
 
   useEffect(() => {
+    if (!wallet) return;
+    const nftRepo = new MetamaskNftRepository(wallet);
+    const getNftsService = new GetNftsService(nftRepo);
     const getNfts = async () => {
       const result = await getNftsService.handle();
       setNfts(result);
     };
     getNfts();
-  }, [wallet, getNftsService]);
+  }, [wallet]);
 
   return (
     <Container mt="lg">
