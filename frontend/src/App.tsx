@@ -16,6 +16,7 @@ import ConnectWallet from './pages/ConnectWallet';
 import { initWeb3Onboard } from './services/smart-contract.service';
 import { InitSingletonServiceStore } from './stores/singletonServiceStore';
 import { useAppStore, useNftStore, useWalletStore } from './stores';
+import ViewNft from './pages/ViewNft';
 
 declare global {
   interface Window {
@@ -70,8 +71,9 @@ export function App() {
       async function setMagicUser() {
         // eslint-disable-next-line no-useless-catch
         try {
-          const { email } =
-            await magicWalletProvider.instance.user.getMetadata();
+          const { email } = (
+            (await magicWalletProvider.instance) as any
+          ).user.getMetadata();
           const magicUserEmail = localStorage.getItem('magicUserEmail');
           if (!magicUserEmail || magicUserEmail !== email)
             localStorage.setItem('magicUserEmail', email);
@@ -127,6 +129,7 @@ export function App() {
     <Routes>
       <Route path="/buy" element={<BuySeed />} />
       <Route path="/gallery" element={<Gallery />} />
+      <Route path="/gallery/:id" element={<ViewNft  />} />
       <Route path="/" element={<Home />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

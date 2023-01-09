@@ -1,7 +1,7 @@
 import { NftRepository } from '../core/nft.repository';
 import { GetSeedService } from './get-seed.service';
 
-interface NftDetails {
+export interface NftDetails {
   seed: number;
   leavesUpgradePrice: number;
   trunkUpgradePrice: number;
