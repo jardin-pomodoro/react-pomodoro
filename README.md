@@ -2,6 +2,31 @@
 
 A handy pomodoro app using smart contracts, where you can earn tokens to evolve your garden's NFT.
 
+<!-- toc -->
+
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+  * [Contract](#contract)
+  * [Frontend](#frontend)
+- [Run Locally](#run-locally)
+  * [Contract](#contract-1)
+  * [Frontend](#frontend-1)
+- [Deployment on Mumbai testnet](#deployment-on-mumbai-testnet)
+- [Running Tests](#running-tests)
+  * [Contract](#contract-2)
+  * [Frontend](#frontend-2)
+- [Documentation](#documentation)
+  * [Contract](#contract-3)
+    + [TreeCore.sol](#treecoresol)
+    + [TreeToken](#treetoken)
+    + [BreedTree](#breedtree)
+    + [Forest](#forest)
+    + [ForestSeeds](#forestseeds)
+    + [TreeStats](#treestats)
+
+<!-- tocstop -->
+
 ## Features
 
 - [x] Pomodoro timer
