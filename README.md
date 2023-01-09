@@ -137,17 +137,112 @@ pnpm run dev
 
 ### Contract
 
-To run tests
+To run tests locally on the contract, run :
 
 ```bash
+pnpm install
 pnpm run test
 
 ```
 
-You can access the frontend at http://localhost:5173/
+It will run the tests on a hardhat local node.
+
+If you want to see the test coverage, just run this command instead of `test` :
+
+```bash
+pnpm run coverage
+
+```
+
+![test coverage](./img/README-1673258786119.png)
+
+### Frontend
+
+To run tests locally on the frontend, run :
+
+```bash
+cd frontend
+pnpm install
+pnpm run test
+
+```
 
 ## Documentation
 
-[Documentation](https://linktodocumentation)
+### Contract
+
+#### TreeCore.sol
+
+It is the contract that will be deployed on the blockchain.
+
+This contract is a combination of several contracts that provide functionality for creating and managing virtual trees.
+
+These contracts include:
+
+- `TreeToken`: Provides functionality for creating and managing ERC-1155 tokens
+- `BreedTree`: Provides functionality for breeding two trees to create a new tree
+- `Forest`: Manages the planting and collection of trees
+- `TreeStats`: Provides functionality for upgrading the trunk and leaves of a tree
+- `ForestSeeds`: Manages the seeds needed to plant and grow a tree
+
+The `TreeCore` contract includes several events that are triggered at various points in the tree creation and management
+process:
+
+- `TreeMinted`: Triggered when a new tree is minted
+- `TreePlanted`: Triggered when a tree is planted
+- `TreeCollected`: Triggered when a tree is collected
+
+The contract also includes several functions for creating and managing trees:
+
+- `createTree(uint childSeed)`: Creates a new tree with the given seed
+- `breedTree(uint256 _tokenId1, uint256 _tokenId2)`: Breeds two trees to create a new tree
+- `plantTree(uint256 _tokenId)`: Plants a tree
+- `collectTree()`: Collects a tree that is ready to be collected
+- `upgradeTreeTrunk(uint256 _tokenId)`: Upgrades the trunk of a tree
+- `upgradeTreeLeaves(uint256 _tokenId)`: Upgrades the leaves of a tree
+
+The contract also includes several pure functions for getting information about seeds:
+
+- `getSeedLeavesStats(uint _seed)`: Returns the leaves stats for a seed
+- `getSeedTrunkStats(uint _seed)`: Returns the trunk stats for a seed
+- `getTreeRarity(uint _seed)`: Returns the rarity of a tree based on its seed
+
+The `TreeCore` contract also includes functions for interacting with the `TreeToken` contract:
+
+- `mintTree(address owner, uint childSeed)`: Mints a new tree for the given owner with the given seed
+- `balanceOf(address owner, uint256 _tokenId)`: Returns the balance of trees for the given owner with the given token ID
+
+The `TreeCore` contract also includes functions for interacting with the `BreedTree` contract:
+
+- `canTreeBreed(uint256 _tokenId)`: Verifies that a tree can be bred
+- `breedTrees(uint256 _tokenId1, uint256 _tokenId2, uint seed1, uint seed2)`: Breeds two trees to create a new tree
+
+The `TreeCore` contract also includes functions for interacting with the `Forest` contract:
+
+- `updateSeeds(uint256 _tokenId)`: Updates the number of seeds available for a tree
+- `consumeSeed(uint256 _tokenId)`: Consumes a seed for a tree
+- `plantTree(uint256 _tokenId, uint trunkUpgrade)`: Plants a tree with the given trunk upgrade
+- `collectTree(uint leavesUpgrade)`: Collects a tree with the given leaves upgrade
+
+The `TreeCore` contract also includes functions for interacting with the `TreeStats` contract:
+
+- `addTreeStats(uint256 _tokenId, uint rarity)`: Adds tree stats for the given tree with the given rarity
+- `getTreeStats(uint256 _tokenId)`: Returns the stats for the given tree
+- `canUpgradeTrunk(uint256 _tokenId)`: Verifies that the trunk of a tree can be upgraded
+- `upgradeTrunk(uint256 _tokenId)`: Upgrades the trunk of a tree
+- `canUpgradeLeaves(uint256 _tokenId)`: Verifies that the leaves of a tree can be upgraded
+- `upgradeLeaves(uint256 _tokenId)`: Upgrades the leaves of a tree
+
+The `TreeCore` contract also includes functions for interacting with the `ForestSeeds` contract:
+
+- `getSeed(uint256 _tokenId)`: Returns the seed for the given tree
+- `getSeeds(uint256 _tokenId)`: Returns the number of seeds available for the given tree
+- `getGrowingTree()`: Returns the tree that is currently growing
+
+Overall, the `TreeCore` contract provides a comprehensive set of functions for creating, breeding, planting, and upgrading
+virtual trees. It combines the functionality of several other contracts to provide a complete solution for managing
+virtual trees.
+
+#### TreeToken
 
 
