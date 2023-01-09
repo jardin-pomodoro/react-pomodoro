@@ -196,7 +196,7 @@ pnpm run test
 
 ### Contract
 
-#### TreeCore.sol
+#### TreeCore
 
 It is the contract that will be deployed on the blockchain.
 
