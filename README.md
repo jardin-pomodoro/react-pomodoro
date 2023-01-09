@@ -239,10 +239,157 @@ The `TreeCore` contract also includes functions for interacting with the `Forest
 - `getSeeds(uint256 _tokenId)`: Returns the number of seeds available for the given tree
 - `getGrowingTree()`: Returns the tree that is currently growing
 
-Overall, the `TreeCore` contract provides a comprehensive set of functions for creating, breeding, planting, and upgrading
-virtual trees. It combines the functionality of several other contracts to provide a complete solution for managing
-virtual trees.
+Overall, the `TreeCore` contract provides a comprehensive set of functions for creating, breeding, planting, and
+upgrading virtual trees. It combines the functionality of several other contracts to provide a complete solution for
+managing virtual trees.
 
 #### TreeToken
 
+This contract is an implementation of the **ERC-1155** standard for creating and managing a collection of virtual trees.
+It
+is built on top of the `ERC1155Supply` contract and includes the `Ownable` contract for adding ownership functionality.
+It
+also includes the `Strings` contract for working with string data.
 
+The contract includes several public variables:
+
+- `name`: The name of the tree collection
+- `CONTRACT_OWNER`: The owner of the contract
+- `TREE_TOKEN`: The identifier for the tree token
+
+It also includes a `mapping` to store the seeds for each tree.
+
+The contract includes a constructor that sets the **URI** for the tree collection and initializes the `ERC1155Supply`
+contract.
+
+The contract includes several functions for creating and managing trees:
+
+- `mintTree(address _to, uint _seed)`: Mints a new tree for the given owner with the given seed
+- `setURI(string newUri)`: Sets the **URI** for the tree collection (only callable by the owner)
+
+The contract also includes functions for interacting with the `ERC1155Supply` contract:
+
+- `withdraw()`: Allows the owner to withdraw any funds that have been sent to the contract
+- `uri(uint256 _tokenId)`: Returns the **URI** for the given tree
+- `baseTokenURI()`: Returns the base **URI** for the tree collection
+
+The contract also includes several utility functions:
+
+- `getSeed(uint256 _tokenId)`: Returns the seed for the given tree
+- `getTokenCount()`: Returns the total number of trees in the collection
+
+Overall, the `TreeToken` contract provides a basic implementation of the **ERC-1155** standard for creating and managing
+a collection of virtual trees. It allows for the creation and minting of new trees and provides a way to retrieve the
+seed for a given tree. It also includes functions for setting the **URI** for the tree collection and withdrawing any
+funds sent to the contract.
+
+#### BreedTree
+
+This contract provides functionality for breeding two trees to create a new tree. It includes a mapping to store the
+number of times each tree has been bred.
+
+The contract includes several private functions for breeding trees:
+
+- `mutate(uint seed)`: Mutates a seed to create a new seed
+- `breed(uint seed1, uint seed2)`: Breeds two seeds to create a new seed
+- `breedTrees(uint256 _tokenId1, uint256 _tokenId2, uint seed1, uint seed2)`: Breeds two trees to create a new tree
+
+It also includes a function for verifying that a tree can be bred:
+
+- `canTreeBreed(uint256 _tokenId)`: Verifies that a tree can be bred
+
+The contract also includes a public function for calculating the cost of breeding two trees:
+
+- `treeBreedCost(uint treeRarity1, uint treeRarity2)`: Returns the cost of breeding two trees with the given rarities
+
+Finally, the contract includes a public function for retrieving the number of times a tree has been bred:
+
+- `breedCount(uint _tokenId)`: Returns the number of times the given tree has been bred
+
+Overall, the `BreedTree` contract provides a set of functions for breeding two trees to create a new tree. It includes
+mechanisms for mutating and breeding seeds, as well as tracking the number of times a tree has been bred. It also
+provides a way to calculate the cost of breeding two trees.
+
+#### Forest
+
+This contract provides functionality for planting and collecting virtual trees. It includes a struct to store
+information about planted trees, including the token ID, start time, and growing time.
+
+The contract includes several public functions for interacting with planted trees:
+
+- `getGrowingTime(uint256 _trunkStat)`: Returns the growing time for a tree with the given trunk stat
+- `getProducedTokens(uint256 _leavesStat)`: Returns the number of tokens produced by a tree with the given leaves stat
+- `getGrowingTree()`: Returns the tree that is currently growing for the caller
+
+It also includes internal functions for planting and collecting trees:
+
+- `plantTree(uint256 _tokenId, uint256 _trunkStat)`: Plants a tree with the given trunk stat
+- `collectTree(uint _leavesStat)`: Collects a tree with the given leaves stat
+
+Overall, the `Forest` contract provides a set of functions for planting and collecting virtual trees. It includes
+mechanisms for calculating the growing time and number of tokens produced by a tree based on its trunk and leaves stats.
+It also allows users to retrieve information about the tree currently growing for them.
+
+#### ForestSeeds
+
+This contract allows users to manage the seeds they own, including refreshing the seeds they have available to use and
+purchasing additional seeds.
+
+The contract includes a `ForestSeed` struct that stores information about a user's seeds, including the number of seeds
+they have available to use, the number of seeds they have purchased, and the time of their last seed update.
+
+The contract includes a `mapping` to store information about each user's seeds, keyed by the token ID.
+
+The contract includes an event for tracking seed updates:
+
+- `event SeedRefreshed(address indexed to, uint256 _tokenId, uint256 _seedCount)` : Emitted when a user's seeds are
+  refreshed
+
+The contract includes several privates functions for managing seeds:
+
+- `registerSeeds(uint256 _tokenId)`: Initializes a user's seed information with 4 seeds and the current block timestamp.
+- `consumeSeed(uint256 _tokenId)`: Decreases the number of seeds a user has available to use by 1. If the user has no
+  seeds available, it decreases their number of purchased seeds by 1.
+- `addSeeds(uint256 _tokenId, uint256 amount)`: This function is called when a player purchases seeds and increments
+  the `boughtSeeds` field by the specified amount.
+
+The contract also includes several public functions for managing seeds:
+
+- `updateSeeds(uint256 _tokenId)`: Refreshes a user's seeds if it has been more than one day since their last update. It
+  sets their seeds to 4 and updates their last update timestamp. It also emits the `SeedRefreshed` event.
+- `getSeeds(uint256 _tokenId)`:  Returns the total number of seeds that a player has for a specific tree by adding
+  the `seeds` and `boughtSeeds` fields.
+- `getSeedCost(uint256 _tokenId)`: Returns the cost for a player to purchase an additional seed for a specific tree. The
+  cost is calculated as 2 * (the number of seeds the player has already purchased + 1).
+
+Overall, the `ForestSeeds` contract provides a set of functions for managing seeds. It allows users to refresh the seeds
+they have available to use and purchase additional seeds. It also tracks the number of seeds a user has purchased.
+
+#### TreeStats
+
+This contract provides functionality for upgrading the stats of virtual trees. It includes a struct to store information
+about tree upgrades, including the maximum number of upgrades, the number of leaves upgrades, and the number of trunk
+upgrades.
+
+The contract includes several public functions for interacting with tree upgrades:
+
+- `getLeavesUpgradeCost(uint256 _tokenId, uint leavesBaseStates)`: Returns the cost of upgrading the leaves of a tree
+  with the given token ID and base leaves stats
+- `getTrunkUpgradeCost(uint256 _tokenId, uint trunkBaseStats)`: Returns the cost of upgrading the trunk of a tree with
+  the given token ID and base trunk stats
+- `getTreeStats(uint256 _tokenId)`: Returns the stats of a tree with the given token ID
+
+It also includes internal functions for upgrading trees:
+
+- `canUpgradeTrunk(uint256 _tokenId)`: Verifies that the trunk of a tree with the given token ID can be upgraded
+- `canUpgradeLeaves(uint256 _tokenId)`: Verifies that the leaves of a tree with the given token ID can be upgraded
+- `upgradeTrunk(uint256 _tokenId)`: Upgrades the trunk of a tree with the given token ID
+- `upgradeLeaves(uint256 _tokenId)`: Upgrades the leaves of a tree with the given token ID
+
+The contract also includes an event for logging tree upgrades:
+
+- `TreeUpgraded(address indexed to, uint256 indexed _tokenId, TreeUpgrade stats)`: Triggered when a tree is upgraded
+
+Overall, the `TreeStats` contract provides a set of functions for upgrading the stats of virtual trees. It includes
+mechanisms for calculating the cost of upgrading tree trunks and leaves, and allows users to retrieve information about
+the upgrades applied to a tree. It also includes an event for logging tree upgrades.
