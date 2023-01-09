@@ -8,7 +8,8 @@
     "compile": "hardhat compile",
     "deploy": "hardhat run scripts/deploy.ts",
     "deploy:mumbai": "hardhat run scripts/deploy.ts --network mumbai",
-    "deploy:local": "hardhat run scripts/deploy.ts --network localhost"
+    "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
+    "local-node":  "hardhat node"
   },
   "license": "MIT",
   "devDependencies": {
