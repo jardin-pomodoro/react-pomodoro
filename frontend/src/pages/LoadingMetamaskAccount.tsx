@@ -18,7 +18,7 @@ const useStyles = createStyles(() => ({
   },
 }));
 
-export default function LoadingMatamaskAccount({
+export function LoadingMatamaskAccount({
   message,
 }: LoadingMatamaskAccountProps) {
   const { classes } = useStyles();

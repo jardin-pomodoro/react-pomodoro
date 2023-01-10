@@ -6,16 +6,18 @@ import { useConnectWallet, useWallets } from '@web3-onboard/react';
 import { OnboardAPI } from '@web3-onboard/core';
 import { useState, useEffect, useCallback } from 'react';
 
-import Home from './pages/Home';
-import NotFound from './pages/NotFound';
-import Gallery from './pages/Gallery';
-import BuySeed from './pages/BuySeedPage';
-import LoadingMatamaskAccount from './pages/LoadingMetamaskAccount';
-import BuyNft from './pages/BuyNft';
-import ConnectWallet from './pages/ConnectWallet';
 import { initWeb3Onboard } from './services/smart-contract.service';
 import { InitSingletonServiceStore } from './stores/singletonServiceStore';
 import { useAppStore, useNftStore, useWalletStore } from './stores';
+import {
+  BuyNft,
+  ConnectWallet,
+  Gallery,
+  Home,
+  LoadingMatamaskAccount,
+  NotFound,
+  BuySeedPage,
+} from './pages';
 
 declare global {
   interface Window {
@@ -125,7 +127,7 @@ export function App() {
   }
   return (
     <Routes>
-      <Route path="/buy" element={<BuySeed />} />
+      <Route path="/buy" element={<BuySeedPage />} />
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/" element={<Home />} />
       <Route path="*" element={<NotFound />} />

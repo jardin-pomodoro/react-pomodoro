@@ -5,7 +5,7 @@ import { MyGallery } from '../components/gallery/MyGallery';
 import { GetMoneyCountService } from '../services/get-money-count.service';
 import { MapServices } from '../stores/singletonServiceStore';
 
-function Gallery() {
+export function Gallery() {
   const [moneyCount, setMoneyCount] = useState<number | undefined>(undefined);
   const [{ wallet }] = useConnectWallet();
   const getMoneyCountService = MapServices.getInstance().getService(
@@ -36,5 +36,3 @@ function Gallery() {
     </>
   );
 }
-
-export default Gallery;

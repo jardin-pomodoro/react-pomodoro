@@ -45,7 +45,7 @@ const useStyles = createStyles(() => ({
   },
 }));
 
-export default function BuyNft() {
+export function BuyNft() {
   const { classes } = useStyles();
   const [transactionSuccess, setTransactionSuccess] = useState(false);
   const [nfts, setNfts] = useState<Nft[]>([]);

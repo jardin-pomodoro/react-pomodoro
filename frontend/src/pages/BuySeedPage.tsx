@@ -5,7 +5,7 @@ import { HeaderMenu } from '../components/common/header';
 import { GetMoneyCountService } from '../services/get-money-count.service';
 import { MapServices } from '../stores/singletonServiceStore';
 
-function BuySeedPage() {
+export function BuySeedPage() {
   const [moneyCount, setMoneyCount] = useState<number | undefined>(undefined);
   const [{ wallet }] = useConnectWallet();
 
@@ -36,5 +36,3 @@ function BuySeedPage() {
     </>
   );
 }
-
-export default BuySeedPage;
