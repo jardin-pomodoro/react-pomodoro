@@ -14,9 +14,13 @@ import LoadingMatamaskAccount from './pages/LoadingMetamaskAccount';
 import BuyNft from './pages/BuyNft';
 import ConnectWallet from './pages/ConnectWallet';
 import { initWeb3Onboard } from './services/smart-contract.service';
-import { InitSingletonServiceStore } from './stores/singletonServiceStore';
+import {
+  InitSingletonServiceStore,
+  MapServices,
+} from './stores/singletonServiceStore';
 import { useAppStore, useNftStore, useWalletStore } from './stores';
 import ViewNft from './pages/ViewNft';
+import { GetNftsService } from './services/get-nfts.service';
 
 declare global {
   interface Window {
@@ -107,11 +111,24 @@ export function App() {
 
   useEffect(() => {
     if (!wallet) return;
-    retrieveNfts().then((isOwner) => {
-      if (isOwner) {
-        setHasNfts(true);
-      }
-    });
+    const getNfts = async () => {
+      const getNftsService = MapServices.getInstance().getService(
+        'GetNftsService'
+      ) as GetNftsService;
+      const res = await getNftsService.handle();
+      console.log(res);
+    };
+    getNfts();
+    // retrieveNfts()
+    //   .then((isOwner) => {
+    //     console.log('isOwner: ', isOwner);
+    //     if (isOwner) {
+    //       setHasNfts(true);
+    //     }
+    //   })
+    //   .catch((error: unknown) => {
+    //     console.log('error: ', error);
+    //   });
   }, [connectedWallets, wallet, retrieveNfts, setHasNfts]);
 
   if (!connecting && !wallet) {
@@ -129,7 +146,7 @@ export function App() {
     <Routes>
       <Route path="/buy" element={<BuySeed />} />
       <Route path="/gallery" element={<Gallery />} />
-      <Route path="/gallery/:id" element={<ViewNft  />} />
+      <Route path="/gallery/:id" element={<ViewNft />} />
       <Route path="/" element={<Home />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

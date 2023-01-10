@@ -71,7 +71,8 @@ export class SmartContractService {
         signer
       );
     }
-
+    console.log('this.growTreeContract');
+    console.log(this.growTreeContract);
     return this.growTreeContract;
   }
 
