@@ -111,24 +111,13 @@ export function App() {
 
   useEffect(() => {
     if (!wallet) return;
-    const getNfts = async () => {
-      const getNftsService = MapServices.getInstance().getService(
-        'GetNftsService'
-      ) as GetNftsService;
-      const res = await getNftsService.handle();
-      console.log(res);
+    const searchIfHasNft = async () => {
+      const isOwner = await retrieveNfts();
+      if (isOwner) {
+        setHasNfts(true);
+      }
     };
-    getNfts();
-    // retrieveNfts()
-    //   .then((isOwner) => {
-    //     console.log('isOwner: ', isOwner);
-    //     if (isOwner) {
-    //       setHasNfts(true);
-    //     }
-    //   })
-    //   .catch((error: unknown) => {
-    //     console.log('error: ', error);
-    //   });
+    searchIfHasNft();
   }, [connectedWallets, wallet, retrieveNfts, setHasNfts]);
 
   if (!connecting && !wallet) {

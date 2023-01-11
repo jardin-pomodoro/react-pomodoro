@@ -51,7 +51,7 @@ export class MetamaskNftRepository implements NftRepository {
     console.log('getAll');
     const adress = this.wallet.accounts[0].address;
     console.log(adress);
-    const numberOfExistingToken = 4;
+    const numberOfExistingToken = await this.getNumberOfExistingNft();
     console.log(numberOfExistingToken);
     const adresses: string[] = [];
     const tokenAsked: number[] = [];
@@ -64,7 +64,7 @@ export class MetamaskNftRepository implements NftRepository {
     const result = await SmartContractService.loadContract(
       this.wallet
     ).balanceOfBatch(adresses, tokenAsked);
-    console.log('result 2', result);
+    console.log(result);
     if (Array.isArray(result)) {
       result.forEach((element) => {
         if (ethers.BigNumber.from(element).toNumber() === 1) {
