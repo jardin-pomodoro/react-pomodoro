@@ -106,14 +106,16 @@ export class MetamaskNftRepository implements NftRepository {
     const result = await SmartContractService.loadContract(
       this.wallet
     ).getLeavesUpgradeCost(nft.id, baseStat);
-    return ethers.BigNumber.from(result).toNumber();
+    console.log(ethers.BigNumber.from(result).toBigInt());
+    return Number(ethers.BigNumber.from(result).toBigInt());
   }
 
   async getTrunkUpgradePrice(nft: Nft, baseStat: number): Promise<number> {
     const result = await SmartContractService.loadContract(
       this.wallet
     ).getTrunkUpgradeCost(nft.id, baseStat);
-    return ethers.BigNumber.from(result).toNumber();
+    console.log(ethers.BigNumber.from(result).toBigInt());
+    return Number(ethers.BigNumber.from(result).toBigInt());
   }
 
   async getUpgradeStats(nft: Nft): Promise<NftUpgradeStats> {

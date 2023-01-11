@@ -70,7 +70,7 @@ export function FeaturesCard({
       className={classes.card_body}
       withBorder
     >
-      <Card.Section component="a" href="https://mantine.dev/">
+      <Card.Section component="a" href={`/gallery/${title}`}>
         <Image
           src={
             !imageUrl
@@ -90,9 +90,6 @@ export function FeaturesCard({
         </Badge>
       </Group>
 
-      <Text size="sm" className={classes.text_color}>
-        Cette NFT vous donnera la force de vosu concentrer
-      </Text>
 
       <Button
         disabled={!improveButtonShow}

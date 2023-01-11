@@ -9,7 +9,7 @@ import {
   Progress,
   createStyles,
   Center,
-  Icon,
+  Chip,
 } from '@mantine/core';
 import { MetamaskNftRepository, MetamaskSeedRepository } from '../repositories';
 import {
@@ -17,23 +17,49 @@ import {
   NftDetails,
 } from '../services/get-nft-details.service';
 import { GetSeedService } from '../services/get-seed.service';
-import { GetNftMetadataService } from '../services';
+import { GetMoneyCountService, GetNftMetadataService } from '../services';
 import { IconArrowDownRight, IconArrowUpRight } from '@tabler/icons';
+import { HeaderMenu } from '../components/common/header';
+import { MapServices } from '../stores';
 
 const useStyles = createStyles(() => ({
   imageSection: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'column',
+    padding: '1rem',
   },
-  stats: {
+  main_stats: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
-  progress: {
+  stats: {
     display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+  },
+  chip: {
+    color: '#4B8673',
+  },
+  card: {
+    backgroundColor: 'white',
+    padding: '1rem',
+    borderRadius: '1rem',
+    boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.1)',
+  },
+  stats_chips: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  chip_element: {
+    pointerEvents: 'none',
   },
 }));
 
@@ -46,8 +72,22 @@ export default function VewNft() {
   const { classes } = useStyles();
   const [nftDetails, setNftDetails] = useState<NftDetails | undefined>();
   const [imageLink, setImageLink] = useState<string | undefined>();
+  const [moneyCount, setMoneyCount] = useState<number | undefined>();
   const [{ wallet }] = useConnectWallet();
   const { id } = useParams();
+  const getMoneyCountService = MapServices.getInstance().getService(
+    'GetMoneyCountService'
+  ) as GetMoneyCountService;
+
+  useEffect(() => {
+    const getMoneyCount = async () => {
+      const money = await getMoneyCountService.handle();
+      setMoneyCount(money);
+    };
+    if (wallet) {
+      getMoneyCount();
+    }
+  }, [wallet, getMoneyCountService]);
   useEffect(() => {
     const getNftDetailsFunc = async () => {
       if (!wallet || !id) return;
@@ -73,86 +113,184 @@ export default function VewNft() {
 
   if (imageLink && nftDetails) {
     return (
-      <Container>
-        <div className={classes.imageSection}>
-          <img src={imageLink} alt="nft" />
-        </div>
-        <div className={classes.stats}>
-          <Group>
-            <RingProgress
-              size={80}
-              roundCaps
-              thickness={8}
-              sections={[
-                {
-                  value:
-                    (nftDetails.leavesUpgradeCount / nftDetails.maxUpgrade) *
-                    100,
-                  color: 'blue',
-                },
-              ]}
-              label={
-                <Center>
-                  <IconArrowUpRight size={22} stroke={1.5} />
-                </Center>
-              }
-            />
-
-            <div>
-              <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
-                Nombre d'update des feuilles
-              </Text>
-              <Text weight={700} size="xl">
-                {nftDetails.leavesUpgradeCount} / {nftDetails.maxUpgrade}
-              </Text>
+      <>
+        <HeaderMenu
+          links={[
+            { link: '/', label: 'Home', links: [] },
+            { link: '/gallery', label: 'Gallery', links: [] },
+            { link: '/buy', label: 'Acheter', links: [] },
+          ]}
+          moneyCount={moneyCount}
+        />
+        <Container className={classes.card}>
+          <div className={classes.imageSection}>
+            <img src={imageLink} alt="nft" />
+            <Chip m="sm">
+              <span className={classes.chip}>#{nftDetails.seed}</span>
+            </Chip>
+            <div className={classes.stats_chips}>
+              <Chip className={classes.chip_element} m="sm">
+                <span className={classes.chip}>
+                  {nftDetails.maxBreed} fusions maximum
+                </span>
+              </Chip>
+              <Chip className={classes.chip_element} m="sm">
+                <span className={classes.chip}>
+                  {nftDetails.leavesUpgradePrice} pour upgrade les feuilles
+                </span>
+              </Chip>
+              <Chip className={classes.chip_element} m="sm">
+                <span className={classes.chip}>
+                  {nftDetails.trunkUpgradePrice} pour upgrade le tronc
+                </span>
+              </Chip>
             </div>
-          </Group>
-          <Group>
-            <RingProgress
-              size={80}
-              roundCaps
-              thickness={8}
-              sections={[
-                {
-                  value:
-                    (nftDetails.trunkUpgradeCount / nftDetails.maxUpgrade) *
-                    100,
-                  color: 'blue',
-                },
-              ]}
-              label={
-                <Center>
-                  <IconArrowUpRight size={22} stroke={1.5} />
-                </Center>
-              }
-            />
+          </div>
+          <div className={classes.main_stats}>
+            <div className={classes.stats}>
+              <Group>
+                <RingProgress
+                  size={80}
+                  roundCaps
+                  thickness={8}
+                  sections={[
+                    {
+                      value:
+                        (nftDetails.trunkStats / (27 + nftDetails.maxUpgrade)) *
+                        100,
+                      color: '#4B8673',
+                    },
+                  ]}
+                  label={
+                    <Center>
+                      <IconArrowUpRight size={22} stroke={1.5} />
+                    </Center>
+                  }
+                />
+                <div>
+                  <Text
+                    color="dimmed"
+                    size="xs"
+                    transform="uppercase"
+                    weight={700}
+                  >
+                    Statistique du tronc
+                  </Text>
+                  <Text weight={700} size="xl">
+                    {nftDetails.trunkStats} / {27 + nftDetails.maxUpgrade}
+                  </Text>
+                </div>
+              </Group>
 
-            <div>
-              <Text color="dimmed" size="xs" transform="uppercase" weight={700}>
-                Nombre d'update du tronc
-              </Text>
-              <Text weight={700} size="xl">
-                {nftDetails.trunkUpgradeCount} / {nftDetails.maxUpgrade}
-              </Text>
+              <Group>
+                <RingProgress
+                  size={80}
+                  roundCaps
+                  thickness={8}
+                  sections={[
+                    {
+                      value:
+                        (nftDetails.leavesStats /
+                          (27 + nftDetails.maxUpgrade)) *
+                        100,
+                      color: '#4B8673',
+                    },
+                  ]}
+                  label={
+                    <Center>
+                      <IconArrowUpRight size={22} stroke={1.5} />
+                    </Center>
+                  }
+                />
+                <div>
+                  <Text
+                    color="dimmed"
+                    size="xs"
+                    transform="uppercase"
+                    weight={700}
+                  >
+                    Statistique des feuilles
+                  </Text>
+                  <Text weight={700} size="xl">
+                    {nftDetails.leavesStats} / {27 + nftDetails.maxUpgrade}
+                  </Text>
+                </div>
+              </Group>
             </div>
-          </Group>
-        </div>
-        <Text size="xl">Attributs</Text>
-        <div>
-          <Text> Nombre de fusion maximum</Text>
-          <Text>{nftDetails.maxBreed}</Text>
-        </div>
-        <div>
-          <div className={classes.progress}>
-            <span>statistique du tronc</span>
-            <Progress value={(nftDetails.trunkStats / 30) * 100} mt={5} />
+            <div className={classes.stats}>
+              <Group>
+                <RingProgress
+                  size={80}
+                  roundCaps
+                  thickness={8}
+                  sections={[
+                    {
+                      value:
+                        (nftDetails.leavesUpgradeCount /
+                          nftDetails.maxUpgrade) *
+                        100,
+                      color: '#4B8673',
+                    },
+                  ]}
+                  label={
+                    <Center>
+                      <IconArrowUpRight size={22} stroke={1.5} />
+                    </Center>
+                  }
+                />
+
+                <div>
+                  <Text
+                    color="dimmed"
+                    size="xs"
+                    transform="uppercase"
+                    weight={700}
+                  >
+                    Nombre d'update des feuilles
+                  </Text>
+                  <Text weight={700} size="xl">
+                    {nftDetails.leavesUpgradeCount} / {nftDetails.maxUpgrade}
+                  </Text>
+                </div>
+              </Group>
+              <Group>
+                <RingProgress
+                  size={80}
+                  roundCaps
+                  thickness={8}
+                  sections={[
+                    {
+                      value:
+                        (nftDetails.trunkUpgradeCount / nftDetails.maxUpgrade) *
+                        100,
+                      color: '#4B8673',
+                    },
+                  ]}
+                  label={
+                    <Center>
+                      <IconArrowUpRight size={22} stroke={1.5} />
+                    </Center>
+                  }
+                />
+
+                <div>
+                  <Text
+                    color="dimmed"
+                    size="xs"
+                    transform="uppercase"
+                    weight={700}
+                  >
+                    Nombre d'update du tronc
+                  </Text>
+                  <Text weight={700} size="xl">
+                    {nftDetails.trunkUpgradeCount} / {nftDetails.maxUpgrade}
+                  </Text>
+                </div>
+              </Group>
+            </div>
           </div>
-          <div className={classes.progress}>
-            <span>statistique des feuilles</span>
-            <Progress value={(nftDetails.leavesStats / 30) * 100} mt={5} />
-          </div>
-        </div>
-      </Container>
+        </Container>
+      </>
     );
   }
   return <div>Loading...</div>;
