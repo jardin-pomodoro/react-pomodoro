@@ -1,15 +1,23 @@
 import create from 'zustand';
+import { NftRepository, SeedRepository } from '../core';
 import { Nft } from '../core/nft';
-import { MetamaskNftRepository } from '../repositories';
-import { GetNftsService, PlantTreeService } from '../services';
+import { MetamaskNftRepository, MetamaskSeedRepository } from '../repositories';
+import {
+  GetNftDetailsService,
+  GetNftMetadataService,
+  GetNftsService,
+  GetSeedService,
+  PlantTreeService,
+} from '../services';
 import { useWalletStore } from './walletStore';
 
 export interface NftStore {
   nfts: Nft[];
   retrieveNfts: () => Promise<boolean>;
-  plantATree: () => Promise<void>;
+  plantATree: (id: string) => Promise<void>;
+  loadImage: () => Promise<void>;
 }
-function getRepo(): MetamaskNftRepository {
+function getRepo(): NftRepository {
   const { wallet } = useWalletStore.getState();
   if (wallet === null) {
     throw new Error('Repository is undefined');
@@ -18,7 +26,16 @@ function getRepo(): MetamaskNftRepository {
   return new MetamaskNftRepository(wallet);
 }
 
-export const useNftStore = create<NftStore>((set) => ({
+function getSeedRepo(): SeedRepository {
+  const { wallet } = useWalletStore.getState();
+  if (wallet === null) {
+    throw new Error('Repository is undefined');
+  }
+
+  return new MetamaskSeedRepository(wallet);
+}
+
+export const useNftStore = create<NftStore>((set, get) => ({
   nfts: [],
   // return true if have found at lease one nft
   retrieveNfts: async (): Promise<boolean> => {
@@ -28,13 +45,27 @@ export const useNftStore = create<NftStore>((set) => ({
     set({ nfts });
     return nfts.length > 0;
   },
-  plantATree: async () => {
+  plantATree: async (id: string) => {
     const repository = getRepo();
-    const getNfts = new GetNftsService(repository);
     const plantTreeService = new PlantTreeService(repository);
-    const nfts = await getNfts.handle();
-    const randomNft = nfts.sort(() => 0.5 - Math.random())[0];
-    // en vrai c'est une seed qu'il me faut
-    await plantTreeService.handle(randomNft.id);
+    await plantTreeService.handle(id);
+  },
+  loadImage: async () => {
+    const repo = getRepo();
+    const seedRepo = getSeedRepo();
+    const getSeedService = new GetSeedService(seedRepo);
+    const getNftDetails = new GetNftDetailsService(repo, getSeedService);
+    const getNftMetadataService = new GetNftMetadataService(repo);
+    const nfts = await Promise.all(get().nfts.map(async (nft) => {
+      const nftDetailsResponse = await getNftDetails.handle(Number(nft.id));
+      const imageLinkResponse = await getNftMetadataService.handle({
+        id: nft.id,
+      });
+      const newNft = { ...nft };
+      newNft.image = imageLinkResponse;
+      newNft.detail = nftDetailsResponse;
+      return newNft;
+    }));
+    set({ nfts });
   },
 }));

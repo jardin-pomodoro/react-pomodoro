@@ -14,10 +14,10 @@ import { IconArrowDownRight, IconArrowUpRight } from '@tabler/icons';
 import { MetamaskNftRepository, MetamaskSeedRepository } from '../repositories';
 import {
   GetNftDetailsService,
-  NftDetails,
 } from '../services/get-nft-details.service';
 import { GetNftMetadataService, GetSeedService } from '../services';
 import { HeaderMenu } from '../components/common/header';
+import { NftDetails } from '../core';
 
 const useStyles = createStyles(() => ({
   imageSection: {
@@ -67,7 +67,7 @@ const icons = {
 
 export function ViewNft({ moneyCount }: any) {
   const { classes } = useStyles();
-  const [nftDetails, setNftDetails] = useState<NftDetails | undefined>();
+const [nftDetails, setNftDetails] = useState<NftDetails | undefined>();
   const [imageLink, setImageLink] = useState<string | undefined>();
   const [{ wallet }] = useConnectWallet();
   const { id } = useParams();

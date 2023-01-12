@@ -86,7 +86,9 @@ export class MetamaskNftRepository implements NftRepository {
   }
 
   async plantTree(parentTree: string): Promise<void> {
-    const result = await SmartContractService.loadContract(this.wallet).plantTree(parentTree);
+    const result = await SmartContractService.loadContract(
+      this.wallet
+    ).plantTree(parentTree);
     // eslint-disable-next-line no-console
     console.log(result);
   }

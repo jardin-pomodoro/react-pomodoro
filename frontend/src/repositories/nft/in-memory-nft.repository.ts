@@ -1,9 +1,25 @@
 /* eslint-disable no-console */
 /* eslint-disable class-methods-use-this */
-import { Nft } from '../../core/nft';
-import { NftRepository } from '../../core/nft.repository';
+import { Nft, NftRepository } from '../../core';
+import { NftUpgradeStats } from '../../core/nft-upgrade-stats';
 
 export class InMemoryNftRepository implements NftRepository {
+  getLeavesUpgradePrice(nft: Nft, baseStat: number): Promise<number> {
+    throw new Error('Method not implemented.');
+  }
+
+  getTrunkUpgradePrice(nft: Nft, baseStat: number): Promise<number> {
+    throw new Error('Method not implemented.');
+  }
+
+  getUpgradeStats(nft: Nft): Promise<NftUpgradeStats> {
+    throw new Error('Method not implemented.');
+  }
+
+  getBreedCount(nft: Nft): Promise<number> {
+    throw new Error('Method not implemented.');
+  }
+
   private static nfts: Nft[] = [
     { id: '82781378133' },
     { id: '82781378132' },
@@ -14,7 +30,7 @@ export class InMemoryNftRepository implements NftRepository {
     { id: '3993103103' },
   ];
 
-  async plantTree(parentTree: number): Promise<void> {
+  async plantTree(parentTree: string): Promise<void> {
     return Promise.resolve(undefined); // TODO
   }
 

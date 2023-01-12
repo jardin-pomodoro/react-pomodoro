@@ -11,7 +11,7 @@ import {
   createStyles,
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
-import { ethers } from 'ethers';
+import { useConnectWallet } from '@web3-onboard/react';
 import { Nft } from '../../core/nft';
 import { GetNftsService } from '../../services/get-nfts.service';
 import { ImproveLeavesNftService } from '../../services/improve-leaves-tree.service';
@@ -19,9 +19,7 @@ import { MergeNftsService } from '../../services/merge-nfts.service';
 import { Banner } from './Banner';
 import { FeaturesCard } from './card';
 import { MetamaskNftRepository } from '../../repositories/nft/metamask-nft.repository';
-import { contractAbi, treeToken } from '../../utils/constants';
 import { GetNftMetadataService } from '../../services/get-nft-metadata.service';
-import { useConnectWallet } from '@web3-onboard/react';
 import { GetSeedService } from '../../services/get-seed.service';
 import { MetamaskSeedRepository } from '../../repositories/seed/metamask-seed.repository';
 import {

@@ -2,7 +2,11 @@ import { useConnectWallet } from '@web3-onboard/react';
 import BuySeed from '../components/buy/BuySeed';
 import { HeaderMenu } from '../components/common/header';
 
-export function BuySeedPage({ moneyCount }: { moneyCount: number | undefined }) {
+export function BuySeedPage({
+  moneyCount,
+}: {
+  moneyCount: number | undefined;
+}) {
   const [{ wallet }] = useConnectWallet();
 
   return (

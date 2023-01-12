@@ -1,5 +1,5 @@
 import create from 'zustand';
-import { Nft, Seed, SeedRepository } from '../core';
+import { Nft, SeedRepository } from '../core';
 import { MetamaskSeedRepository } from '../repositories';
 import { GetSeedService } from '../services';
 import { useWalletStore } from './walletStore';
@@ -22,7 +22,7 @@ export const useSeedsStore = create<SeedsStore>((set) => ({
   getSeeds: async () => {
     const repo = getRepo();
     const service = new GetSeedService(repo);
-    const seed = await service.handle(1);// TODO 1 is dummy value
+    const seed = await service.handle(1); // TODO 1 is dummy value
     set((state) => ({ seeds: [...state.seeds, seed] }));
   },
 }));

@@ -1,17 +1,23 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { SimpleGrid, Image, Button } from '@mantine/core';
 import { useState } from 'react';
+import { Nft } from '../../core';
+import { useNftStore } from '../../stores';
 
 export interface HomeModalProps {
-  urls: string[];
+  nfts: Nft[];
+  closeModal: () => void;
 }
 
 export interface NftCardProps {
-  onClick: (url: string) => void;
+  onClick: (id: string) => void;
   url: string;
+  id: string;
   isSelected: boolean;
+  fert?: number;
 }
 
-export function NftCard({ url, isSelected, onClick }: NftCardProps) {
+export function NftCard({ id, url, isSelected, onClick, fert }: NftCardProps) {
   const wapperStyle = {
     maxHeight: 240,
     padding: 20,
@@ -24,36 +30,44 @@ export function NftCard({ url, isSelected, onClick }: NftCardProps) {
   return (
     <div style={wapperStyle}>
       <Image
-        onClick={() => onClick(url)}
+        onClick={() => onClick(id)}
         radius="sm"
         src={url}
         alt="nft tree"
         withPlaceholder
       />
+      <div>{ fert }</div>
     </div>
   );
 }
 
-export function HomeModal({ urls }: HomeModalProps) {
+export function HomeModal({ nfts, closeModal }: HomeModalProps) {
   const [nftParent, setParent] = useState<string | null>(null);
-  const onImageClick = (url: string) => {
-    setParent(url);
+  const plantATree = useNftStore((store) => store.plantATree);
+  const onImageClick = (id: string) => {
+    setParent(id);
   };
 
   const onSubmit = () => {
     // eslint-disable-next-line no-console
     console.log(nftParent);
+    if (nftParent) {
+      plantATree(nftParent);
+      closeModal();
+    }
   };
 
   return (
     <>
       <SimpleGrid cols={3}>
-        {urls.map((url) => (
+        {nfts.map((nft) => (
           <NftCard
-            key={url}
-            url={url}
+            id={nft.id}
+            key={nft.id}
+            url={nft.image!}
             onClick={onImageClick}
-            isSelected={url === nftParent}
+            isSelected={nft.id === nftParent}
+            fert={nft.detail?.seed}
           />
         ))}
       </SimpleGrid>
