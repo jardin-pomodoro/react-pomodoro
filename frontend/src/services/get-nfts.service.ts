@@ -5,7 +5,6 @@ export class GetNftsService {
   constructor(private readonly nftRepository: NftRepository) {}
 
   async handle(): Promise<Nft[]> {
-    console.log('dans le getAll');
     return this.nftRepository.getAll();
   }
 }

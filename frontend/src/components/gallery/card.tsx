@@ -9,6 +9,9 @@ import {
   Image,
   Text,
 } from '@mantine/core';
+import { IconCurrencyEthereum } from '@tabler/icons';
+import { Link } from 'react-router-dom';
+import { NftDetails } from '../../services/get-nft-details.service';
 
 interface FeaturesCardProps {
   backgroundColor: string;
@@ -18,6 +21,7 @@ interface FeaturesCardProps {
   improveButtonShow: boolean;
   // eslint-disable-next-line react/require-default-props
   imageUrl?: string;
+  nftDetails: NftDetails;
   selectMerge: (id: string) => void;
   selectImproveLeaves: (id: string) => void;
   selectImproveTrunk: (id: string) => void;
@@ -54,6 +58,7 @@ export function FeaturesCard({
   textButtonMerge,
   improveButtonShow,
   imageUrl,
+  nftDetails,
   selectMerge,
   selectImproveLeaves,
   selectImproveTrunk,
@@ -70,26 +75,27 @@ export function FeaturesCard({
       className={classes.card_body}
       withBorder
     >
-      <Card.Section component="a" href={`/gallery/${title}`}>
-        <Image
-          src={
-            !imageUrl
-              ? 'https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80'
-              : imageUrl
-          }
-          alt="Norway"
-        />
-      </Card.Section>
+      <Link to={`/gallery/${title}`}>
+        <Card.Section>
+          <Image
+            src={
+              !imageUrl
+                ? 'https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80'
+                : imageUrl
+            }
+            alt="Norway"
+          />
+        </Card.Section>
+      </Link>
 
       <Group position="apart" mt="md" mb="xs">
         <Text weight={500} className={classes.text_color}>
           {title}
         </Text>
         <Badge color="teal.7" variant="light">
-          Disponible
+          En pleine santé
         </Badge>
       </Group>
-
 
       <Button
         disabled={!improveButtonShow}
@@ -103,7 +109,8 @@ export function FeaturesCard({
           selectImproveLeaves(title);
         }}
       >
-        Améliorer les feuilles de l'arbre
+        Améliorer les feuilles <IconCurrencyEthereum color="black" size={20} />{' '}
+        {nftDetails.leavesUpgradePrice}
       </Button>
       <Button
         disabled={!improveButtonShow}
@@ -117,7 +124,8 @@ export function FeaturesCard({
           selectImproveTrunk(title);
         }}
       >
-        Améliorer le tronc de l'arbre
+        Améliorer le tronc <IconCurrencyEthereum color="black" size={20} />{' '}
+        {nftDetails.trunkUpgradePrice}
       </Button>
       <Button
         variant="light"

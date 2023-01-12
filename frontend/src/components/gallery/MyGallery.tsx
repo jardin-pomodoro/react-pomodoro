@@ -22,9 +22,14 @@ import { MetamaskNftRepository } from '../../repositories/nft/metamask-nft.repos
 import { contractAbi, treeToken } from '../../utils/constants';
 import { GetNftMetadataService } from '../../services/get-nft-metadata.service';
 import { useConnectWallet } from '@web3-onboard/react';
-import { GetNftDetailsService } from '../../services/get-nft-details.service';
 import { GetSeedService } from '../../services/get-seed.service';
 import { MetamaskSeedRepository } from '../../repositories/seed/metamask-seed.repository';
+import {
+  NftDetails,
+  GetNftDetailsService,
+} from '../../services/get-nft-details.service';
+import { MapServices } from '../../stores';
+import { SmartContractService } from '../../services/smart-contract.service';
 
 interface BannerProps {
   backgroundColor: string;
@@ -47,6 +52,7 @@ interface FeaturesCardUI {
   improveButtonShow: boolean;
   title: string;
   imageMetadata?: string;
+  nftDetails: NftDetails;
 }
 
 const useStyles = createStyles(() => ({
@@ -119,18 +125,26 @@ const modifyFeaturesCard = (
 };
 
 const loadFeatureCardProps = async (
-  getNftsService: GetNftsService
+  getNftsService: GetNftsService,
+  getNftDetailsService: GetNftDetailsService,
+  getNftMetadataService: GetNftMetadataService
 ): Promise<FeaturesCardUI[]> => {
   const nftsFromService = await getNftsService.handle();
-  return nftsFromService.map((nft) => {
-    return {
-      backgroundColor: '#4B8673',
-      textColor: 'white',
-      textButtonMerge: "Fusionner l'arbre",
-      improveButtonShow: true,
-      title: nft.id,
-    };
-  });
+  return Promise.all(
+    nftsFromService.map(async (nft) => {
+      const nftMetadata = await getNftMetadataService.handle(nft);
+      const nftDetails = await getNftDetailsService.handle(Number(nft.id));
+      return {
+        backgroundColor: '#4B8673',
+        textColor: 'white',
+        textButtonMerge: "Fusionner l'arbre",
+        improveButtonShow: true,
+        title: nft.id,
+        imageMetadata: nftMetadata,
+        nftDetails,
+      };
+    })
+  );
 };
 
 export function MyGallery() {
@@ -156,6 +170,14 @@ export function MyGallery() {
     {} as SimpleBannerProps
   );
   const { classes } = useStyles();
+
+  const getNftDetailsService = MapServices.getInstance().getService(
+    'GetNftDetailsService'
+  ) as GetNftDetailsService;
+
+  const getNftMetadataService = MapServices.getInstance().getService(
+    'GetNftMetadataService'
+  ) as GetNftMetadataService;
 
   const selectNftToMerge = (id: string) => {
     const nft = featuresCardProps.find(
@@ -185,6 +207,24 @@ export function MyGallery() {
     );
   };
 
+  useEffect(() => {
+    if (!wallet) return;
+    SmartContractService.listenToEvent('TreeUpgraded', (event) => {
+      console.log('TreeUpgraded', event);
+      const getNftsService = new GetNftsService(
+        new MetamaskNftRepository(wallet)
+      );
+      loadFeatureCardProps(
+        getNftsService,
+        getNftDetailsService,
+        getNftMetadataService
+      ).then((featureCardUiResponse) => {
+        console.log('featureCardUiResponse', featureCardUiResponse);
+        setFeaturesCardProps(featureCardUiResponse);
+      });
+    });
+  }, [wallet]);
+
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const mergeTwoNfts = async () => {
     if (!wallet) return;
@@ -200,14 +240,17 @@ export function MyGallery() {
     try {
       await mergeNftsService.handle({ nft1: nft1.id, nft2: nft2.id });
       setSelectedNfts([]);
-      const featureCardUi = await loadFeatureCardProps(getNftsService);
+      // const featureCardUi = await loadFeatureCardProps(
+      //   getNftsService,
+      //   getNftDetailsService
+      // );
 
-      setFeaturesCardProps(featureCardUi);
-      setSimpleBannerProps({
-        title: 'Succès',
-        description:
-          "Votre Fusion est un succès, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction",
-      });
+      // setFeaturesCardProps(featureCardUi);
+      // setSimpleBannerProps({
+      //   title: 'Succès',
+      //   description:
+      //     "Votre Fusion est un succès, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction",
+      // });
     } catch (e) {
       setSimpleBannerProps({
         title: 'Echec',
@@ -228,12 +271,15 @@ export function MyGallery() {
     );
     const nft: Nft = { id };
     await improveNftService.handle({ nft });
-    const featureCardUi = await loadFeatureCardProps(getNftsService);
-    setFeaturesCardProps(featureCardUi);
-    setSimpleBannerProps({
-      title: 'Succès',
-      description: 'Le tronc de votre arbre a été amélioré avec succès',
-    });
+    // const featureCardUi = await loadFeatureCardProps(
+    //   getNftsService,
+    //   getNftDetailsService
+    // );
+    // setFeaturesCardProps(featureCardUi);
+    // setSimpleBannerProps({
+    //   title: 'Succès',
+    //   description: 'Le tronc de votre arbre a été amélioré avec succès',
+    // });
   };
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
@@ -247,12 +293,15 @@ export function MyGallery() {
     );
     const nft: Nft = { id };
     await improveNftService.handle({ nft });
-    const featureCardUi = await loadFeatureCardProps(getNftsService);
-    setFeaturesCardProps(featureCardUi);
-    setSimpleBannerProps({
-      title: 'Succès',
-      description: 'Les feuilles de votre arbre ont été améliorées avec succès',
-    });
+    // const featureCardUi = await loadFeatureCardProps(
+    //   getNftsService,
+    //   getNftDetailsService
+    // );
+    // setFeaturesCardProps(featureCardUi);
+    // setSimpleBannerProps({
+    //   title: 'Succès',
+    //   description: 'Les feuilles de votre arbre ont été améliorées avec succès',
+    // });
   };
 
   useEffect(() => {
@@ -275,6 +324,7 @@ export function MyGallery() {
       const nftsUi = await Promise.all(
         nfts.map(async (nft) => {
           const nftMetadata = await getNftMetadataService.handle(nft);
+          const nftDetails = await getNftDetails.handle(Number(nft.id));
           const nftE = {
             backgroundColor: '#4B8673',
             textColor: 'white',
@@ -282,8 +332,8 @@ export function MyGallery() {
             improveButtonShow: true,
             title: nft.id,
             imageMetadata: nftMetadata,
+            nftDetails,
           };
-          console.log(await getNftDetails.handle(Number(nft.id)));
           return nftE;
         })
       );
@@ -345,6 +395,7 @@ export function MyGallery() {
                   textColor={nft.textColor}
                   title={nft.title}
                   textButtonMerge={nft.textButtonMerge}
+                  nftDetails={nft.nftDetails}
                   selectMerge={() => selectNftToMerge(nft.title)}
                   selectImproveLeaves={() => improveLeavesNft(nft.title)}
                   selectImproveTrunk={() => improveTrunkNft(nft.title)}

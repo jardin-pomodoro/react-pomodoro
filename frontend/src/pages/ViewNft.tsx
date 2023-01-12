@@ -125,7 +125,7 @@ export default function VewNft() {
         <Container className={classes.card}>
           <div className={classes.imageSection}>
             <img src={imageLink} alt="nft" />
-            <Chip m="sm">
+            <Chip className={classes.chip_element} m="sm">
               <span className={classes.chip}>#{nftDetails.seed}</span>
             </Chip>
             <div className={classes.stats_chips}>
@@ -156,7 +156,8 @@ export default function VewNft() {
                   sections={[
                     {
                       value:
-                        (nftDetails.trunkStats / (27 + nftDetails.maxUpgrade)) *
+                        (nftDetails.trunkStats /
+                          (nftDetails.trunkStats + nftDetails.maxUpgrade)) *
                         100,
                       color: '#4B8673',
                     },
@@ -177,7 +178,8 @@ export default function VewNft() {
                     Statistique du tronc
                   </Text>
                   <Text weight={700} size="xl">
-                    {nftDetails.trunkStats} / {27 + nftDetails.maxUpgrade}
+                    {nftDetails.trunkStats} /
+                    {nftDetails.trunkStats + nftDetails.maxUpgrade}
                   </Text>
                 </div>
               </Group>
@@ -191,7 +193,7 @@ export default function VewNft() {
                     {
                       value:
                         (nftDetails.leavesStats /
-                          (27 + nftDetails.maxUpgrade)) *
+                          (nftDetails.leavesStats + nftDetails.maxUpgrade)) *
                         100,
                       color: '#4B8673',
                     },
@@ -212,7 +214,8 @@ export default function VewNft() {
                     Statistique des feuilles
                   </Text>
                   <Text weight={700} size="xl">
-                    {nftDetails.leavesStats} / {27 + nftDetails.maxUpgrade}
+                    {nftDetails.leavesStats} /{' '}
+                    {nftDetails.leavesStats + nftDetails.maxUpgrade}
                   </Text>
                 </div>
               </Group>

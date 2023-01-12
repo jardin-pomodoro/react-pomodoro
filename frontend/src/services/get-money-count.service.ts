@@ -6,7 +6,6 @@ export class GetMoneyCountService {
   async handle(): Promise<number> {
     const balance = await this.moneyRepository.getBalance();
     // eslint-disable-next-line no-console
-    console.log(balance);
     return balance;
   }
 }

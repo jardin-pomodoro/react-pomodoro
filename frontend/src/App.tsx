@@ -44,11 +44,8 @@ export function App() {
     if (!wallet) {
       return;
     }
-    console.log('start initBeans');
     InitSingletonServiceStore(wallet);
     setWallet(wallet);
-    console.log('end initBeans');
-    console.log(wallet);
   }, [wallet, setWallet]);
 
   useEffect(() => {
@@ -119,6 +116,8 @@ export function App() {
     };
     searchIfHasNft();
   }, [connectedWallets, wallet, retrieveNfts, setHasNfts]);
+
+  
 
   if (!connecting && !wallet) {
     return <ConnectWallet />;
