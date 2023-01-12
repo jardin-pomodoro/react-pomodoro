@@ -86,11 +86,9 @@ export class MetamaskNftRepository implements NftRepository {
   }
 
   async plantTree(parentTree: string): Promise<void> {
-    const contract = SmartContractService.loadContract(this.wallet).connect(
-      this.wallet.accounts[0].address
-    );
-    const result = await contract.plantTree(parentTree);
+    const result = await SmartContractService.loadContract(this.wallet).plantTree(parentTree);
     // eslint-disable-next-line no-console
+    console.log(result);
   }
 
   async getLeavesUpgradePrice(nft: Nft, baseStat: number): Promise<number> {
