@@ -13,7 +13,10 @@ import BuySeed from './pages/BuySeedPage';
 import LoadingMatamaskAccount from './pages/LoadingMetamaskAccount';
 import BuyNft from './pages/BuyNft';
 import ConnectWallet from './pages/ConnectWallet';
-import { initWeb3Onboard } from './services/smart-contract.service';
+import {
+  initWeb3Onboard,
+  SmartContractService,
+} from './services/smart-contract.service';
 import {
   InitSingletonServiceStore,
   MapServices,
@@ -21,6 +24,7 @@ import {
 import { useAppStore, useNftStore, useWalletStore } from './stores';
 import ViewNft from './pages/ViewNft';
 import { GetNftsService } from './services/get-nfts.service';
+import { GetMoneyCountService } from './services/get-money-count.service';
 
 declare global {
   interface Window {
@@ -30,6 +34,7 @@ declare global {
 
 export function App() {
   const connectedWallets = useWallets();
+  const [moneyCount, setMoneyCount] = useState<number | undefined>(undefined);
   const [{ wallet, connecting }, connect] = useConnectWallet();
   const [, setWeb3Onboard] = useState<OnboardAPI | null>(null);
   const retrieveNfts = useNftStore((store) => store.retrieveNfts);
@@ -117,7 +122,22 @@ export function App() {
     searchIfHasNft();
   }, [connectedWallets, wallet, retrieveNfts, setHasNfts]);
 
-  
+  useEffect(() => {
+    const getMoneyCount = async () => {
+      const getMoneyCountService = MapServices.getInstance().getService(
+        'GetMoneyCountService'
+      ) as GetMoneyCountService;
+      const money = await getMoneyCountService.handle();
+      setMoneyCount(money);
+    };
+    if (wallet) {
+      getMoneyCount();
+      SmartContractService.listenToEvent('TreeUpgraded', (event) => {
+        console.log('TreeUpgraded', event);
+        getMoneyCount();
+      });
+    }
+  }, [wallet]);
 
   if (!connecting && !wallet) {
     return <ConnectWallet />;
@@ -132,9 +152,12 @@ export function App() {
   }
   return (
     <Routes>
-      <Route path="/buy" element={<BuySeed />} />
-      <Route path="/gallery" element={<Gallery />} />
-      <Route path="/gallery/:id" element={<ViewNft />} />
+      <Route path="/buy" element={<BuySeed moneyCount={moneyCount} />} />
+      <Route path="/gallery" element={<Gallery moneyCount={moneyCount} />} />
+      <Route
+        path="/gallery/:id"
+        element={<ViewNft moneyCount={moneyCount} />}
+      />
       <Route path="/" element={<Home />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

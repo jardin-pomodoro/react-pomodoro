@@ -5,22 +5,8 @@ import { MyGallery } from '../components/gallery/MyGallery';
 import { GetMoneyCountService } from '../services/get-money-count.service';
 import { MapServices } from '../stores/singletonServiceStore';
 
-function Gallery() {
-  const [moneyCount, setMoneyCount] = useState<number | undefined>(undefined);
+function Gallery({ moneyCount }: any) {
   const [{ wallet }] = useConnectWallet();
-  const getMoneyCountService = MapServices.getInstance().getService(
-    'GetMoneyCountService'
-  ) as GetMoneyCountService;
-
-  useEffect(() => {
-    const getMoneyCount = async () => {
-      const money = await getMoneyCountService.handle();
-      setMoneyCount(money);
-    };
-    if (wallet) {
-      getMoneyCount();
-    }
-  }, [wallet, getMoneyCountService]);
 
   return (
     <>

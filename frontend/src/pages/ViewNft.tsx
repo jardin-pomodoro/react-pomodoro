@@ -6,21 +6,18 @@ import {
   RingProgress,
   Text,
   Group,
-  Progress,
   createStyles,
   Center,
   Chip,
 } from '@mantine/core';
+import { IconArrowDownRight, IconArrowUpRight } from '@tabler/icons';
 import { MetamaskNftRepository, MetamaskSeedRepository } from '../repositories';
 import {
   GetNftDetailsService,
   NftDetails,
 } from '../services/get-nft-details.service';
 import { GetSeedService } from '../services/get-seed.service';
-import { GetMoneyCountService, GetNftMetadataService } from '../services';
-import { IconArrowDownRight, IconArrowUpRight } from '@tabler/icons';
 import { HeaderMenu } from '../components/common/header';
-import { MapServices } from '../stores';
 
 const useStyles = createStyles(() => ({
   imageSection: {
@@ -68,26 +65,13 @@ const icons = {
   down: IconArrowDownRight,
 };
 
-export default function VewNft() {
+export default function VewNft({ moneyCount }: any) {
   const { classes } = useStyles();
   const [nftDetails, setNftDetails] = useState<NftDetails | undefined>();
   const [imageLink, setImageLink] = useState<string | undefined>();
-  const [moneyCount, setMoneyCount] = useState<number | undefined>();
   const [{ wallet }] = useConnectWallet();
   const { id } = useParams();
-  const getMoneyCountService = MapServices.getInstance().getService(
-    'GetMoneyCountService'
-  ) as GetMoneyCountService;
 
-  useEffect(() => {
-    const getMoneyCount = async () => {
-      const money = await getMoneyCountService.handle();
-      setMoneyCount(money);
-    };
-    if (wallet) {
-      getMoneyCount();
-    }
-  }, [wallet, getMoneyCountService]);
   useEffect(() => {
     const getNftDetailsFunc = async () => {
       if (!wallet || !id) return;
