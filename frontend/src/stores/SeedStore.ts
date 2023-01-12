@@ -1,11 +1,11 @@
 import create from 'zustand';
 import { Nft, Seed, SeedRepository } from '../core';
 import { MetamaskSeedRepository } from '../repositories';
-import { GetSeedsService } from '../services';
+import { GetSeedService } from '../services';
 import { useWalletStore } from './walletStore';
 
 export interface SeedsStore {
-  seeds: Seed[];
+  seeds: number[];
   getSeeds: (tree: Nft) => Promise<void>;
 }
 function getRepo(): SeedRepository {
@@ -21,8 +21,8 @@ export const useSeedsStore = create<SeedsStore>((set) => ({
   seeds: [],
   getSeeds: async () => {
     const repo = getRepo();
-    const service = new GetSeedsService(repo);
-    const seeds = await service.handle();
-    set({ seeds });
+    const service = new GetSeedService(repo);
+    const seed = await service.handle(1);// TODO 1 is dummy value
+    set((state) => ({ seeds: [...state.seeds, seed] }));
   },
 }));
