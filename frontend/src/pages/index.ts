@@ -6,3 +6,4 @@ export * from './installPlugin';
 export * from './NotFound';
 export * from './LoadingMetamaskAccount';
 export * from './ConnectWallet';
+export * from './ViewNft';

@@ -28,9 +28,9 @@ export const initWeb3Onboard = init({
       minimal: false,
     },
   },
+  apiKey: '50afc552-a665-4163-8ead-24433e8b9b34',
   notify: {
     transactionHandler: (transaction) => {
-      console.log({ transaction });
       if (transaction.eventCode === 'txPool') {
         return {
           // autoDismiss set to zero will persist the notification until the user excuses it
@@ -70,15 +70,13 @@ export class SmartContractService {
         signer
       );
     }
-
     return this.growTreeContract;
   }
 
   static listenToEvent(
-    contract: Contract,
     eventName: string,
     callback: (...parameters: any) => void
   ): void {
-    contract.on(eventName, callback);
+    this.growTreeContract.on(eventName, callback);
   }
 }

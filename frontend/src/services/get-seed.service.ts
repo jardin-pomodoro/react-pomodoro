@@ -1,11 +1,9 @@
-import { Seed } from '../core/seed-free';
-import { SeedRepository } from '../core/seed.repository';
+import { SeedRepository } from '../core';
 
-export class GetSeedsService {
-  constructor(private readonly seedFreeRepository: SeedRepository) {}
+export class GetSeedService {
+  constructor(private readonly seedRepository: SeedRepository) {}
 
-  async handle(): Promise<Seed[]> {
-    // TODO implement
-    return this.seedFreeRepository.getAllSeed();
+  async handle(tokenId: number): Promise<number> {
+    return this.seedRepository.getSeed(tokenId);
   }
 }

@@ -1,4 +1,4 @@
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.17;
 
 
 contract ForestSeeds {
@@ -12,7 +12,7 @@ contract ForestSeeds {
 
     mapping(uint256 => ForestSeed) private userSeeds;
 
-    function register(uint256 _tokenId) internal {
+    function registerSeeds(uint256 _tokenId) internal {
         userSeeds[_tokenId] = ForestSeed(4, 0, block.timestamp);
     }
 

@@ -6,9 +6,8 @@ import { useConnectWallet, useWallets } from '@web3-onboard/react';
 import { OnboardAPI } from '@web3-onboard/core';
 import { useState, useEffect, useCallback } from 'react';
 
-import { initWeb3Onboard } from './services/smart-contract.service';
-import { InitSingletonServiceStore } from './stores/singletonServiceStore';
-import { useAppStore, useNftStore, useWalletStore } from './stores';
+import { initWeb3Onboard, SmartContractService } from './services/smart-contract.service';
+import { useAppStore, useNftStore, useWalletStore, InitSingletonServiceStore, MapServices } from './stores';
 import {
   BuyNft,
   ConnectWallet,
@@ -16,8 +15,10 @@ import {
   Home,
   LoadingMatamaskAccount,
   NotFound,
+  ViewNft,
   BuySeedPage,
 } from './pages';
+import { GetMoneyCountService } from './services';
 
 declare global {
   interface Window {
@@ -27,6 +28,7 @@ declare global {
 
 export function App() {
   const connectedWallets = useWallets();
+  const [moneyCount, setMoneyCount] = useState<number | undefined>(undefined);
   const [{ wallet, connecting }, connect] = useConnectWallet();
   const [, setWeb3Onboard] = useState<OnboardAPI | null>(null);
   const retrieveNfts = useNftStore((store) => store.retrieveNfts);
@@ -41,11 +43,8 @@ export function App() {
     if (!wallet) {
       return;
     }
-    console.log('start initBeans');
     InitSingletonServiceStore(wallet);
     setWallet(wallet);
-    console.log('end initBeans');
-    console.log(wallet);
   }, [wallet, setWallet]);
 
   useEffect(() => {
@@ -67,13 +66,14 @@ export function App() {
     // Check for Magic Wallet user session
     if (connectedWalletsLabelArray.includes('Magic Wallet')) {
       const [magicWalletProvider] = connectedWallets.filter(
-        (providerWallet) => providerWallet.label === 'Magic Wallet'
+        (providerWallet: { label: string; }) => providerWallet.label === 'Magic Wallet'
       );
       async function setMagicUser() {
         // eslint-disable-next-line no-useless-catch
         try {
-          const { email } =
-            await magicWalletProvider.instance.user.getMetadata();
+          const { email } = (
+            (await magicWalletProvider.instance) as any
+          ).user.getMetadata();
           const magicUserEmail = localStorage.getItem('magicUserEmail');
           if (!magicUserEmail || magicUserEmail !== email)
             localStorage.setItem('magicUserEmail', email);
@@ -107,12 +107,31 @@ export function App() {
 
   useEffect(() => {
     if (!wallet) return;
-    retrieveNfts().then((isOwner) => {
+    const searchIfHasNft = async () => {
+      const isOwner = await retrieveNfts();
       if (isOwner) {
         setHasNfts(true);
       }
-    });
+    };
+    searchIfHasNft();
   }, [connectedWallets, wallet, retrieveNfts, setHasNfts]);
+
+  useEffect(() => {
+    const getMoneyCount = async () => {
+      const getMoneyCountService = MapServices.getInstance().getService(
+        'GetMoneyCountService'
+      ) as GetMoneyCountService;
+      const money = await getMoneyCountService.handle();
+      setMoneyCount(money);
+    };
+    if (wallet) {
+      getMoneyCount();
+      SmartContractService.listenToEvent('TreeUpgraded', (event) => {
+        console.log('TreeUpgraded', event);
+        getMoneyCount();
+      });
+    }
+  }, [wallet]);
 
   if (!connecting && !wallet) {
     return <ConnectWallet />;
@@ -127,8 +146,12 @@ export function App() {
   }
   return (
     <Routes>
-      <Route path="/buy" element={<BuySeedPage />} />
-      <Route path="/gallery" element={<Gallery />} />
+      <Route path="/buy" element={<BuySeedPage moneyCount={moneyCount} />} />
+      <Route path="/gallery" element={<Gallery moneyCount={moneyCount} />} />
+      <Route
+        path="/gallery/:id"
+        element={<ViewNft moneyCount={moneyCount} />}
+      />
       <Route path="/" element={<Home />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

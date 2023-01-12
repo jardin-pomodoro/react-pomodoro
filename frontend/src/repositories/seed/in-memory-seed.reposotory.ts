@@ -30,4 +30,8 @@ export class InMemorySeedRepository implements SeedRepository {
       }, 1000);
     });
   }
+
+  async getSeed(tokenId: number): Promise<number> {
+    throw new Error('Method not implemented.');
+  }
 }

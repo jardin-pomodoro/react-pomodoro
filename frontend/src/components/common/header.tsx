@@ -91,7 +91,7 @@ export function HeaderMenu({ links, moneyCount }: HeaderSearchProps) {
       <Container size="xl">
         <div className={classes.inner}>
           <Text c="teal.8" fz="lg">
-            NFT-Forest
+            NFT-Pomodoro
           </Text>
 
           <Group spacing={5} className={classes.links}>
