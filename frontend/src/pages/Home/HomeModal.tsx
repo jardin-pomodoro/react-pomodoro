@@ -35,18 +35,14 @@ export function NftCard({ url, isSelected, onClick }: NftCardProps) {
 }
 
 export function HomeModal({ urls }: HomeModalProps) {
-  const [selected, select] = useState<string[]>([]);
+  const [nftParent, setParent] = useState<string | null>(null);
   const onImageClick = (url: string) => {
-    select((prev) => {
-      if (prev.includes(url)) {
-        return prev.filter((u) => u !== url);
-      }
-      return [...prev, url];
-    });
+    setParent(url);
   };
 
   const onSubmit = () => {
-    console.log(selected);
+    // eslint-disable-next-line no-console
+    console.log(nftParent);
   };
 
   return (
@@ -57,7 +53,7 @@ export function HomeModal({ urls }: HomeModalProps) {
             key={url}
             url={url}
             onClick={onImageClick}
-            isSelected={selected.includes(url)}
+            isSelected={url === nftParent}
           />
         ))}
       </SimpleGrid>

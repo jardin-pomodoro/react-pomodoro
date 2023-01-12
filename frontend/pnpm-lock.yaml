@@ -12,6 +12,7 @@ specifiers:
   '@tabler/icons': ^1.117.0
   '@testing-library/jest-dom': ^5.16.5
   '@testing-library/react': ^13.4.0
+  '@types/luxon': ^3.2.0
   '@types/react': ^18.0.25
   '@types/react-dom': ^18.0.9
   '@types/testing-library__jest-dom': ^5.14.5
@@ -34,6 +35,7 @@ specifiers:
   eslint-plugin-testing-library: ^5.9.1
   ethers: ^5.7.2
   jsdom: ^20.0.2
+  luxon: ^3.2.1
   prettier: ^2.7.1
   react: ^18.2.0
   react-dom: ^18.2.0
@@ -58,6 +60,7 @@ dependencies:
   '@web3-onboard/injected-wallets': 2.4.0
   '@web3-onboard/react': 2.5.3_react@18.2.0
   ethers: 5.7.2
+  luxon: 3.2.1
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-router-dom: 6.4.3_biqbaboplfbrettd7655fr4n2y
@@ -67,6 +70,7 @@ dependencies:
 devDependencies:
   '@testing-library/jest-dom': 5.16.5
   '@testing-library/react': 13.4.0_biqbaboplfbrettd7655fr4n2y
+  '@types/luxon': 3.2.0
   '@types/react': 18.0.25
   '@types/react-dom': 18.0.9
   '@types/testing-library__jest-dom': 5.14.5
@@ -1707,6 +1711,10 @@ packages:
 
   /@types/json5/0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
+    dev: true
+
+  /@types/luxon/3.2.0:
+    resolution: {integrity: sha512-lGmaGFoaXHuOLXFvuju2bfvZRqxAqkHPx9Y9IQdQABrinJJshJwfNCKV+u7rR3kJbiqfTF/NhOkcxxAFrObyaA==}
     dev: true
 
   /@types/node/18.11.9:
@@ -4157,6 +4165,11 @@ packages:
     resolution: {integrity: sha512-BpdYkt9EvGl8OfWHDQPISVpcl5xZthb+XPsbELj5AQXxIC8IriDZIQYjBJPEm5rS420sjZ0TLEzRcq5KdBhYrQ==}
     dependencies:
       es5-ext: 0.10.62
+    dev: false
+
+  /luxon/3.2.1:
+    resolution: {integrity: sha512-QrwPArQCNLAKGO/C+ZIilgIuDnEnKx5QYODdDtbFaxzsbZcc/a7WFq7MhsVYgRlwawLtvOUESTlfJ+hc/USqPg==}
+    engines: {node: '>=12'}
     dev: false
 
   /lz-string/1.4.4:
