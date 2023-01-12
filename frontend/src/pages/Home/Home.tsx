@@ -5,6 +5,8 @@ import { HeaderMenu } from '../../components/common/header';
 import { Animation } from '../../components';
 import { useNftStore } from '../../stores';
 import { HomeModal } from './HomeModal';
+import { Timer } from '../../components/timer';
+import { Duration } from 'luxon';
 
 export function Home() {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
@@ -41,6 +43,7 @@ export function Home() {
       <Modal centered size="xl" opened={isModalOpen} onClose={closeModal}>
         <HomeModal nfts={trees} closeModal={closeModal} />
       </Modal>
+      <Timer start={Duration.fromObject({minute: 20})} />
       {showAnimation && <Animation />}
     </>
   );
