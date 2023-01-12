@@ -16,7 +16,7 @@ import {
   GetNftDetailsService,
   NftDetails,
 } from '../services/get-nft-details.service';
-import { GetSeedService } from '../services/get-seed.service';
+import { GetNftMetadataService, GetSeedService } from '../services';
 import { HeaderMenu } from '../components/common/header';
 
 const useStyles = createStyles(() => ({
@@ -65,7 +65,7 @@ const icons = {
   down: IconArrowDownRight,
 };
 
-export default function VewNft({ moneyCount }: any) {
+export function ViewNft({ moneyCount }: any) {
   const { classes } = useStyles();
   const [nftDetails, setNftDetails] = useState<NftDetails | undefined>();
   const [imageLink, setImageLink] = useState<string | undefined>();

@@ -6,25 +6,19 @@ import { useConnectWallet, useWallets } from '@web3-onboard/react';
 import { OnboardAPI } from '@web3-onboard/core';
 import { useState, useEffect, useCallback } from 'react';
 
-import Home from './pages/Home';
-import NotFound from './pages/NotFound';
-import Gallery from './pages/Gallery';
-import BuySeed from './pages/BuySeedPage';
-import LoadingMatamaskAccount from './pages/LoadingMetamaskAccount';
-import BuyNft from './pages/BuyNft';
-import ConnectWallet from './pages/ConnectWallet';
+import { initWeb3Onboard, SmartContractService } from './services/smart-contract.service';
+import { useAppStore, useNftStore, useWalletStore, InitSingletonServiceStore, MapServices } from './stores';
 import {
-  initWeb3Onboard,
-  SmartContractService,
-} from './services/smart-contract.service';
-import {
-  InitSingletonServiceStore,
-  MapServices,
-} from './stores/singletonServiceStore';
-import { useAppStore, useNftStore, useWalletStore } from './stores';
-import ViewNft from './pages/ViewNft';
-import { GetNftsService } from './services/get-nfts.service';
-import { GetMoneyCountService } from './services/get-money-count.service';
+  BuyNft,
+  ConnectWallet,
+  Gallery,
+  Home,
+  LoadingMatamaskAccount,
+  NotFound,
+  ViewNft,
+  BuySeedPage,
+} from './pages';
+import { GetMoneyCountService } from './services';
 
 declare global {
   interface Window {
@@ -56,7 +50,7 @@ export function App() {
   useEffect(() => {
     initBeans();
     setWeb3Onboard(initWeb3Onboard);
-  }, [initBeans]);
+  }, [initBeans, wallet]);
 
   useEffect(() => {
     if (!connectedWallets.length) return;
@@ -72,7 +66,7 @@ export function App() {
     // Check for Magic Wallet user session
     if (connectedWalletsLabelArray.includes('Magic Wallet')) {
       const [magicWalletProvider] = connectedWallets.filter(
-        (providerWallet) => providerWallet.label === 'Magic Wallet'
+        (providerWallet: { label: string; }) => providerWallet.label === 'Magic Wallet'
       );
       async function setMagicUser() {
         // eslint-disable-next-line no-useless-catch
@@ -152,7 +146,7 @@ export function App() {
   }
   return (
     <Routes>
-      <Route path="/buy" element={<BuySeed moneyCount={moneyCount} />} />
+      <Route path="/buy" element={<BuySeedPage moneyCount={moneyCount} />} />
       <Route path="/gallery" element={<Gallery moneyCount={moneyCount} />} />
       <Route
         path="/gallery/:id"

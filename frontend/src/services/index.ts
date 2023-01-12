@@ -10,3 +10,6 @@ export * from './get-nft-metadata.service';
 export * from './connect-to-wallet.service';
 export * from './get-number-of-nft.service';
 export * from './improve-trunk-tree.service';
+export * from './improve-leaves-tree.service';
+export * from './get-seed.service';
+export * from './smart-contract.service';

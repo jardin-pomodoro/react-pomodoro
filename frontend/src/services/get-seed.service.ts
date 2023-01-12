@@ -1,4 +1,4 @@
-import { SeedRepository } from '../core/seed.repository';
+import { SeedRepository } from '../core';
 
 export class GetSeedService {
   constructor(private readonly seedRepository: SeedRepository) {}

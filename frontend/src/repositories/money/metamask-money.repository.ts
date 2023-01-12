@@ -1,6 +1,6 @@
 import { WalletState } from '@web3-onboard/core';
 import { ethers } from 'ethers';
-import MoneyRepository from '../../core/money.repository';
+import { MoneyRepository } from '../../core';
 import { SmartContractService } from '../../services/smart-contract.service';
 
 export class MetamaskMoneyRepository implements MoneyRepository {

@@ -1,11 +1,8 @@
-import { useEffect, useState } from 'react';
 import { useConnectWallet } from '@web3-onboard/react';
 import { HeaderMenu } from '../components/common/header';
 import { MyGallery } from '../components/gallery/MyGallery';
-import { GetMoneyCountService } from '../services/get-money-count.service';
-import { MapServices } from '../stores/singletonServiceStore';
 
-function Gallery({ moneyCount }: any) {
+export function Gallery({ moneyCount }: any) {
   const [{ wallet }] = useConnectWallet();
 
   return (
@@ -22,5 +19,3 @@ function Gallery({ moneyCount }: any) {
     </>
   );
 }
-
-export default Gallery;

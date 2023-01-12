@@ -1,8 +1,11 @@
 /* eslint-disable class-methods-use-this */
-import { SeedFree } from '../../core/seed-free';
+import { Seed, SeedFree } from '../../core/seed-free';
 import { SeedRepository } from '../../core/seed.repository';
 
 export class InMemorySeedRepository implements SeedRepository {
+  getAllSeed(): Promise<Seed[]> {
+    throw new Error('Method not implemented.');
+  }
 
   private seedFree: SeedFree = {
     numberSeed: 0,
