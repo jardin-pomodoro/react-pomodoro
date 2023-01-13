@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import { Contract, ethers, Wallet } from 'ethers';
+import { Contract, ethers } from 'ethers';
 import { WalletState } from '@web3-onboard/core';
 import injectedModule from '@web3-onboard/injected-wallets';
 import { init } from '@web3-onboard/react';

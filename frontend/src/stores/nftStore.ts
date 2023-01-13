@@ -56,16 +56,18 @@ export const useNftStore = create<NftStore>((set, get) => ({
     const getSeedService = new GetSeedService(seedRepo);
     const getNftDetails = new GetNftDetailsService(repo, getSeedService);
     const getNftMetadataService = new GetNftMetadataService(repo);
-    const nfts = await Promise.all(get().nfts.map(async (nft) => {
-      const nftDetailsResponse = await getNftDetails.handle(Number(nft.id));
-      const imageLinkResponse = await getNftMetadataService.handle({
-        id: nft.id,
-      });
-      const newNft = { ...nft };
-      newNft.image = imageLinkResponse;
-      newNft.detail = nftDetailsResponse;
-      return newNft;
-    }));
+    const nfts = await Promise.all(
+      get().nfts.map(async (nft) => {
+        const nftDetailsResponse = await getNftDetails.handle(Number(nft.id));
+        const imageLinkResponse = await getNftMetadataService.handle({
+          id: nft.id,
+        });
+        const newNft = { ...nft };
+        newNft.image = imageLinkResponse;
+        newNft.detail = nftDetailsResponse;
+        return newNft;
+      })
+    );
     set({ nfts });
   },
 }));

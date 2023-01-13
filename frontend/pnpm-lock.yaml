@@ -22,6 +22,7 @@ specifiers:
   '@web3-onboard/core': ^2.12.1
   '@web3-onboard/injected-wallets': ^2.4.0
   '@web3-onboard/react': ^2.5.3
+  dayjs: ^1.11.7
   eslint: ^8.27.0
   eslint-config-airbnb: ^19.0.4
   eslint-config-airbnb-typescript: ^17.0.0
@@ -35,11 +36,11 @@ specifiers:
   eslint-plugin-testing-library: ^5.9.1
   ethers: ^5.7.2
   jsdom: ^20.0.2
-  luxon: ^3.2.1
   prettier: ^2.7.1
   react: ^18.2.0
   react-dom: ^18.2.0
   react-router-dom: ^6.4.3
+  react-timer-hook: ^3.0.5
   typescript: ^4.9.3
   vite: ^3.2.4
   vitest: ^0.25.2
@@ -49,7 +50,7 @@ specifiers:
 dependencies:
   '@emotion/react': 11.10.5_fan5qbzahqtxlm5dzefqlqx5ia
   '@mantine/core': 5.8.0_oropdu55clxolwu5c7qygkf2pm
-  '@mantine/dates': 5.8.0_6dodjup76aaydz6cwwne4t3okq
+  '@mantine/dates': 5.8.0_2t3pznsdnkrbzngyudftgjkcfa
   '@mantine/form': 5.8.0_react@18.2.0
   '@mantine/hooks': 5.8.0_react@18.2.0
   '@mantine/modals': 5.8.0_ewvkjm4ajyqza72j4kh4rch33a
@@ -59,11 +60,12 @@ dependencies:
   '@web3-onboard/core': 2.12.1
   '@web3-onboard/injected-wallets': 2.4.0
   '@web3-onboard/react': 2.5.3_react@18.2.0
+  dayjs: 1.11.7
   ethers: 5.7.2
-  luxon: 3.2.1
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-router-dom: 6.4.3_biqbaboplfbrettd7655fr4n2y
+  react-timer-hook: 3.0.5_biqbaboplfbrettd7655fr4n2y
   zod: 3.19.1
   zustand: 4.1.4_react@18.2.0
 
@@ -1351,7 +1353,7 @@ packages:
       - '@types/react'
     dev: false
 
-  /@mantine/dates/5.8.0_6dodjup76aaydz6cwwne4t3okq:
+  /@mantine/dates/5.8.0_2t3pznsdnkrbzngyudftgjkcfa:
     resolution: {integrity: sha512-w8pc/cCUXiITBnAi9hy3My8ML9/Y/ANDTHkJpPsiMLMSt+JbC1eqcytXMv3CGGLhWdkwRy5E43J7yv1rAs89fQ==}
     peerDependencies:
       '@mantine/core': 5.8.0
@@ -1362,6 +1364,7 @@ packages:
       '@mantine/core': 5.8.0_oropdu55clxolwu5c7qygkf2pm
       '@mantine/hooks': 5.8.0_react@18.2.0
       '@mantine/utils': 5.8.0_react@18.2.0
+      dayjs: 1.11.7
       react: 18.2.0
     dev: false
 
@@ -2411,6 +2414,10 @@ packages:
       whatwg-mimetype: 3.0.0
       whatwg-url: 11.0.0
     dev: true
+
+  /dayjs/1.11.7:
+    resolution: {integrity: sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==}
+    dev: false
 
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
@@ -4167,11 +4174,6 @@ packages:
       es5-ext: 0.10.62
     dev: false
 
-  /luxon/3.2.1:
-    resolution: {integrity: sha512-QrwPArQCNLAKGO/C+ZIilgIuDnEnKx5QYODdDtbFaxzsbZcc/a7WFq7MhsVYgRlwawLtvOUESTlfJ+hc/USqPg==}
-    engines: {node: '>=12'}
-    dev: false
-
   /lz-string/1.4.4:
     resolution: {integrity: sha512-0ckx7ZHRPqb0oUm8zNr+90mtf9DQB60H1wMCjBtfi62Kl3a7JbHob6gA2bC+xRvZoOL+1hzUK8jeuEIQE8svEQ==}
     hasBin: true
@@ -4589,6 +4591,16 @@ packages:
       use-latest: 1.2.1_fan5qbzahqtxlm5dzefqlqx5ia
     transitivePeerDependencies:
       - '@types/react'
+    dev: false
+
+  /react-timer-hook/3.0.5_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-n+98SdmYvui2ne3KyWb3Ldu4k0NYQa3g/VzW6VEIfZJ8GAk/jJsIY700M8Nd2vNSTj05c7wKyQfJBqZ0x7zfiA==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /react-transition-group/4.4.2_biqbaboplfbrettd7655fr4n2y:

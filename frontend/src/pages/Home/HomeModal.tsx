@@ -36,7 +36,7 @@ export function NftCard({ id, url, isSelected, onClick, fert }: NftCardProps) {
         alt="nft tree"
         withPlaceholder
       />
-      <div>{ fert }</div>
+      <div>{fert}</div>
     </div>
   );
 }

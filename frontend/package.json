@@ -31,11 +31,12 @@
     "@web3-onboard/core": "^2.12.1",
     "@web3-onboard/injected-wallets": "^2.4.0",
     "@web3-onboard/react": "^2.5.3",
+    "dayjs": "^1.11.7",
     "ethers": "^5.7.2",
-    "luxon": "^3.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.3",
+    "react-timer-hook": "^3.0.5",
     "zod": "^3.19.1",
     "zustand": "^4.1.4"
   },

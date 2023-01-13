@@ -6,7 +6,12 @@ import { Animation } from '../../components';
 import { useNftStore } from '../../stores';
 import { HomeModal } from './HomeModal';
 import { Timer } from '../../components/timer';
-import { Duration } from 'luxon';
+
+function cumputeTimestamp(minuteToAdd: number): number {
+  const SEC_IN_A_MINUTE = 60;
+  const timestamp = new Date().getTime() / 1000;
+  return timestamp + (minuteToAdd * SEC_IN_A_MINUTE);
+}
 
 export function Home() {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
@@ -17,15 +22,15 @@ export function Home() {
   ]);
 
   useEffect(() => {
-    loadImage()
-  }, []);
+    loadImage();
+  }, [loadImage]);
 
   const openModal = () => setModalOpen(true);
+  const toggleAnimation = () => setAnimation(!showAnimation);
   const closeModal = () => {
     setModalOpen(false);
     toggleAnimation();
   };
-  const toggleAnimation = () => setAnimation(!showAnimation);
 
   return (
     <>
@@ -43,8 +48,12 @@ export function Home() {
       <Modal centered size="xl" opened={isModalOpen} onClose={closeModal}>
         <HomeModal nfts={trees} closeModal={closeModal} />
       </Modal>
-      <Timer start={Duration.fromObject({minute: 20})} />
-      {showAnimation && <Animation />}
+      {showAnimation && (
+        <>
+          <Timer expiryTimestamp={cumputeTimestamp(20)} />
+          <Animation />
+        </>
+      )}
     </>
   );
 }
