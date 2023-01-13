@@ -2,15 +2,14 @@
 import { Button, Modal } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { HeaderMenu } from '../../components/common/header';
-import { Animation } from '../../components';
+import { Animation, Timer } from '../../components';
 import { useNftStore } from '../../stores';
 import { HomeModal } from './HomeModal';
-import { Timer } from '../../components/timer';
 
 function cumputeTimestamp(minuteToAdd: number): number {
   const SEC_IN_A_MINUTE = 60;
-  const timestamp = new Date().getTime() / 1000;
-  return timestamp + (minuteToAdd * SEC_IN_A_MINUTE);
+  const timestamp = new Date().getTime() / 1000; // time in js is with miliseconds
+  return timestamp + minuteToAdd * SEC_IN_A_MINUTE;
 }
 
 export function Home() {
@@ -41,13 +40,33 @@ export function Home() {
           { link: '/buy', label: 'Acheter', links: [] },
         ]}
       />
-      <h1>Hello World !</h1>
-      <Button onClick={openModal}>plant a tree</Button>
-      <Button onClick={toggleAnimation}>toggle animation</Button>
-
       <Modal centered size="xl" opened={isModalOpen} onClose={closeModal}>
         <HomeModal nfts={trees} closeModal={closeModal} />
       </Modal>
+      {!showAnimation && (
+        <>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginBottom: '1rem',
+            }}
+          >
+            <Button onClick={openModal}>plant a tree</Button>
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
+            <video style={{ width: '70vw' }} autoPlay loop muted>
+              <source src="/room.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </>
+      )}
       {showAnimation && (
         <>
           <Timer expiryTimestamp={cumputeTimestamp(20)} />

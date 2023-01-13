@@ -3,6 +3,7 @@ import { NftUpgradeStats } from './nft-upgrade-stats';
 
 // eslint-disable-next-line import/prefer-default-export
 export abstract class NftRepository {
+  abstract harvestTree(): Promise<number>;
   abstract getAll(): Promise<Nft[]>;
   abstract getNumberOfExistingNft(): Promise<number>;
   abstract merge(nfts1: string, nfts2: string): Promise<void>;

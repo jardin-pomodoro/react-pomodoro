@@ -125,4 +125,12 @@ export class MetamaskNftRepository implements NftRepository {
     ).breedCount(nft.id);
     return ethers.BigNumber.from(result).toNumber();
   }
+
+  async harvestTree(): Promise<number> {
+    const result = await SmartContractService.loadContract(
+      this.wallet
+    ).collectTree();
+    console.log(result);
+    return result;
+  }
 }

@@ -7,6 +7,7 @@ import {
   GetNftMetadataService,
   GetNftsService,
   GetSeedService,
+  HarvestTreeService,
   PlantTreeService,
 } from '../services';
 import { useWalletStore } from './walletStore';
@@ -16,6 +17,7 @@ export interface NftStore {
   retrieveNfts: () => Promise<boolean>;
   plantATree: (id: string) => Promise<void>;
   loadImage: () => Promise<void>;
+  harvestATree: () => Promise<void>;
 }
 function getRepo(): NftRepository {
   const { wallet } = useWalletStore.getState();
@@ -69,5 +71,10 @@ export const useNftStore = create<NftStore>((set, get) => ({
       })
     );
     set({ nfts });
+  },
+  harvestATree: async () => {
+    const repository = getRepo();
+    const harverstTreeService = new HarvestTreeService(repository);
+    await harverstTreeService.handle();
   },
 }));
