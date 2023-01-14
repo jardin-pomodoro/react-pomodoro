@@ -138,11 +138,17 @@ export function App() {
       getMoneyCount();
       SmartContractService.listenToEvent('TreeUpgraded', (event) => {
         console.log('TreeUpgraded', event);
-        getMoneyCount();
+        setMoneyCount(-1);
+        setTimeout(() => {
+          getMoneyCount();
+        }, 1000);
       });
       SmartContractService.listenToEvent('TreeMinted', (event) => {
         console.log('TreeMinted', event);
-        getMoneyCount();
+        setMoneyCount(-1);
+        setTimeout(() => {
+          getMoneyCount();
+        }, 1000);
       });
     }
   }, [wallet]);
