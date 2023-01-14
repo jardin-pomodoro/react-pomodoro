@@ -10,7 +10,11 @@ import {
   Center,
   Chip,
 } from '@mantine/core';
-import { IconArrowDownRight, IconArrowUpRight } from '@tabler/icons';
+import {
+  IconArrowDownRight,
+  IconArrowUpRight,
+  IconCurrencyEthereum,
+} from '@tabler/icons';
 import { MetamaskNftRepository, MetamaskSeedRepository } from '../repositories';
 import {
   GetNftDetailsService,
@@ -41,6 +45,9 @@ const useStyles = createStyles(() => ({
   },
   chip: {
     color: '#4B8673',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   card: {
     backgroundColor: 'white',
@@ -120,12 +127,14 @@ export function ViewNft({ moneyCount }: any) {
               </Chip>
               <Chip className={classes.chip_element} m="sm">
                 <span className={classes.chip}>
-                  {nftDetails.leavesUpgradePrice} pour upgrade les feuilles
+                  {nftDetails.leavesUpgradePrice}{' '}
+                  <IconCurrencyEthereum size={20} /> pour upgrade les feuilles
                 </span>
               </Chip>
               <Chip className={classes.chip_element} m="sm">
                 <span className={classes.chip}>
-                  {nftDetails.trunkUpgradePrice} pour upgrade le tronc
+                  {nftDetails.trunkUpgradePrice}{' '}
+                  <IconCurrencyEthereum size={20} /> pour upgrade le tronc
                 </span>
               </Chip>
             </div>

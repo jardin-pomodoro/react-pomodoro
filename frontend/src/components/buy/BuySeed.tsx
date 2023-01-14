@@ -16,6 +16,7 @@ import {
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { useConnectWallet } from '@web3-onboard/react';
+import { IconCurrencyEthereum } from '@tabler/icons';
 import {
   GetSeedPriceService,
   GetNftsService,
@@ -23,6 +24,7 @@ import {
 } from '../../services';
 import { deadline } from '../../utils/constants';
 import { MapServices } from '../../stores/singletonServiceStore';
+import { WalletError } from '../../services/smart-contract.service';
 
 const useStyles = createStyles(() => ({
   center_button: {
@@ -57,7 +59,9 @@ function BuySeed() {
   const initalNfts: string[] = [];
   const [nfts, setNfts] = useState(initalNfts);
   const [opened, setOpened] = useState(false);
-  const [transactionSuccess, setTransactionSuccess] = useState(false);
+  const [transactionMessage, setTransactionMessage] = useState<
+    string | undefined
+  >(undefined);
   const [days, setDays] = useState(0);
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
@@ -113,8 +117,20 @@ function BuySeed() {
   }, [days, hours, minutes, seconds]);
 
   const buy = async (tokenId: string) => {
-    await buySeedService.handle({ tokenId, amount: 1 });
-    setTransactionSuccess(true);
+    try {
+      await buySeedService.handle({ tokenId, amount: 1 });
+      setTransactionMessage(
+        "Votre transaction est un succès, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction"
+      );
+    } catch (error: any) {
+      if (error.code && error.code === WalletError.ACTION_REJECTED) {
+        setTransactionMessage('Vous avez décidé de rejeter la transaction');
+      } else {
+        setTransactionMessage(
+          'Une erreur est survenue lors de la transaction, vous pouvez potentiellement ne pas avoir assez de fonds sur votre wallet'
+        );
+      }
+    }
     setOpened(false);
   };
 
@@ -141,7 +157,7 @@ function BuySeed() {
       </Modal>
 
       <Container>
-        {transactionSuccess && (
+        {transactionMessage && (
           <Paper
             withBorder
             p="lg"
@@ -151,18 +167,15 @@ function BuySeed() {
           >
             <Group position="apart" mb="xs">
               <Text size="md" weight={500}>
-                Achat bien finalisé
+                Résultat de la transaction
               </Text>
               <CloseButton
                 mr={-9}
                 mt={-9}
-                onClick={() => setTransactionSuccess(false)}
+                onClick={() => setTransactionMessage(undefined)}
               />
             </Group>
-            <Text size="xs">
-              Votre transaction est un succès, vous pouvez vous rendre dans
-              metamask pour suivre l'historique de votre transaction
-            </Text>
+            <Text size="xs">{transactionMessage} </Text>
           </Paper>
         )}
         <Paper withBorder p="lg" radius="md" shadow="md" mb="xs">
@@ -172,16 +185,19 @@ function BuySeed() {
             </Text>
 
             <Badge size="xl" variant="filled">
-              20% de réduction
+              50% de réduction
             </Badge>
           </Group>
           <Text size="lg">
             Plus que {days} jours {hours} heures {minutes} minutes et {seconds}{' '}
             secondes pour profiter de la réduction
           </Text>
-          <Text td="line-through">1,2 name Money</Text>
+          <Text td="line-through">
+            4 <IconCurrencyEthereum color="black" size={20} />
+          </Text>
           <Text pt="md" fw={700}>
-            {seedPrice !== 0 && seedPrice} name Money
+            {seedPrice !== 0 && seedPrice}{' '}
+            <IconCurrencyEthereum color="black" size={20} />
           </Text>
         </Paper>
         <div>
@@ -194,7 +210,8 @@ function BuySeed() {
                   de graine journellement offertes.
                 </Text>
                 <Button onClick={() => setOpened(true)} color="teal">
-                  {seedPrice !== 0 && `Acheter ${seedPrice} name Money`}
+                  {seedPrice !== 0 && `Acheter ${seedPrice}`}
+                  <IconCurrencyEthereum size={20} />
                 </Button>
               </Center>
             </Grid.Col>

@@ -6,6 +6,10 @@ import { init } from '@web3-onboard/react';
 import { utils } from 'ethers';
 import { treeToken, contractAbi } from '../utils/constants';
 
+export enum WalletError {
+  ACTION_REJECTED = 'ACTION_REJECTED',
+}
+
 export const initWeb3Onboard = init({
   wallets: [injectedModule()],
   chains: [

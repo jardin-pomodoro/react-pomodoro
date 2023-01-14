@@ -29,7 +29,10 @@ import {
   GetNftDetailsService,
 } from '../../services/get-nft-details.service';
 import { MapServices } from '../../stores';
-import { SmartContractService } from '../../services/smart-contract.service';
+import {
+  SmartContractService,
+  WalletError,
+} from '../../services/smart-contract.service';
 
 interface BannerProps {
   backgroundColor: string;
@@ -214,6 +217,11 @@ export function MyGallery() {
       const getNftsService = new GetNftsService(
         new MetamaskNftRepository(wallet)
       );
+      setSimpleBannerProps({
+        title: `Félicitations`,
+        description:
+          'Vos arbres a bien été amélioré, vous pouvez décourvir vos nouvelles stats dans ses détails',
+      });
       loadFeatureCardProps(
         getNftsService,
         getNftDetailsService,
@@ -237,12 +245,19 @@ export function MyGallery() {
     try {
       await mergeNftsService.handle({ nft1: nft1.id, nft2: nft2.id });
       setSelectedNfts([]);
-    } catch (e) {
-      setSimpleBannerProps({
-        title: 'Echec',
-        description:
-          "Votre Fusion est un echec, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction",
-      });
+    } catch (error: any) {
+      if (error.code && error.code === WalletError.ACTION_REJECTED) {
+        setSimpleBannerProps({
+          title: 'Echec',
+          description: 'Vous avez décidé de rejeter la transaction',
+        });
+      } else {
+        setSimpleBannerProps({
+          title: 'Echec',
+          description:
+            "Votre Fusion est un echec, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction",
+        });
+      }
     }
   };
 
@@ -253,7 +268,22 @@ export function MyGallery() {
       new MetamaskNftRepository(wallet)
     );
     const nft: Nft = { id };
-    await improveNftService.handle({ nft });
+    try {
+      await improveNftService.handle({ nft });
+    } catch (error: any) {
+      if (error.code && error.code === WalletError.ACTION_REJECTED) {
+        setSimpleBannerProps({
+          title: 'Echec',
+          description: 'Vous avez décidé de rejeter la transaction',
+        });
+      } else {
+        setSimpleBannerProps({
+          title: 'Echec',
+          description:
+            "Votre amélioration est un echec, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction",
+        });
+      }
+    }
   };
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
@@ -299,6 +329,15 @@ export function MyGallery() {
       setFeaturesCardProps(nftsUi);
     };
     getNfts();
+    SmartContractService.listenToEvent('TreeMinted', (event) => {
+      console.log('TreeMinted', event);
+      setSimpleBannerProps({
+        title: `Félicitations`,
+        description:
+          'Vos arbres ont bien fusionné, vous pouvez retrouver votre nouveau NFT dans votre gallerie',
+      });
+      getNfts();
+    });
   }, [wallet]);
 
   return (

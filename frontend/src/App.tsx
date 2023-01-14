@@ -6,8 +6,17 @@ import { useConnectWallet, useWallets } from '@web3-onboard/react';
 import { OnboardAPI } from '@web3-onboard/core';
 import { useState, useEffect, useCallback } from 'react';
 
-import { initWeb3Onboard, SmartContractService } from './services/smart-contract.service';
-import { useAppStore, useNftStore, useWalletStore, InitSingletonServiceStore, MapServices } from './stores';
+import {
+  initWeb3Onboard,
+  SmartContractService,
+} from './services/smart-contract.service';
+import {
+  useAppStore,
+  useNftStore,
+  useWalletStore,
+  InitSingletonServiceStore,
+  MapServices,
+} from './stores';
 import {
   BuyNft,
   ConnectWallet,
@@ -66,7 +75,8 @@ export function App() {
     // Check for Magic Wallet user session
     if (connectedWalletsLabelArray.includes('Magic Wallet')) {
       const [magicWalletProvider] = connectedWallets.filter(
-        (providerWallet: { label: string; }) => providerWallet.label === 'Magic Wallet'
+        (providerWallet: { label: string }) =>
+          providerWallet.label === 'Magic Wallet'
       );
       async function setMagicUser() {
         // eslint-disable-next-line no-useless-catch
@@ -128,6 +138,10 @@ export function App() {
       getMoneyCount();
       SmartContractService.listenToEvent('TreeUpgraded', (event) => {
         console.log('TreeUpgraded', event);
+        getMoneyCount();
+      });
+      SmartContractService.listenToEvent('TreeMinted', (event) => {
+        console.log('TreeMinted', event);
         getMoneyCount();
       });
     }

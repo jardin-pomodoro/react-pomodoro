@@ -89,9 +89,9 @@ export function FeaturesCard({
       </Link>
 
       <Group position="apart" mt="md" mb="xs">
-        <Text weight={500} className={classes.text_color}>
+        <Badge color="teal.7" variant="light">
           {title}
-        </Text>
+        </Badge>
         <Badge color="teal.7" variant="light">
           En pleine santé
         </Badge>
@@ -109,7 +109,7 @@ export function FeaturesCard({
           selectImproveLeaves(title);
         }}
       >
-        Améliorer les feuilles <IconCurrencyEthereum color="black" size={20} />{' '}
+        Améliorer les feuilles <IconCurrencyEthereum size={20} />{' '}
         {nftDetails.leavesUpgradePrice}
       </Button>
       <Button
@@ -124,7 +124,7 @@ export function FeaturesCard({
           selectImproveTrunk(title);
         }}
       >
-        Améliorer le tronc <IconCurrencyEthereum color="black" size={20} />{' '}
+        Améliorer le tronc <IconCurrencyEthereum size={20} />{' '}
         {nftDetails.trunkUpgradePrice}
       </Button>
       <Button
