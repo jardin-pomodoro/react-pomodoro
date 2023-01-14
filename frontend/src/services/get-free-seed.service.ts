@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { SeedRepository } from '../core/seed.repository';
 import { SeedFree } from '../core/seed-free';
 

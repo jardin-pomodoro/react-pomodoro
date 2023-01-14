@@ -14,13 +14,14 @@ import {
   CloseButton,
 } from '@mantine/core';
 import { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
-import { BuyFirstNftService } from '../services/buy-first-nft.service';
-import { contractAbi, treeToken } from '../utils/constants';
-import { MetamaskNftRepository } from '../repositories/nft/metamask-nft.repository';
+import { useConnectWallet } from '@web3-onboard/react';
 import { GetNftsService } from '../services/get-nfts.service';
+import { BuyFirstNftService } from '../services/buy-first-nft.service';
 import { Nft } from '../core/nft';
-import { useServiceStore, useWalletStore } from '../stores';
+import { MetamaskNftRepository } from '../repositories';
+import { WalletError } from '../services';
+import { SmartContractService } from '../services/smart-contract.service';
+import { MapServices } from '../stores';
 
 const useStyles = createStyles(() => ({
   center_button: {
@@ -47,36 +48,59 @@ const useStyles = createStyles(() => ({
   },
 }));
 
-export const BuyFirstNft = async ({ provider, signer, nfts }: any) => {
-  const buyFirstNftService = new BuyFirstNftService(
-    new MetamaskNftRepository(
-      provider,
-      signer,
-      new ethers.Contract(treeToken.Token, contractAbi, provider.getSigner(0))
-    )
-  );
-  await buyFirstNftService.handle(nfts);
-};
-
-export default function BuyNft() {
-  const { provider, signer } = useWalletStore();
+export function BuyNft() {
   const { classes } = useStyles();
-  const [transactionSuccess, setTransactionSuccess] = useState(false);
   const [nfts, setNfts] = useState<Nft[]>([]);
-  const getNftsService = useServiceStore((state) =>
-    state.services.get('GetNftsService')
+  const [{ wallet }] = useConnectWallet();
+  const [transactionMessage, setTransactionMessage] = useState<
+    string | undefined
+  >(undefined);
+
+  const buyFirstNftService = MapServices.getInstance().getService(
+    'BuyFirstNftService'
+  ) as BuyFirstNftService;
+  const getNftsService = MapServices.getInstance().getService(
+    'GetNftsService'
   ) as GetNftsService;
 
+  const BuyFirstNft = async () => {
+    if (wallet === null) return;
+    try {
+      await buyFirstNftService.handle(nfts);
+    } catch (error: any) {
+      if (error.code && error.code === WalletError.ACTION_REJECTED) {
+        setTransactionMessage('Vous avez décidé de rejeter la transaction');
+      } else {
+        setTransactionMessage(
+          'Une erreur est survenue lors de la transaction, vous pouvez potentiellement ne pas avoir assez de fonds sur votre wallet'
+        );
+      }
+    }
+  };
+
   useEffect(() => {
+    if (!wallet) return;
+
     const getNfts = async () => {
-      setNfts(await getNftsService.handle());
+      const result = await getNftsService.handle();
+      setNfts(result);
     };
     getNfts();
-  }, [provider, signer, getNftsService]);
+    SmartContractService.listenToEvent('TreeMinted', (event: any) => {
+      console.log('TreeMinted', event);
+      setTransactionMessage(
+        'Votre transaction est un succès, vous allez être redirigé vers votre gallerie'
+      );
+      setTimeout(() => {
+        window.location.href = '/';
+        window.location.reload();
+      }, 2000);
+    });
+  }, [getNftsService, wallet]);
 
   return (
     <Container mt="lg">
-      {transactionSuccess && (
+      {transactionMessage && (
         <Paper
           withBorder
           p="lg"
@@ -86,18 +110,15 @@ export default function BuyNft() {
         >
           <Group position="apart" mb="xs">
             <Text size="md" weight={500}>
-              Achat bien finalisé
+              Résultat de la transaction
             </Text>
             <CloseButton
               mr={-9}
               mt={-9}
-              onClick={() => setTransactionSuccess(false)}
+              onClick={() => setTransactionMessage(undefined)}
             />
           </Group>
-          <Text size="xs">
-            Votre transaction est un succès, vous pouvez vous rendre dans
-            metamask pour suivre l'historique de votre transaction
-          </Text>
+          <Text size="xs">{transactionMessage}</Text>
         </Paper>
       )}
       <Paper withBorder p="lg" radius="md" shadow="md" mb="xs">
@@ -125,10 +146,7 @@ export default function BuyNft() {
               <Text fs="italic" fz="l" align="center">
                 Acheter votre première NFT pour commencer votre périple
               </Text>
-              <Button
-                onClick={() => BuyFirstNft({ provider, signer, nfts })}
-                color="teal"
-              >
+              <Button onClick={() => BuyFirstNft()} color="teal">
                 Acheter 0.1 Matic
               </Button>
             </Center>

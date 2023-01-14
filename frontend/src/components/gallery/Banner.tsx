@@ -67,7 +67,6 @@ export function Banner({
         <Text size="md" weight={500}>
           {title}
         </Text>
-        <CloseButton mr={-9} mt={-9} />
       </Group>
       <Text size="xs">{description}</Text>
       <Group position="right" mt="xs">

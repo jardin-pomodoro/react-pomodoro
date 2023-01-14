@@ -63,7 +63,7 @@ describe('TreeCore contract', () => {
         const currentTokenCount = await contract.getTokenCount();
 
         await expect(contract.connect(owner).mintRandomTree({value: ethers.utils.parseEther("0.05")}))
-            .to.reverted;
+            .to.revertedWith('You must add a value of at least 0.1 ether');
 
         expect(await contract.balanceOf(owner.address, currentTokenCount))
             .to.equal(0);

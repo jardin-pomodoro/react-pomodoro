@@ -5,11 +5,13 @@ import {
   createStyles,
   Group,
   Header,
+  Loader,
   Text,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import './header.css';
 import { IconUser, IconCurrencyEthereum } from '@tabler/icons';
+import { Link } from 'react-router-dom';
 
 const useStyles = createStyles((theme) => ({
   inner: {
@@ -69,26 +71,19 @@ interface HeaderSearchProps {
     label: string;
     links: { link: string; label: string }[];
   }[];
-  account: string;
   // eslint-disable-next-line react/require-default-props
   moneyCount?: number;
 }
 
-export function HeaderMenu({ links, account, moneyCount }: HeaderSearchProps) {
+export function HeaderMenu({ links, moneyCount }: HeaderSearchProps) {
   const [opened, { toggle }] = useDisclosure(false);
   const { classes } = useStyles();
 
   const items = links.map((link) => {
     return (
-      <a
-        key={link.label}
-        href={link.link}
-        className={classes.link}
-        // eslint-disable-next-line no-console
-        onClick={(event) => console.log(event)}
-      >
+      <Link key={link.label} to={link.link} className={classes.link}>
         {link.label}
-      </a>
+      </Link>
     );
   });
 
@@ -97,26 +92,21 @@ export function HeaderMenu({ links, account, moneyCount }: HeaderSearchProps) {
       <Container size="xl">
         <div className={classes.inner}>
           <Text c="teal.8" fz="lg">
-            NFT-Forest
+            NFT-Pomodoro
           </Text>
 
           <Group spacing={5} className={classes.links}>
             {items}
-            {account && (
-              <>
-                <IconUser />
-                <div
-                  style={{ textOverflow: 'ellipsis' }}
-                  className={classes.account}
-                >
-                  {account}
-                </div>
-              </>
-            )}
-            {moneyCount && (
+            {moneyCount && moneyCount !== -1 && (
               <>
                 <IconCurrencyEthereum />
                 <div>{moneyCount}</div>
+              </>
+            )}
+            {moneyCount && moneyCount === -1 && (
+              <>
+                <IconCurrencyEthereum />
+                <Loader color="black" size="sm" />
               </>
             )}
           </Group>
