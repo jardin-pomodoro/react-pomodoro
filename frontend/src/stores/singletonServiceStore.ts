@@ -53,7 +53,7 @@ export const InitSingletonServiceStore = (wallet: WalletState) => {
     'BuyFirstNftService',
     new BuyFirstNftService(nftRepository)
   );
-  
+
   MapServices.getInstance().addService(
     'MergeNftsService',
     new MergeNftsService(nftRepository)

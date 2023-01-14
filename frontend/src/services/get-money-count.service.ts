@@ -1,4 +1,4 @@
-import MoneyRepository from '../core/money.repository';
+import { MoneyRepository } from '../core/money.repository';
 
 export class GetMoneyCountService {
   constructor(private readonly moneyRepository: MoneyRepository) {}
