@@ -103,6 +103,12 @@ function BuySeed() {
         "Votre transaction est un succès, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction"
       );
     });
+    SmartContractService.listenToEvent('TreeUpgraded', (event) => {
+      console.log('TreeUpgraded', event);
+      setTransactionMessage(
+        "Votre transaction est un succès, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction"
+      );
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet]);
 
