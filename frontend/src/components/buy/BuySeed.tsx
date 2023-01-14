@@ -98,13 +98,11 @@ function BuySeed() {
     };
     getNfts();
     SmartContractService.listenToEvent('SeedRefreshed', (tokenId: string) => {
-      console.log('SeedRefreshed', tokenId);
       setTransactionMessage(
         "Votre transaction est un succès, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction"
       );
     });
     SmartContractService.listenToEvent('TreeUpgraded', (event) => {
-      console.log('TreeUpgraded', event);
       setTransactionMessage(
         "Votre transaction est un succès, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction"
       );

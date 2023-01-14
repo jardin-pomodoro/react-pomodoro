@@ -68,7 +68,6 @@ export function BuyNft() {
     try {
       await buyFirstNftService.handle(nfts);
     } catch (error: any) {
-      console.log(error);
       if (error.code && error.code === WalletError.ACTION_REJECTED) {
         setTransactionMessage('Vous avez décidé de rejeter la transaction');
       } else {

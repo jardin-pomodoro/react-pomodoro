@@ -253,7 +253,6 @@ export function MyGallery() {
       await mergeNftsService.handle({ nft1: nft1.id, nft2: nft2.id });
       setSelectedNfts([]);
     } catch (error: any) {
-      console.log(error);
       if (error.code && error.code === WalletError.ACTION_REJECTED) {
         setSimpleBannerProps({
           title: 'Echec',
