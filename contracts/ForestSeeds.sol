@@ -43,5 +43,6 @@ contract ForestSeeds {
 
     function addSeeds(uint256 _tokenId, uint256 amount) internal {
         userSeeds[_tokenId].boughtSeeds += amount;
+        emit SeedRefreshed(msg.sender, _tokenId, getSeeds(_tokenId));
     }
 }
