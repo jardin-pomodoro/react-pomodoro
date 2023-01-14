@@ -19,6 +19,9 @@ import { GetNftsService } from '../services/get-nfts.service';
 import { BuyFirstNftService } from '../services/buy-first-nft.service';
 import { Nft } from '../core/nft';
 import { MetamaskNftRepository } from '../repositories';
+import { WalletError } from '../services';
+import { SmartContractService } from '../services/smart-contract.service';
+import { MapServices } from '../stores';
 
 const useStyles = createStyles(() => ({
   center_button: {
@@ -47,31 +50,57 @@ const useStyles = createStyles(() => ({
 
 export function BuyNft() {
   const { classes } = useStyles();
-  const [transactionSuccess, setTransactionSuccess] = useState(false);
   const [nfts, setNfts] = useState<Nft[]>([]);
   const [{ wallet }] = useConnectWallet();
+  const [transactionMessage, setTransactionMessage] = useState<
+    string | undefined
+  >(undefined);
+
+  const buyFirstNftService = MapServices.getInstance().getService(
+    'BuyFirstNftService'
+  ) as BuyFirstNftService;
+  const getNftsService = MapServices.getInstance().getService(
+    'GetNftsService'
+  ) as GetNftsService;
 
   const BuyFirstNft = async () => {
     if (wallet === null) return;
-    const nftRepo = new MetamaskNftRepository(wallet);
-    const buyFirstNftService = new BuyFirstNftService(nftRepo);
-    await buyFirstNftService.handle(nfts);
+    try {
+      await buyFirstNftService.handle(nfts);
+    } catch (error: any) {
+      if (error.code && error.code === WalletError.ACTION_REJECTED) {
+        setTransactionMessage('Vous avez décidé de rejeter la transaction');
+      } else {
+        setTransactionMessage(
+          'Une erreur est survenue lors de la transaction, vous pouvez potentiellement ne pas avoir assez de fonds sur votre wallet'
+        );
+      }
+    }
   };
 
   useEffect(() => {
     if (!wallet) return;
-    const nftRepo = new MetamaskNftRepository(wallet);
-    const getNftsService = new GetNftsService(nftRepo);
+
     const getNfts = async () => {
       const result = await getNftsService.handle();
       setNfts(result);
     };
     getNfts();
-  }, [wallet]);
+    SmartContractService.listenToEvent('TreeMinted', (event: any) => {
+      console.log('TreeMinted', event);
+      setTransactionMessage(
+        'Votre transaction est un succès, vous allez être redirigé vers votre gallerie'
+      );
+      setTimeout(() => {
+        window.location.href = '/';
+        window.location.reload();
+      }, 2000);
+    });
+  }, [getNftsService, wallet]);
 
   return (
     <Container mt="lg">
-      {transactionSuccess && (
+      {transactionMessage && (
         <Paper
           withBorder
           p="lg"
@@ -81,18 +110,15 @@ export function BuyNft() {
         >
           <Group position="apart" mb="xs">
             <Text size="md" weight={500}>
-              Achat bien finalisé
+              Résultat de la transaction
             </Text>
             <CloseButton
               mr={-9}
               mt={-9}
-              onClick={() => setTransactionSuccess(false)}
+              onClick={() => setTransactionMessage(undefined)}
             />
           </Group>
-          <Text size="xs">
-            Votre transaction est un succès, vous pouvez vous rendre dans
-            metamask pour suivre l'historique de votre transaction
-          </Text>
+          <Text size="xs">{transactionMessage}</Text>
         </Paper>
       )}
       <Paper withBorder p="lg" radius="md" shadow="md" mb="xs">

@@ -17,6 +17,8 @@ import {
 } from '../services';
 import { GetNftDetailsService } from '../services/get-nft-details.service';
 import { GetSeedService } from '../services/get-seed.service';
+import { ImproveLeavesNftService } from '../services/improve-leaves-tree.service';
+import { MergeNftsService } from '../services/merge-nfts.service';
 
 export class MapServices {
   private static instance: MapServices;
@@ -53,6 +55,11 @@ export const InitSingletonServiceStore = (wallet: WalletState) => {
   );
 
   MapServices.getInstance().addService(
+    'MergeNftsService',
+    new MergeNftsService(nftRepository)
+  );
+
+  MapServices.getInstance().addService(
     'BuySeedService',
     new BuySeedService(seedRepository)
   );
@@ -75,6 +82,11 @@ export const InitSingletonServiceStore = (wallet: WalletState) => {
   MapServices.getInstance().addService(
     'ImproveTrunkNftService',
     new ImproveTrunkNftService(nftRepository)
+  );
+
+  MapServices.getInstance().addService(
+    'ImproveLeavesNftService',
+    new ImproveLeavesNftService(nftRepository)
   );
 
   MapServices.getInstance().addService(

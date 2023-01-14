@@ -5,6 +5,7 @@ import {
   createStyles,
   Group,
   Header,
+  Loader,
   Text,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
@@ -96,10 +97,16 @@ export function HeaderMenu({ links, moneyCount }: HeaderSearchProps) {
 
           <Group spacing={5} className={classes.links}>
             {items}
-            {moneyCount && (
+            {moneyCount && moneyCount !== -1 && (
               <>
                 <IconCurrencyEthereum />
                 <div>{moneyCount}</div>
+              </>
+            )}
+            {moneyCount && moneyCount === -1 && (
+              <>
+                <IconCurrencyEthereum />
+                <Loader color="black" size="sm" />
               </>
             )}
           </Group>

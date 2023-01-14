@@ -1,6 +1,6 @@
 import { useConnectWallet } from '@web3-onboard/react';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import {
   Container,
   RingProgress,
@@ -10,12 +10,17 @@ import {
   Center,
   Chip,
 } from '@mantine/core';
-import { IconArrowDownRight, IconArrowUpRight } from '@tabler/icons';
-import { MetamaskNftRepository, MetamaskSeedRepository } from '../repositories';
+import {
+  IconArrowDownRight,
+  IconArrowUpRight,
+  IconCurrencyEthereum,
+  IconArrowNarrowLeft,
+} from '@tabler/icons';
 import { GetNftDetailsService } from '../services/get-nft-details.service';
-import { GetNftMetadataService, GetSeedService } from '../services';
+import { GetNftMetadataService } from '../services';
 import { HeaderMenu } from '../components/common/header';
 import { NftDetails } from '../core';
+import { MapServices } from '../stores';
 
 const useStyles = createStyles(() => ({
   imageSection: {
@@ -39,6 +44,9 @@ const useStyles = createStyles(() => ({
   },
   chip: {
     color: '#4B8673',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   card: {
     backgroundColor: 'white',
@@ -69,20 +77,17 @@ export function ViewNft({ moneyCount }: any) {
   const [imageLink, setImageLink] = useState<string | undefined>();
   const [{ wallet }] = useConnectWallet();
   const { id } = useParams();
+  const getNftDetails = MapServices.getInstance().getService(
+    'GetNftDetailsService'
+  ) as GetNftDetailsService;
+
+  const getNftMetadataService = MapServices.getInstance().getService(
+    'GetNftMetadataService'
+  ) as GetNftMetadataService;
 
   useEffect(() => {
     const getNftDetailsFunc = async () => {
       if (!wallet || !id) return;
-      const getSeedService = new GetSeedService(
-        new MetamaskSeedRepository(wallet)
-      );
-      const getNftDetails = new GetNftDetailsService(
-        new MetamaskNftRepository(wallet),
-        getSeedService
-      );
-      const getNftMetadataService = new GetNftMetadataService(
-        new MetamaskNftRepository(wallet)
-      );
       const nftDetailsResponse = await getNftDetails.handle(Number(id));
       const imageLinkResponse = await getNftMetadataService.handle({
         id,
@@ -91,7 +96,7 @@ export function ViewNft({ moneyCount }: any) {
       setNftDetails(nftDetailsResponse);
     };
     getNftDetailsFunc();
-  }, [id, wallet]);
+  }, [getNftDetails, getNftMetadataService, id, wallet]);
 
   if (imageLink && nftDetails) {
     return (
@@ -105,6 +110,9 @@ export function ViewNft({ moneyCount }: any) {
           moneyCount={moneyCount}
         />
         <Container className={classes.card}>
+          <Link to="/gallery">
+            <IconArrowNarrowLeft color="grey" size={22} stroke={1.5} />
+          </Link>
           <div className={classes.imageSection}>
             <img src={imageLink} alt="nft" />
             <Chip className={classes.chip_element} m="sm">
@@ -118,12 +126,14 @@ export function ViewNft({ moneyCount }: any) {
               </Chip>
               <Chip className={classes.chip_element} m="sm">
                 <span className={classes.chip}>
-                  {nftDetails.leavesUpgradePrice} pour upgrade les feuilles
+                  {nftDetails.leavesUpgradePrice}{' '}
+                  <IconCurrencyEthereum size={20} /> pour upgrade les feuilles
                 </span>
               </Chip>
               <Chip className={classes.chip_element} m="sm">
                 <span className={classes.chip}>
-                  {nftDetails.trunkUpgradePrice} pour upgrade le tronc
+                  {nftDetails.trunkUpgradePrice}{' '}
+                  <IconCurrencyEthereum size={20} /> pour upgrade le tronc
                 </span>
               </Chip>
             </div>
@@ -138,44 +148,10 @@ export function ViewNft({ moneyCount }: any) {
                   sections={[
                     {
                       value:
-                        (nftDetails.trunkStats /
-                          (nftDetails.trunkStats + nftDetails.maxUpgrade)) *
-                        100,
-                      color: '#4B8673',
-                    },
-                  ]}
-                  label={
-                    <Center>
-                      <IconArrowUpRight size={22} stroke={1.5} />
-                    </Center>
-                  }
-                />
-                <div>
-                  <Text
-                    color="dimmed"
-                    size="xs"
-                    transform="uppercase"
-                    weight={700}
-                  >
-                    Statistique du tronc
-                  </Text>
-                  <Text weight={700} size="xl">
-                    {nftDetails.trunkStats} /
-                    {nftDetails.trunkStats + nftDetails.maxUpgrade}
-                  </Text>
-                </div>
-              </Group>
-
-              <Group>
-                <RingProgress
-                  size={80}
-                  roundCaps
-                  thickness={8}
-                  sections={[
-                    {
-                      value:
                         (nftDetails.leavesStats /
-                          (nftDetails.leavesStats + nftDetails.maxUpgrade)) *
+                          (nftDetails.leavesStats -
+                            nftDetails.leavesUpgradeCount +
+                            nftDetails.maxUpgrade)) *
                         100,
                       color: '#4B8673',
                     },
@@ -197,7 +173,48 @@ export function ViewNft({ moneyCount }: any) {
                   </Text>
                   <Text weight={700} size="xl">
                     {nftDetails.leavesStats} /{' '}
-                    {nftDetails.leavesStats + nftDetails.maxUpgrade}
+                    {nftDetails.leavesStats -
+                      nftDetails.leavesUpgradeCount +
+                      nftDetails.maxUpgrade}
+                  </Text>
+                </div>
+              </Group>
+              <Group>
+                <RingProgress
+                  size={80}
+                  roundCaps
+                  thickness={8}
+                  sections={[
+                    {
+                      value:
+                        (nftDetails.trunkStats /
+                          (nftDetails.trunkStats -
+                            nftDetails.trunkUpgradeCount +
+                            nftDetails.maxUpgrade)) *
+                        100,
+                      color: '#4B8673',
+                    },
+                  ]}
+                  label={
+                    <Center>
+                      <IconArrowUpRight size={22} stroke={1.5} />
+                    </Center>
+                  }
+                />
+                <div>
+                  <Text
+                    color="dimmed"
+                    size="xs"
+                    transform="uppercase"
+                    weight={700}
+                  >
+                    Statistique du tronc
+                  </Text>
+                  <Text weight={700} size="xl">
+                    {nftDetails.trunkStats} /
+                    {nftDetails.trunkStats -
+                      nftDetails.trunkUpgradeCount +
+                      nftDetails.maxUpgrade}
                   </Text>
                 </div>
               </Group>

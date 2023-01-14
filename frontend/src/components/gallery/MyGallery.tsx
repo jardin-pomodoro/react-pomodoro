@@ -12,22 +12,20 @@ import {
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { useConnectWallet } from '@web3-onboard/react';
-import { Nft } from '../../core/nft';
+import { Nft, NftDetails } from '../../core/nft';
 import { GetNftsService } from '../../services/get-nfts.service';
 import { ImproveLeavesNftService } from '../../services/improve-leaves-tree.service';
 import { MergeNftsService } from '../../services/merge-nfts.service';
 import { Banner } from './Banner';
 import { FeaturesCard } from './card';
-import { MetamaskNftRepository } from '../../repositories/nft/metamask-nft.repository';
 import { GetNftMetadataService } from '../../services/get-nft-metadata.service';
-import { GetSeedService } from '../../services/get-seed.service';
-import { MetamaskSeedRepository } from '../../repositories/seed/metamask-seed.repository';
-import {
-  NftDetails,
-  GetNftDetailsService,
-} from '../../services/get-nft-details.service';
+import { GetNftDetailsService } from '../../services';
 import { MapServices } from '../../stores';
-import { SmartContractService } from '../../services/smart-contract.service';
+import { ImproveTrunkNftService } from '../../services/improve-trunk-tree.service';
+import {
+  SmartContractService,
+  WalletError,
+} from '../../services/smart-contract.service';
 
 interface BannerProps {
   backgroundColor: string;
@@ -77,17 +75,17 @@ const modifyBanner = (selectedNfts: Nft[]): BannerProps => {
   };
 
   if (selectedNfts.length === 1) {
-    banner.title = `Fusionnez vos arbres ${selectedNfts
+    banner.title = `Fusionnez vos arbres (${selectedNfts
       .map((nft) => nft.id)
-      .join(', ')}`;
+      .join(', ')})`;
     banner.description =
       "Il ne vous manque qu'un arbre pour pouvoir procéder à la fusion";
     banner.buttonText = 'Ajoutez en un de plus';
     banner.buttonValidity = false;
   } else if (selectedNfts.length === 2) {
-    banner.title = `Fusionnez vos arbres ${selectedNfts
+    banner.title = `Fusionnez vos arbres (${selectedNfts
       .map((nft) => nft.id)
-      .join(', ')}`;
+      .join(', ')})`;
     banner.description = 'Vous pouvez fusionner vos arbres';
     banner.buttonText = 'Fusionner';
     banner.buttonValidity = true;
@@ -168,6 +166,9 @@ export function MyGallery() {
     {} as SimpleBannerProps
   );
   const { classes } = useStyles();
+  const getNftsService = MapServices.getInstance().getService(
+    'GetNftsService'
+  ) as GetNftsService;
 
   const getNftDetailsService = MapServices.getInstance().getService(
     'GetNftDetailsService'
@@ -177,6 +178,17 @@ export function MyGallery() {
     'GetNftMetadataService'
   ) as GetNftMetadataService;
 
+  const improveLeavesNftService = MapServices.getInstance().getService(
+    'ImproveLeavesNftService'
+  ) as ImproveLeavesNftService;
+
+  const improveTrunkNftService = MapServices.getInstance().getService(
+    'ImproveTrunkNftService'
+  ) as ImproveTrunkNftService;
+
+  const mergeNftsService = MapServices.getInstance().getService(
+    'MergeNftsService'
+  ) as MergeNftsService;
   const selectNftToMerge = (id: string) => {
     const nft = featuresCardProps.find(
       (nftFromResearch) => nftFromResearch.title === id
@@ -208,16 +220,16 @@ export function MyGallery() {
   useEffect(() => {
     if (!wallet) return;
     SmartContractService.listenToEvent('TreeUpgraded', (event) => {
-      console.log('TreeUpgraded', event);
-      const getNftsService = new GetNftsService(
-        new MetamaskNftRepository(wallet)
-      );
+      setSimpleBannerProps({
+        title: `Félicitations`,
+        description:
+          'Vos arbres a bien été amélioré, vous pouvez décourvir vos nouvelles stats dans ses détails',
+      });
       loadFeatureCardProps(
         getNftsService,
         getNftDetailsService,
         getNftMetadataService
       ).then((featureCardUiResponse) => {
-        console.log('featureCardUiResponse', featureCardUiResponse);
         setFeaturesCardProps(featureCardUiResponse);
       });
     });
@@ -229,59 +241,87 @@ export function MyGallery() {
     if (selectedNfts.length !== 2) return;
     const nft1 = selectedNfts[0];
     const nft2 = selectedNfts[1];
-    const mergeNftsService = new MergeNftsService(
-      new MetamaskNftRepository(wallet)
-    );
     try {
       await mergeNftsService.handle({ nft1: nft1.id, nft2: nft2.id });
       setSelectedNfts([]);
-    } catch (e) {
-      setSimpleBannerProps({
-        title: 'Echec',
-        description:
-          "Votre Fusion est un echec, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction",
-      });
+    } catch (error: any) {
+      if (error.code && error.code === WalletError.ACTION_REJECTED) {
+        setSimpleBannerProps({
+          title: 'Echec',
+          description: 'Vous avez décidé de rejeter la transaction',
+        });
+      } else if (
+        error.reason &&
+        error.reason === 'execution reverted: Breeding limit reached'
+      ) {
+        setSimpleBannerProps({
+          title: 'Echec',
+          description:
+            "Vous avez atteint la limite de fusion pour l'un des ces arbres",
+        });
+      } else {
+        setSimpleBannerProps({
+          title: 'Echec',
+          description:
+            "Votre Fusion est un echec, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction",
+        });
+      }
     }
   };
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const improveLeavesNft = async (id: string) => {
     if (!wallet) return;
-    const improveNftService = new ImproveLeavesNftService(
-      new MetamaskNftRepository(wallet)
-    );
+
     const nft: Nft = { id };
-    await improveNftService.handle({ nft });
+    try {
+      await improveLeavesNftService.handle({ nft });
+    } catch (error: any) {
+      if (error.code && error.code === WalletError.ACTION_REJECTED) {
+        setSimpleBannerProps({
+          title: 'Echec',
+          description: 'Vous avez décidé de rejeter la transaction',
+        });
+      } else {
+        setSimpleBannerProps({
+          title: 'Echec',
+          description:
+            "Votre amélioration est un echec, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction",
+        });
+      }
+    }
   };
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const improveTrunkNft = async (id: string) => {
     if (!wallet) return;
-    const improveNftService = new ImproveLeavesNftService(
-      new MetamaskNftRepository(wallet)
-    );
     const nft: Nft = { id };
-    await improveNftService.handle({ nft });
+    try {
+      await improveTrunkNftService.handle({ nft });
+    } catch (error: any) {
+      if (error.code && error.code === WalletError.ACTION_REJECTED) {
+        setSimpleBannerProps({
+          title: 'Echec',
+          description: 'Vous avez décidé de rejeter la transaction',
+        });
+      } else {
+        setSimpleBannerProps({
+          title: 'Echec',
+          description:
+            "Votre amélioration est un echec, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction",
+        });
+      }
+    }
   };
 
   useEffect(() => {
     if (!wallet) return;
-    const getNftsService = new GetNftsService(
-      new MetamaskNftRepository(wallet)
-    );
-    const getSeedService = new GetSeedService(
-      new MetamaskSeedRepository(wallet)
-    );
-    const getNftDetails = new GetNftDetailsService(
-      new MetamaskNftRepository(wallet),
-      getSeedService
-    );
     const getNfts = async () => {
       const nfts = await getNftsService.handle();
       const nftsUi = await Promise.all(
         nfts.map(async (nft) => {
           const nftMetadata = await getNftMetadataService.handle(nft);
-          const nftDetails = await getNftDetails.handle(Number(nft.id));
+          const nftDetails = await getNftDetailsService.handle(Number(nft.id));
           const nftE = {
             backgroundColor: '#4B8673',
             textColor: 'white',
@@ -297,6 +337,14 @@ export function MyGallery() {
       setFeaturesCardProps(nftsUi);
     };
     getNfts();
+    SmartContractService.listenToEvent('TreeMinted', (event) => {
+      setSimpleBannerProps({
+        title: `Félicitations`,
+        description:
+          'Vos arbres ont bien fusionné, vous pouvez retrouver votre nouveau NFT dans votre gallerie',
+      });
+      getNfts();
+    });
   }, [wallet]);
 
   return (
