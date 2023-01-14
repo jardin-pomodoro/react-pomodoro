@@ -150,6 +150,13 @@ export function App() {
           getMoneyCount();
         }, 1000);
       });
+      SmartContractService.listenToEvent('SeedRefreshed', (event) => {
+        console.log('SeedRefreshed', event);
+        setMoneyCount(-1);
+        setTimeout(() => {
+          getMoneyCount();
+        }, 1000);
+      });
     }
   }, [wallet]);
 

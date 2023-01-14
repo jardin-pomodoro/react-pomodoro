@@ -153,44 +153,10 @@ export function ViewNft({ moneyCount }: any) {
                   sections={[
                     {
                       value:
-                        (nftDetails.trunkStats /
-                          (nftDetails.trunkStats + nftDetails.maxUpgrade)) *
-                        100,
-                      color: '#4B8673',
-                    },
-                  ]}
-                  label={
-                    <Center>
-                      <IconArrowUpRight size={22} stroke={1.5} />
-                    </Center>
-                  }
-                />
-                <div>
-                  <Text
-                    color="dimmed"
-                    size="xs"
-                    transform="uppercase"
-                    weight={700}
-                  >
-                    Statistique du tronc
-                  </Text>
-                  <Text weight={700} size="xl">
-                    {nftDetails.trunkStats} /
-                    {nftDetails.trunkStats + nftDetails.maxUpgrade}
-                  </Text>
-                </div>
-              </Group>
-
-              <Group>
-                <RingProgress
-                  size={80}
-                  roundCaps
-                  thickness={8}
-                  sections={[
-                    {
-                      value:
                         (nftDetails.leavesStats /
-                          (nftDetails.leavesStats + nftDetails.maxUpgrade)) *
+                          (nftDetails.leavesStats -
+                            nftDetails.leavesUpgradeCount +
+                            nftDetails.maxUpgrade)) *
                         100,
                       color: '#4B8673',
                     },
@@ -212,7 +178,48 @@ export function ViewNft({ moneyCount }: any) {
                   </Text>
                   <Text weight={700} size="xl">
                     {nftDetails.leavesStats} /{' '}
-                    {nftDetails.leavesStats + nftDetails.maxUpgrade}
+                    {nftDetails.leavesStats -
+                      nftDetails.leavesUpgradeCount +
+                      nftDetails.maxUpgrade}
+                  </Text>
+                </div>
+              </Group>
+              <Group>
+                <RingProgress
+                  size={80}
+                  roundCaps
+                  thickness={8}
+                  sections={[
+                    {
+                      value:
+                        (nftDetails.trunkStats /
+                          (nftDetails.trunkStats -
+                            nftDetails.trunkUpgradeCount +
+                            nftDetails.maxUpgrade)) *
+                        100,
+                      color: '#4B8673',
+                    },
+                  ]}
+                  label={
+                    <Center>
+                      <IconArrowUpRight size={22} stroke={1.5} />
+                    </Center>
+                  }
+                />
+                <div>
+                  <Text
+                    color="dimmed"
+                    size="xs"
+                    transform="uppercase"
+                    weight={700}
+                  >
+                    Statistique du tronc
+                  </Text>
+                  <Text weight={700} size="xl">
+                    {nftDetails.trunkStats} /
+                    {nftDetails.trunkStats -
+                      nftDetails.trunkUpgradeCount +
+                      nftDetails.maxUpgrade}
                   </Text>
                 </div>
               </Group>

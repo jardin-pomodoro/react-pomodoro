@@ -24,7 +24,10 @@ import {
 } from '../../services';
 import { deadline } from '../../utils/constants';
 import { MapServices } from '../../stores/singletonServiceStore';
-import { WalletError } from '../../services/smart-contract.service';
+import {
+  WalletError,
+  SmartContractService,
+} from '../../services/smart-contract.service';
 
 const useStyles = createStyles(() => ({
   center_button: {
@@ -94,6 +97,12 @@ function BuySeed() {
       setNfts(nftsFormatted);
     };
     getNfts();
+    SmartContractService.listenToEvent('SeedRefreshed', (tokenId: string) => {
+      console.log('SeedRefreshed', tokenId);
+      setTransactionMessage(
+        "Votre transaction est un succès, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction"
+      );
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet]);
 
@@ -119,9 +128,6 @@ function BuySeed() {
   const buy = async (tokenId: string) => {
     try {
       await buySeedService.handle({ tokenId, amount: 1 });
-      // setTransactionMessage(
-      //   "Votre transaction est un succès, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction"
-      // );
     } catch (error: any) {
       if (error.code && error.code === WalletError.ACTION_REJECTED) {
         setTransactionMessage('Vous avez décidé de rejeter la transaction');

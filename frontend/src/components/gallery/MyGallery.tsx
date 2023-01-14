@@ -12,6 +12,7 @@ import {
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
+import { useConnectWallet } from '@web3-onboard/react';
 import { Nft } from '../../core/nft';
 import { GetNftsService } from '../../services/get-nfts.service';
 import { ImproveLeavesNftService } from '../../services/improve-leaves-tree.service';
@@ -21,7 +22,6 @@ import { FeaturesCard } from './card';
 import { MetamaskNftRepository } from '../../repositories/nft/metamask-nft.repository';
 import { contractAbi, treeToken } from '../../utils/constants';
 import { GetNftMetadataService } from '../../services/get-nft-metadata.service';
-import { useConnectWallet } from '@web3-onboard/react';
 import { GetSeedService } from '../../services/get-seed.service';
 import { MetamaskSeedRepository } from '../../repositories/seed/metamask-seed.repository';
 import {
@@ -29,6 +29,7 @@ import {
   GetNftDetailsService,
 } from '../../services/get-nft-details.service';
 import { MapServices } from '../../stores';
+import { ImproveTrunkNftService } from '../../services/improve-trunk-tree.service';
 import {
   SmartContractService,
   WalletError,
@@ -82,17 +83,17 @@ const modifyBanner = (selectedNfts: Nft[]): BannerProps => {
   };
 
   if (selectedNfts.length === 1) {
-    banner.title = `Fusionnez vos arbres ${selectedNfts
+    banner.title = `Fusionnez vos arbres (${selectedNfts
       .map((nft) => nft.id)
-      .join(', ')}`;
+      .join(', ')})`;
     banner.description =
       "Il ne vous manque qu'un arbre pour pouvoir procéder à la fusion";
     banner.buttonText = 'Ajoutez en un de plus';
     banner.buttonValidity = false;
   } else if (selectedNfts.length === 2) {
-    banner.title = `Fusionnez vos arbres ${selectedNfts
+    banner.title = `Fusionnez vos arbres (${selectedNfts
       .map((nft) => nft.id)
-      .join(', ')}`;
+      .join(', ')})`;
     banner.description = 'Vous pouvez fusionner vos arbres';
     banner.buttonText = 'Fusionner';
     banner.buttonValidity = true;
@@ -173,6 +174,9 @@ export function MyGallery() {
     {} as SimpleBannerProps
   );
   const { classes } = useStyles();
+  const getNftsService = MapServices.getInstance().getService(
+    'GetNftsService'
+  ) as GetNftsService;
 
   const getNftDetailsService = MapServices.getInstance().getService(
     'GetNftDetailsService'
@@ -182,6 +186,17 @@ export function MyGallery() {
     'GetNftMetadataService'
   ) as GetNftMetadataService;
 
+  const improveLeavesNftService = MapServices.getInstance().getService(
+    'ImproveLeavesNftService'
+  ) as ImproveLeavesNftService;
+
+  const improveTrunkNftService = MapServices.getInstance().getService(
+    'ImproveTrunkNftService'
+  ) as ImproveTrunkNftService;
+
+  const mergeNftsService = MapServices.getInstance().getService(
+    'MergeNftsService'
+  ) as MergeNftsService;
   const selectNftToMerge = (id: string) => {
     const nft = featuresCardProps.find(
       (nftFromResearch) => nftFromResearch.title === id
@@ -213,10 +228,6 @@ export function MyGallery() {
   useEffect(() => {
     if (!wallet) return;
     SmartContractService.listenToEvent('TreeUpgraded', (event) => {
-      console.log('TreeUpgraded', event);
-      const getNftsService = new GetNftsService(
-        new MetamaskNftRepository(wallet)
-      );
       setSimpleBannerProps({
         title: `Félicitations`,
         description:
@@ -227,7 +238,6 @@ export function MyGallery() {
         getNftDetailsService,
         getNftMetadataService
       ).then((featureCardUiResponse) => {
-        console.log('featureCardUiResponse', featureCardUiResponse);
         setFeaturesCardProps(featureCardUiResponse);
       });
     });
@@ -239,9 +249,6 @@ export function MyGallery() {
     if (selectedNfts.length !== 2) return;
     const nft1 = selectedNfts[0];
     const nft2 = selectedNfts[1];
-    const mergeNftsService = new MergeNftsService(
-      new MetamaskNftRepository(wallet)
-    );
     try {
       await mergeNftsService.handle({ nft1: nft1.id, nft2: nft2.id });
       setSelectedNfts([]);
@@ -264,12 +271,10 @@ export function MyGallery() {
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const improveLeavesNft = async (id: string) => {
     if (!wallet) return;
-    const improveNftService = new ImproveLeavesNftService(
-      new MetamaskNftRepository(wallet)
-    );
+
     const nft: Nft = { id };
     try {
-      await improveNftService.handle({ nft });
+      await improveLeavesNftService.handle({ nft });
     } catch (error: any) {
       if (error.code && error.code === WalletError.ACTION_REJECTED) {
         setSimpleBannerProps({
@@ -289,12 +294,9 @@ export function MyGallery() {
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const improveTrunkNft = async (id: string) => {
     if (!wallet) return;
-    const improveNftService = new ImproveLeavesNftService(
-      new MetamaskNftRepository(wallet)
-    );
     const nft: Nft = { id };
     try {
-      await improveNftService.handle({ nft });
+      await improveTrunkNftService.handle({ nft });
     } catch (error: any) {
       if (error.code && error.code === WalletError.ACTION_REJECTED) {
         setSimpleBannerProps({
@@ -313,22 +315,12 @@ export function MyGallery() {
 
   useEffect(() => {
     if (!wallet) return;
-    const getNftsService = new GetNftsService(
-      new MetamaskNftRepository(wallet)
-    );
-    const getSeedService = new GetSeedService(
-      new MetamaskSeedRepository(wallet)
-    );
-    const getNftDetails = new GetNftDetailsService(
-      new MetamaskNftRepository(wallet),
-      getSeedService
-    );
     const getNfts = async () => {
       const nfts = await getNftsService.handle();
       const nftsUi = await Promise.all(
         nfts.map(async (nft) => {
           const nftMetadata = await getNftMetadataService.handle(nft);
-          const nftDetails = await getNftDetails.handle(Number(nft.id));
+          const nftDetails = await getNftDetailsService.handle(Number(nft.id));
           const nftE = {
             backgroundColor: '#4B8673',
             textColor: 'white',
@@ -345,7 +337,6 @@ export function MyGallery() {
     };
     getNfts();
     SmartContractService.listenToEvent('TreeMinted', (event) => {
-      console.log('TreeMinted', event);
       setSimpleBannerProps({
         title: `Félicitations`,
         description:
