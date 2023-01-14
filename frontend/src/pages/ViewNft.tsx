@@ -23,6 +23,7 @@ import {
 } from '../services/get-nft-details.service';
 import { GetNftMetadataService, GetSeedService } from '../services';
 import { HeaderMenu } from '../components/common/header';
+import { MapServices } from '../stores';
 
 const useStyles = createStyles(() => ({
   imageSection: {
@@ -79,20 +80,17 @@ export function ViewNft({ moneyCount }: any) {
   const [imageLink, setImageLink] = useState<string | undefined>();
   const [{ wallet }] = useConnectWallet();
   const { id } = useParams();
+  const getNftDetails = MapServices.getInstance().getService(
+    'GetNftDetailsService'
+  ) as GetNftDetailsService;
+
+  const getNftMetadataService = MapServices.getInstance().getService(
+    'GetNftMetadataService'
+  ) as GetNftMetadataService;
 
   useEffect(() => {
     const getNftDetailsFunc = async () => {
       if (!wallet || !id) return;
-      const getSeedService = new GetSeedService(
-        new MetamaskSeedRepository(wallet)
-      );
-      const getNftDetails = new GetNftDetailsService(
-        new MetamaskNftRepository(wallet),
-        getSeedService
-      );
-      const getNftMetadataService = new GetNftMetadataService(
-        new MetamaskNftRepository(wallet)
-      );
       const nftDetailsResponse = await getNftDetails.handle(Number(id));
       const imageLinkResponse = await getNftMetadataService.handle({
         id,
@@ -101,7 +99,7 @@ export function ViewNft({ moneyCount }: any) {
       setNftDetails(nftDetailsResponse);
     };
     getNftDetailsFunc();
-  }, [id, wallet]);
+  }, [getNftDetails, getNftMetadataService, id, wallet]);
 
   if (imageLink && nftDetails) {
     return (

@@ -21,6 +21,7 @@ import { Nft } from '../core/nft';
 import { MetamaskNftRepository } from '../repositories';
 import { WalletError } from '../services';
 import { SmartContractService } from '../services/smart-contract.service';
+import { MapServices } from '../stores';
 
 const useStyles = createStyles(() => ({
   center_button: {
@@ -55,10 +56,15 @@ export function BuyNft() {
     string | undefined
   >(undefined);
 
+  const buyFirstNftService = MapServices.getInstance().getService(
+    'BuyFirstNftService'
+  ) as BuyFirstNftService;
+  const getNftsService = MapServices.getInstance().getService(
+    'GetNftsService'
+  ) as GetNftsService;
+
   const BuyFirstNft = async () => {
     if (wallet === null) return;
-    const nftRepo = new MetamaskNftRepository(wallet);
-    const buyFirstNftService = new BuyFirstNftService(nftRepo);
     try {
       await buyFirstNftService.handle(nfts);
     } catch (error: any) {
@@ -75,8 +81,7 @@ export function BuyNft() {
 
   useEffect(() => {
     if (!wallet) return;
-    const nftRepo = new MetamaskNftRepository(wallet);
-    const getNftsService = new GetNftsService(nftRepo);
+
     const getNfts = async () => {
       const result = await getNftsService.handle();
       setNfts(result);
@@ -92,7 +97,7 @@ export function BuyNft() {
         window.location.reload();
       }, 2000);
     });
-  }, [wallet]);
+  }, [getNftsService, wallet]);
 
   return (
     <Container mt="lg">
