@@ -253,10 +253,20 @@ export function MyGallery() {
       await mergeNftsService.handle({ nft1: nft1.id, nft2: nft2.id });
       setSelectedNfts([]);
     } catch (error: any) {
+      console.log(error);
       if (error.code && error.code === WalletError.ACTION_REJECTED) {
         setSimpleBannerProps({
           title: 'Echec',
           description: 'Vous avez décidé de rejeter la transaction',
+        });
+      } else if (
+        error.reason &&
+        error.reason === 'execution reverted: Breeding limit reached'
+      ) {
+        setSimpleBannerProps({
+          title: 'Echec',
+          description:
+            "Vous avez atteint la limite de fusion pour l'un des ces arbres",
         });
       } else {
         setSimpleBannerProps({
