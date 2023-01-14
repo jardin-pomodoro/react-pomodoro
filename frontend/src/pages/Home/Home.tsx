@@ -69,7 +69,10 @@ export function Home() {
       )}
       {showAnimation && (
         <>
-          <Timer expiryTimestamp={cumputeTimestamp(20)} />
+          <Timer
+            toggleAnimation={toggleAnimation}
+            expiryTimestamp={cumputeTimestamp(0.5)}
+          />
           <Animation />
         </>
       )}
