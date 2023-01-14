@@ -293,7 +293,22 @@ export function MyGallery() {
       new MetamaskNftRepository(wallet)
     );
     const nft: Nft = { id };
-    await improveNftService.handle({ nft });
+    try {
+      await improveNftService.handle({ nft });
+    } catch (error: any) {
+      if (error.code && error.code === WalletError.ACTION_REJECTED) {
+        setSimpleBannerProps({
+          title: 'Echec',
+          description: 'Vous avez décidé de rejeter la transaction',
+        });
+      } else {
+        setSimpleBannerProps({
+          title: 'Echec',
+          description:
+            "Votre amélioration est un echec, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction",
+        });
+      }
+    }
   };
 
   useEffect(() => {

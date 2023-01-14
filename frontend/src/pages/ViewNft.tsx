@@ -1,6 +1,6 @@
 import { useConnectWallet } from '@web3-onboard/react';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import {
   Container,
   RingProgress,
@@ -14,6 +14,7 @@ import {
   IconArrowDownRight,
   IconArrowUpRight,
   IconCurrencyEthereum,
+  IconArrowNarrowLeft,
 } from '@tabler/icons';
 import { MetamaskNftRepository, MetamaskSeedRepository } from '../repositories';
 import {
@@ -114,6 +115,9 @@ export function ViewNft({ moneyCount }: any) {
           moneyCount={moneyCount}
         />
         <Container className={classes.card}>
+          <Link to="/gallery">
+            <IconArrowNarrowLeft color="grey" size={22} stroke={1.5} />
+          </Link>
           <div className={classes.imageSection}>
             <img src={imageLink} alt="nft" />
             <Chip className={classes.chip_element} m="sm">
