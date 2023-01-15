@@ -32,14 +32,14 @@ const useStyles = createStyles(() => ({
   },
   main_stats: {
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   stats: {
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
     flexDirection: 'column',
   },
   chip: {
@@ -63,6 +63,11 @@ const useStyles = createStyles(() => ({
   },
   chip_element: {
     pointerEvents: 'none',
+  },
+  last_circle: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
   },
 }));
 
@@ -286,6 +291,41 @@ export function ViewNft({ moneyCount }: any) {
                   </Text>
                   <Text weight={700} size="xl">
                     {nftDetails.trunkUpgradeCount} / {nftDetails.maxUpgrade}
+                  </Text>
+                </div>
+              </Group>
+            </div>
+            <div className={classes.last_circle}>
+              <Group>
+                <RingProgress
+                  size={80}
+                  roundCaps
+                  thickness={8}
+                  sections={[
+                    {
+                      value:
+                        (nftDetails.breedCount / nftDetails.maxBreed) * 100,
+                      color: '#4B8673',
+                    },
+                  ]}
+                  label={
+                    <Center>
+                      <IconArrowUpRight size={22} stroke={1.5} />
+                    </Center>
+                  }
+                />
+
+                <div>
+                  <Text
+                    color="dimmed"
+                    size="xs"
+                    transform="uppercase"
+                    weight={700}
+                  >
+                    Nombre de fusions
+                  </Text>
+                  <Text weight={700} size="xl">
+                    {nftDetails.breedCount} / {nftDetails.maxBreed}
                   </Text>
                 </div>
               </Group>

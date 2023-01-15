@@ -5,20 +5,21 @@ import {
   MetamaskSeedRepository,
 } from '../repositories';
 import {
-  BuyFirstNftService,
+  BuyNftService,
   BuySeedService,
-  GetFreeSeedService,
   GetMoneyCountService,
   GetNftMetadataService,
-  GetNftsService,
   GetNumberOfNftService,
-  GetSeedPriceService,
   ImproveTrunkNftService,
+  GetSeedPriceService,
+  GetNftsService,
+  GetFreeSeedService,
 } from '../services';
 import { GetNftDetailsService } from '../services/get-nft-details.service';
 import { GetSeedService } from '../services/get-seed.service';
 import { ImproveLeavesNftService } from '../services/improve-leaves-tree.service';
 import { MergeNftsService } from '../services/merge-nfts.service';
+import { WithDrawService } from '../services/with-draw.service';
 
 export class MapServices {
   private static instance: MapServices;
@@ -50,8 +51,8 @@ export const InitSingletonServiceStore = (wallet: WalletState) => {
   const seedRepository = new MetamaskSeedRepository(wallet);
 
   MapServices.getInstance().addService(
-    'BuyFirstNftService',
-    new BuyFirstNftService(nftRepository)
+    'BuyNftService',
+    new BuyNftService(nftRepository)
   );
 
   MapServices.getInstance().addService(
@@ -107,6 +108,11 @@ export const InitSingletonServiceStore = (wallet: WalletState) => {
   MapServices.getInstance().addService(
     'GetSeedService',
     new GetSeedService(seedRepository)
+  );
+
+  MapServices.getInstance().addService(
+    'WithDrawService',
+    new WithDrawService(wallet)
   );
 
   MapServices.getInstance().addService(

@@ -8,6 +8,7 @@ export interface NftDetails {
   maxBreed: number;
   leavesUpgradeCount: number;
   trunkUpgradeCount: number;
+  breedCount: number;
 }
 
 export interface Nft {

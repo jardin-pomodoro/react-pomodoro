@@ -14,6 +14,7 @@ export function Gallery({ moneyCount }: any) {
           { link: '/buy', label: 'Acheter', links: [] },
         ]}
         moneyCount={moneyCount}
+        address={wallet?.accounts[0].address}
       />
       {wallet && <MyGallery />}
     </>

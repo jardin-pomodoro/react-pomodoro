@@ -12,6 +12,7 @@ function cumputeTimestamp(minuteToAdd: number): number {
   return timestamp + minuteToAdd * SEC_IN_A_MINUTE;
 }
 
+<<<<<<< HEAD
 enum State {
   IDLE,
   Growing,
@@ -19,6 +20,11 @@ enum State {
 }
 
 export function Home() {
+||||||| 1f7a1a9
+export function Home() {
+=======
+export function Home({ moneyCount }: any) {
+>>>>>>> origin/main
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [showAnimation, setAnimation] = useState<State>(State.IDLE);
   const [trees, loadImage] = useNftStore((store) => [
@@ -46,6 +52,7 @@ export function Home() {
           { link: '/gallery', label: 'Gallery', links: [] },
           { link: '/buy', label: 'Acheter', links: [] },
         ]}
+        moneyCount={moneyCount}
       />
       <Modal centered size="xl" opened={isModalOpen} onClose={closeModal}>
         <HomeModal nfts={trees} closeModal={onSubmitModal} />

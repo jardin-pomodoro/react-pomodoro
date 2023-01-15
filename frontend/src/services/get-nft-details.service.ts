@@ -10,7 +10,7 @@ export class GetNftDetailsService {
   async handle(tokenId: number): Promise<NftDetails> {
     const seed = await this.getSeedService.handle(tokenId);
     const seedInString = seed.toString();
-    const leavesString = seedInString.slice(0, 2);
+    const leavesString = seedInString.slice(0, 3);
     const trunkString = seedInString.slice(3, 6);
     const leavesValue: number = leavesString
       .split('')
@@ -31,6 +31,10 @@ export class GetNftDetailsService {
       id: tokenId.toString(),
     });
 
+    const breedCount = await this.nftRepository.getBreedCount({
+      id: tokenId.toString(),
+    });
+
     return {
       seed,
       leavesUpgradePrice: leaves,
@@ -40,6 +44,7 @@ export class GetNftDetailsService {
       maxUpgrade: nftUpgradeStats.maxUpgrade,
       leavesUpgradeCount: nftUpgradeStats.leavesUpgrade,
       trunkUpgradeCount: nftUpgradeStats.trunkUpgrade,
+      breedCount,
       maxBreed: 2,
     };
   }
