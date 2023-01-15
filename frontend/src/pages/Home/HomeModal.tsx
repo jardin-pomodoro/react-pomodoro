@@ -70,7 +70,7 @@ export function HomeModal({ nfts, closeModal, startGrowing }: HomeModalProps) {
             url={nft.image!}
             onClick={onImageClick}
             isSelected={nft.id === nftParent}
-            fert={nft.detail?.maxBreed}
+            fert={nft.fert}
           />
         ))}
       </SimpleGrid>

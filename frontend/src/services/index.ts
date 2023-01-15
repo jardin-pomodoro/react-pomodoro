@@ -14,4 +14,4 @@ export * from './improve-leaves-tree.service';
 export * from './get-seed.service';
 export * from './smart-contract.service';
 export * from './get-nft-details.service';
-export * from './harvest-tree-service';
+export * from './harvest-tree.service';
