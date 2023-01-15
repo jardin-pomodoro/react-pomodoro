@@ -27,6 +27,10 @@ export function Home() {
   const openModal = () => setModalOpen(true);
   const toggleAnimation = () => setAnimation(!showAnimation);
   const closeModal = () => setModalOpen(false);
+  const onSubmitModal = () => {
+    closeModal();
+    toggleAnimation();
+  };
 
   return (
     <>
@@ -38,7 +42,7 @@ export function Home() {
         ]}
       />
       <Modal centered size="xl" opened={isModalOpen} onClose={closeModal}>
-        <HomeModal nfts={trees} closeModal={closeModal} />
+        <HomeModal nfts={trees} closeModal={onSubmitModal} />
       </Modal>
       {!showAnimation && (
         <>
