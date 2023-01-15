@@ -12,9 +12,15 @@ function cumputeTimestamp(minuteToAdd: number): number {
   return timestamp + minuteToAdd * SEC_IN_A_MINUTE;
 }
 
+enum State {
+  IDLE,
+  Growing,
+  Ready,
+}
+
 export function Home() {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
-  const [showAnimation, setAnimation] = useState<boolean>(false);
+  const [showAnimation, setAnimation] = useState<State>(State.IDLE);
   const [trees, loadImage] = useNftStore((store) => [
     store.nfts,
     store.loadImage,
@@ -25,7 +31,7 @@ export function Home() {
   }, [loadImage]);
 
   const openModal = () => setModalOpen(true);
-  const toggleAnimation = () => setAnimation(!showAnimation);
+  const startGrowing = () => setAnimation(State.Growing);
   const closeModal = () => setModalOpen(false);
   const onSubmitModal = () => {
     closeModal();
