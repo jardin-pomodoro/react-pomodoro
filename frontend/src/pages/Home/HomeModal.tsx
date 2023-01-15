@@ -14,6 +14,7 @@ export interface NftCardProps {
   url: string;
   id: string;
   isSelected: boolean;
+  // eslint-disable-next-line react/require-default-props
   fert?: number;
 }
 
@@ -22,10 +23,10 @@ export function NftCard({ id, url, isSelected, onClick, fert }: NftCardProps) {
     maxHeight: 240,
     padding: 20,
     marginBottom: 20,
-    background: isSelected ? 'blue' : 'transparent',
     borderRadius: 10,
     cursor: 'pointer',
-    border: '2px solib lightBlue',
+    border: '2px solid #8ba6e9',
+    backgroundColor: isSelected ? '#8ba6e9' : 'white',
   };
   return (
     <div style={wapperStyle}>
@@ -36,7 +37,7 @@ export function NftCard({ id, url, isSelected, onClick, fert }: NftCardProps) {
         alt="nft tree"
         withPlaceholder
       />
-      <div>{fert}</div>
+      <div style={{ textAlign: 'center', margin: '4px 0' }}>{fert ?? 0}</div>
     </div>
   );
 }
@@ -67,7 +68,7 @@ export function HomeModal({ nfts, closeModal }: HomeModalProps) {
             url={nft.image!}
             onClick={onImageClick}
             isSelected={nft.id === nftParent}
-            fert={nft.detail?.seed}
+            fert={nft.detail?.maxBreed}
           />
         ))}
       </SimpleGrid>

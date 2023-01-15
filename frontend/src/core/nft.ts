@@ -14,4 +14,5 @@ export interface Nft {
   id: string;
   image?: string;
   detail?: NftDetails;
+  fert?: number;
 }
