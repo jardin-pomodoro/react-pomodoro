@@ -1,6 +1,7 @@
 /* eslint-disable no-inner-declarations */
 /* eslint-disable no-console */
 import { MantineProvider } from '@mantine/core';
+import { NotificationsProvider } from '@mantine/notifications';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { useConnectWallet, useWallets } from '@web3-onboard/react';
 import { OnboardAPI } from '@web3-onboard/core';
@@ -196,9 +197,11 @@ export function WrappedApp() {
         colorScheme: 'light',
       }}
     >
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <NotificationsProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </NotificationsProvider>
     </MantineProvider>
   );
 }

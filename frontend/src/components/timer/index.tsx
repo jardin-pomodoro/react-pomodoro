@@ -1,19 +1,16 @@
 import { useTimer } from 'react-timer-hook';
-import { useNftStore } from '../../stores';
 
 export function Timer({
   expiryTimestamp,
-  toggleAnimation,
+  onGrowingFinish,
 }: {
   expiryTimestamp: number;
-  toggleAnimation: () => void;
+  onGrowingFinish: () => void;
 }) {
-  const harvestATree = useNftStore((state) => state.harvestATree);
   const { seconds, minutes, hours } = useTimer({
     expiryTimestamp: new Date(expiryTimestamp * 1000),
     onExpire: () => {
-      harvestATree();
-      toggleAnimation();
+      onGrowingFinish();
       console.log('collect');
     },
   });

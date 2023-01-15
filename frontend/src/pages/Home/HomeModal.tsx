@@ -7,6 +7,7 @@ import { useNftStore } from '../../stores';
 export interface HomeModalProps {
   nfts: Nft[];
   closeModal: () => void;
+  startGrowing: () => void;
 }
 
 export interface NftCardProps {
@@ -42,7 +43,7 @@ export function NftCard({ id, url, isSelected, onClick, fert }: NftCardProps) {
   );
 }
 
-export function HomeModal({ nfts, closeModal }: HomeModalProps) {
+export function HomeModal({ nfts, closeModal, startGrowing }: HomeModalProps) {
   const [nftParent, setParent] = useState<string | null>(null);
   const plantATree = useNftStore((store) => store.plantATree);
   const onImageClick = (id: string) => {
@@ -54,6 +55,7 @@ export function HomeModal({ nfts, closeModal }: HomeModalProps) {
     console.log(nftParent);
     if (nftParent) {
       plantATree(nftParent);
+      startGrowing();
       closeModal();
     }
   };
