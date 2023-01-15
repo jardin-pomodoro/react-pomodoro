@@ -16,6 +16,7 @@ import {
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { useConnectWallet } from '@web3-onboard/react';
+import { useTimer } from 'react-timer-hook';
 import { IconCurrencyEthereum } from '@tabler/icons';
 import {
   GetSeedPriceService,
@@ -65,10 +66,6 @@ function BuySeed() {
   const [transactionMessage, setTransactionMessage] = useState<
     string | undefined
   >(undefined);
-  const [days, setDays] = useState(0);
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
   const [{ wallet }] = useConnectWallet();
   const { classes } = useStyles();
   const getSeedPriceService = MapServices.getInstance().getService(
@@ -80,6 +77,9 @@ function BuySeed() {
   const buySeedService = MapServices.getInstance().getService(
     'BuySeedService'
   ) as BuySeedService;
+  const { seconds, hours, minutes, days } = useTimer({
+    expiryTimestamp: new Date(deadline),
+  });
 
   useEffect(() => {
     const getSeePrice = async () => {
@@ -102,7 +102,7 @@ function BuySeed() {
         "Votre transaction est un succès, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction"
       );
     });
-    SmartContractService.listenToEvent('TreeUpgraded', (event) => {
+    SmartContractService.listenToEvent('TreeUpgraded', () => {
       setTransactionMessage(
         "Votre transaction est un succès, vous pouvez vous rendre dans metamask pour suivre l'historique de votre transaction"
       );
@@ -110,24 +110,6 @@ function BuySeed() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet]);
 
-  useEffect(() => {
-    const getTime = (_deadline: string) => {
-      const time = Date.parse(_deadline) - Date.now();
-      setDays(Math.floor(time / (1000 * 60 * 60 * 24)));
-      setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
-      setMinutes(Math.floor((time / 1000 / 60) % 60));
-      setSeconds(Math.floor((time / 1000) % 60));
-      return {
-        total: time,
-        days,
-        hours,
-        minutes,
-        seconds,
-      };
-    };
-    const interval = setInterval(() => getTime(deadline), 1000);
-    return () => clearInterval(interval);
-  }, [days, hours, minutes, seconds]);
 
   const buy = async (tokenId: string) => {
     try {

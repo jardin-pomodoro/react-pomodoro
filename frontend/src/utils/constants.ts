@@ -3,4 +3,5 @@ import TreeToken from './tree-token.json';
 
 export const contractAbi = Greeter;
 export const treeToken = TreeToken;
-export const deadline = 'Februray, 01, 2023';
+export const deadline = '01 Feb 2023 00:00:00';
+
