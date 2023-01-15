@@ -15,12 +15,13 @@ import {
 } from '@mantine/core';
 import { useState, useEffect } from 'react';
 import { useConnectWallet } from '@web3-onboard/react';
-import { GetNftsService } from '../services/get-nfts.service';
-import { BuyFirstNftService } from '../services/buy-first-nft.service';
-import { Nft } from '../core/nft';
-import { MetamaskNftRepository } from '../repositories';
-import { WalletError } from '../services';
-import { SmartContractService } from '../services/smart-contract.service';
+import { Nft } from '../core';
+import {
+  GetNftsService,
+  BuyFirstNftService,
+  WalletError,
+  SmartContractService,
+} from '../services';
 import { MapServices } from '../stores';
 
 const useStyles = createStyles(() => ({

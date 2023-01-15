@@ -41,6 +41,7 @@ export function App() {
   const [{ wallet, connecting }, connect] = useConnectWallet();
   const [, setWeb3Onboard] = useState<OnboardAPI | null>(null);
   const retrieveNfts = useNftStore((store) => store.retrieveNfts);
+  const [depsLoaded, setDepsLoaded] = useState(false);
   const { hasNfts, setHasNfts, setErrorMessage } = useAppStore((state) => ({
     hasNfts: state.hasNfts,
     setHasNfts: state.setHasNfts,
@@ -54,6 +55,7 @@ export function App() {
     }
     InitSingletonServiceStore(wallet);
     setWallet(wallet);
+    setDepsLoaded(true);
   }, [wallet, setWallet]);
 
   useEffect(() => {
@@ -163,7 +165,7 @@ export function App() {
   if (!connecting && !wallet) {
     return <ConnectWallet />;
   }
-  if (connecting) {
+  if (connecting || !depsLoaded) {
     return (
       <LoadingMatamaskAccount message="le compte est entrain de charger" />
     );
