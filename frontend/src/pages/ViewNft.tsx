@@ -16,13 +16,10 @@ import {
   IconCurrencyEthereum,
   IconArrowNarrowLeft,
 } from '@tabler/icons';
-import { MetamaskNftRepository, MetamaskSeedRepository } from '../repositories';
-import {
-  GetNftDetailsService,
-  NftDetails,
-} from '../services/get-nft-details.service';
-import { GetNftMetadataService, GetSeedService } from '../services';
+import { GetNftDetailsService } from '../services/get-nft-details.service';
+import { GetNftMetadataService } from '../services';
 import { HeaderMenu } from '../components/common/header';
+import { NftDetails } from '../core';
 import { MapServices } from '../stores';
 
 const useStyles = createStyles(() => ({
