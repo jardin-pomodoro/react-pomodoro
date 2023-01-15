@@ -1,17 +1,9 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable react/no-unescaped-entities */
-import {
-  Badge,
-  Button,
-  Card,
-  createStyles,
-  Group,
-  Image,
-  Text,
-} from '@mantine/core';
+import { Badge, Button, Card, createStyles, Group, Image } from '@mantine/core';
 import { IconCurrencyEthereum } from '@tabler/icons';
 import { Link } from 'react-router-dom';
-import { NftDetails } from '../../services/get-nft-details.service';
+import { NftDetails } from '../../core';
 
 interface FeaturesCardProps {
   backgroundColor: string;

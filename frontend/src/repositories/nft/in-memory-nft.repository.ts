@@ -4,6 +4,10 @@ import { Nft, NftRepository } from '../../core';
 import { NftUpgradeStats } from '../../core/nft-upgrade-stats';
 
 export class InMemoryNftRepository implements NftRepository {
+  harvestTree(): Promise<number> {
+    throw new Error('Method not implemented.');
+  }
+
   getLeavesUpgradePrice(nft: Nft, baseStat: number): Promise<number> {
     throw new Error('Method not implemented.');
   }
