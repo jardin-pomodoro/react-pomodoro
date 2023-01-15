@@ -90,7 +90,10 @@ export function FeaturesCard({
       </Group>
 
       <Button
-        disabled={!improveButtonShow}
+        disabled={
+          !improveButtonShow ||
+          nftDetails.leavesUpgradeCount >= nftDetails.maxUpgrade
+        }
         variant="light"
         color="blue"
         fullWidth
@@ -101,11 +104,20 @@ export function FeaturesCard({
           selectImproveLeaves(title);
         }}
       >
-        Améliorer les feuilles <IconCurrencyEthereum size={20} />{' '}
-        {nftDetails.leavesUpgradePrice}
+        {nftDetails.leavesUpgradeCount >= nftDetails.maxUpgrade
+          ? 'max upgrade feuilles atteint'
+          : 'Améliorer les feuilles'}
+        {nftDetails.leavesUpgradeCount < nftDetails.maxUpgrade && (
+          <>
+            <IconCurrencyEthereum size={20} /> {nftDetails.leavesUpgradePrice}
+          </>
+        )}
       </Button>
       <Button
-        disabled={!improveButtonShow}
+        disabled={
+          !improveButtonShow ||
+          nftDetails.trunkUpgradeCount >= nftDetails.maxUpgrade
+        }
         variant="light"
         color="blue"
         fullWidth
@@ -116,13 +128,20 @@ export function FeaturesCard({
           selectImproveTrunk(title);
         }}
       >
-        Améliorer le tronc <IconCurrencyEthereum size={20} />{' '}
-        {nftDetails.trunkUpgradePrice}
+        {nftDetails.trunkUpgradeCount >= nftDetails.maxUpgrade
+          ? 'max upgrade tronc atteint'
+          : 'Améliorer le tronc'}
+        {nftDetails.trunkUpgradeCount < nftDetails.maxUpgrade && (
+          <>
+            <IconCurrencyEthereum size={20} /> {nftDetails.trunkUpgradePrice}
+          </>
+        )}
       </Button>
       <Button
         variant="light"
         color="blue"
         fullWidth
+        disabled={nftDetails.breedCount >= nftDetails.maxBreed}
         mt="md"
         radius="md"
         className={classes.button_color}
@@ -130,7 +149,9 @@ export function FeaturesCard({
           selectMerge(title);
         }}
       >
-        {textButtonMerge}
+        {nftDetails.breedCount >= nftDetails.maxBreed
+          ? 'Max fusion atteint'
+          : textButtonMerge}
       </Button>
     </Card>
   );

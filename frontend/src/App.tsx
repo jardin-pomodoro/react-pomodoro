@@ -181,7 +181,7 @@ export function App() {
         path="/gallery/:id"
         element={<ViewNft moneyCount={moneyCount} />}
       />
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Home moneyCount={moneyCount} />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

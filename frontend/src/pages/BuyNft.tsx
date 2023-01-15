@@ -18,7 +18,7 @@ import { useConnectWallet } from '@web3-onboard/react';
 import { Nft } from '../core';
 import {
   GetNftsService,
-  BuyFirstNftService,
+  BuyNftService,
   WalletError,
   SmartContractService,
 } from '../services';
@@ -57,9 +57,9 @@ export function BuyNft() {
     string | undefined
   >(undefined);
 
-  const buyFirstNftService = MapServices.getInstance().getService(
-    'BuyFirstNftService'
-  ) as BuyFirstNftService;
+  const buyNftService = MapServices.getInstance().getService(
+    'BuyNftService'
+  ) as BuyNftService;
   const getNftsService = MapServices.getInstance().getService(
     'GetNftsService'
   ) as GetNftsService;
@@ -67,7 +67,7 @@ export function BuyNft() {
   const BuyFirstNft = async () => {
     if (wallet === null) return;
     try {
-      await buyFirstNftService.handle(nfts);
+      await buyNftService.handle();
     } catch (error: any) {
       if (error.code && error.code === WalletError.ACTION_REJECTED) {
         setTransactionMessage('Vous avez décidé de rejeter la transaction');
@@ -129,13 +129,13 @@ export function BuyNft() {
           </Text>
 
           <Badge size="xl" variant="filled">
-            20% de réduction
+            50% de réduction
           </Badge>
         </Group>
         <Text size="lg">
           Plus que 4 jours pour profiter de cette réduction exceptionnel
         </Text>
-        <Text td="line-through">0.8 Matic</Text>
+        <Text td="line-through">0.2 Matic</Text>
         <Text pt="md" fw={700}>
           0.1 Matic
         </Text>

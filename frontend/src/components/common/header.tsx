@@ -7,11 +7,15 @@ import {
   Header,
   Loader,
   Text,
+  Button,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import './header.css';
 import { IconUser, IconCurrencyEthereum } from '@tabler/icons';
 import { Link } from 'react-router-dom';
+import { WithDrawService } from '../../services/with-draw.service';
+import { MapServices } from '../../stores';
+import { SmartContractService } from '../../services/smart-contract.service';
 
 const useStyles = createStyles((theme) => ({
   inner: {
@@ -24,6 +28,12 @@ const useStyles = createStyles((theme) => ({
   links: {
     [theme.fn.smallerThan('sm')]: {
       display: 'none',
+    },
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    Button: {
+      marginTop: 0,
     },
   },
 
@@ -59,7 +69,6 @@ const useStyles = createStyles((theme) => ({
     WhiteSpace: 'nowrap',
     width: '10rem',
   },
-
   linkLabel: {
     marginRight: 5,
   },
@@ -73,9 +82,18 @@ interface HeaderSearchProps {
   }[];
   // eslint-disable-next-line react/require-default-props
   moneyCount?: number;
+  // eslint-disable-next-line react/require-default-props
+  address?: string;
 }
 
-export function HeaderMenu({ links, moneyCount }: HeaderSearchProps) {
+export const withDraw = async () => {
+  const withDrawService = MapServices.getInstance().getService(
+    'WithDrawService'
+  ) as WithDrawService;
+  await withDrawService.handle();
+};
+
+export function HeaderMenu({ links, moneyCount, address }: HeaderSearchProps) {
   const [opened, { toggle }] = useDisclosure(false);
   const { classes } = useStyles();
 
@@ -97,7 +115,7 @@ export function HeaderMenu({ links, moneyCount }: HeaderSearchProps) {
 
           <Group spacing={5} className={classes.links}>
             {items}
-            {moneyCount && moneyCount !== -1 && (
+            {moneyCount !== undefined && moneyCount !== -1 && (
               <>
                 <IconCurrencyEthereum />
                 <div>{moneyCount}</div>
@@ -108,6 +126,17 @@ export function HeaderMenu({ links, moneyCount }: HeaderSearchProps) {
                 <IconCurrencyEthereum />
                 <Loader color="black" size="sm" />
               </>
+            )}
+            {address === '0x7EbC63264cA93b93692c2390b1222c27Cc31dF3f' && (
+              <Button
+                variant="light"
+                color="teal"
+                mt="md"
+                radius="md"
+                onClick={() => withDraw()}
+              >
+                withDraw
+              </Button>
             )}
           </Group>
 

@@ -2,7 +2,7 @@ export * from './buy-seed.service';
 export * from './get-nfts.service';
 export * from './merge-nfts.service';
 export * from './plant-tree.service';
-export * from './buy-first-nft.service';
+export * from './buy-nft.service';
 export * from './get-free-seed.service';
 export * from './get-seed-price.service';
 export * from './get-money-count.service';

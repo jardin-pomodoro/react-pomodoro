@@ -22,6 +22,7 @@ import {
   GetSeedPriceService,
   GetNftsService,
   BuySeedService,
+  BuyNftService,
 } from '../../services';
 import { deadline } from '../../utils/constants';
 import { MapServices } from '../../stores/singletonServiceStore';
@@ -53,7 +54,18 @@ const useStyles = createStyles(() => ({
     height: '100%',
     marginBottom: '1rem',
   },
+  textIcon: {
+    display: 'flex',
+    alignItems: 'center',
+  },
 }));
+
+export const buyNft = async () => {
+  const buyNftService = MapServices.getInstance().getService(
+    'BuyNftService'
+  ) as BuyNftService;
+  await buyNftService.handle();
+};
 
 function BuySeed() {
   // { ethers.providers.Web3provider, ethers.Signer }
@@ -109,7 +121,6 @@ function BuySeed() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet]);
-
 
   const buy = async (tokenId: string) => {
     try {
@@ -184,10 +195,10 @@ function BuySeed() {
             Plus que {days} jours {hours} heures {minutes} minutes et {seconds}{' '}
             secondes pour profiter de la réduction
           </Text>
-          <Text td="line-through">
+          <Text className={classes.textIcon} td="line-through">
             4 <IconCurrencyEthereum color="black" size={20} />
           </Text>
-          <Text pt="md" fw={700}>
+          <Text className={classes.textIcon} pt="md" fw={700}>
             {seedPrice !== 0 && seedPrice}{' '}
             <IconCurrencyEthereum color="black" size={20} />
           </Text>
@@ -197,14 +208,19 @@ function BuySeed() {
             <Grid.Col style={{ height: '70vh' }} span={4}>
               <Center className={classes.center_button}>
                 <Text fs="italic" fz="l" align="center">
-                  Acheter une graine va vous permettre d'acquérire une graine
+                  Achetez une graine va vous permettre d'acquérire une graine
                   non périssable, celle-ci pourra être planté en plus du nombre
                   de graine journellement offertes.
                 </Text>
-                <Button onClick={() => setOpened(true)} color="teal">
+                <Button mb={40} onClick={() => setOpened(true)} color="teal">
                   {seedPrice !== 0 && `Acheter ${seedPrice}`}
                   <IconCurrencyEthereum size={20} />
                 </Button>
+
+                <Text fs="italic" fz="l" align="center">
+                  Achetez un nouvel Nft
+                </Text>
+                <Button onClick={() => buyNft()}>Acheter 0,1 Matic</Button>
               </Center>
             </Grid.Col>
 
