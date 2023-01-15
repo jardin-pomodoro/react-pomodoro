@@ -26,10 +26,7 @@ export function Home() {
 
   const openModal = () => setModalOpen(true);
   const toggleAnimation = () => setAnimation(!showAnimation);
-  const closeModal = () => {
-    setModalOpen(false);
-    toggleAnimation();
-  };
+  const closeModal = () => setModalOpen(false);
 
   return (
     <>
