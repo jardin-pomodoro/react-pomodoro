@@ -195,9 +195,6 @@ function BuySeed() {
             Plus que {days} jours {hours} heures {minutes} minutes et {seconds}{' '}
             secondes pour profiter de la réduction
           </Text>
-          <Text className={classes.textIcon} td="line-through">
-            4 <IconCurrencyEthereum color="black" size={20} />
-          </Text>
           <Text className={classes.textIcon} pt="md" fw={700}>
             {seedPrice !== 0 && seedPrice}{' '}
             <IconCurrencyEthereum color="black" size={20} />

@@ -11,11 +11,10 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import './header.css';
-import { IconUser, IconCurrencyEthereum } from '@tabler/icons';
+import { IconCurrencyEthereum } from '@tabler/icons';
 import { Link } from 'react-router-dom';
 import { WithDrawService } from '../../services/with-draw.service';
 import { MapServices } from '../../stores';
-import { SmartContractService } from '../../services/smart-contract.service';
 
 const useStyles = createStyles((theme) => ({
   inner: {
