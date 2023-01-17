@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ethers } from 'ethers';
 import { WalletState } from '@web3-onboard/core';
-import { Seed, SeedFree } from '../../core/seed-free';
+import { SeedFree } from '../../core/seed-free';
 import { SeedRepository } from '../../core/seed.repository';
 import { SmartContractService } from '../../services/smart-contract.service';
 
@@ -9,7 +9,11 @@ export class MetamaskSeedRepository implements SeedRepository {
   constructor(private wallet: WalletState) {}
 
   async getSeeds(tree: number): Promise<number> {
-    return SmartContractService.loadContract(this.wallet).getSeeds(tree);
+    const countOfSeeds = await SmartContractService.loadContract(
+      this.wallet
+    ).getSeeds(tree);
+
+    return Number(ethers.BigNumber.from(countOfSeeds).toNumber());
   }
 
   async getSeedFree(): Promise<SeedFree> {

@@ -1,8 +1,7 @@
 import { ethers } from 'ethers';
 import { WalletState } from '@web3-onboard/core';
-import { Nft } from '../../core/nft';
-import { NftRepository } from '../../core/nft.repository';
-import { SmartContractService } from '../../services/smart-contract.service';
+import { Nft, NftRepository } from '../../core';
+import { SmartContractService } from '../../services';
 import { NftUpgradeStats } from '../../core/nft-upgrade-stats';
 
 interface NftMetadata {
@@ -79,10 +78,9 @@ export class MetamaskNftRepository implements NftRepository {
 
   async buyNft(): Promise<void> {
     const contract = SmartContractService.loadContract(this.wallet);
-    const result = await contract.mintRandomTree({
+    await contract.mintRandomTree({
       value: ethers.utils.parseEther('0.1'),
     });
-    // eslint-disable-next-line no-console
   }
 
   async plantTree(parentTree: string): Promise<void> {
@@ -130,7 +128,6 @@ export class MetamaskNftRepository implements NftRepository {
     const result = await SmartContractService.loadContract(
       this.wallet
     ).collectTree();
-    console.log(result);
     return result;
   }
 }
