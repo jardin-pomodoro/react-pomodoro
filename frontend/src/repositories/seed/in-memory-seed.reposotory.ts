@@ -3,6 +3,10 @@ import { Seed, SeedFree } from '../../core/seed-free';
 import { SeedRepository } from '../../core/seed.repository';
 
 export class InMemorySeedRepository implements SeedRepository {
+  getSeeds(tokenId: number): Promise<number> {
+    throw new Error('Method not implemented.');
+  }
+
   getAllSeed(): Promise<Seed[]> {
     throw new Error('Method not implemented.');
   }
