@@ -77,6 +77,8 @@ describe('BreedTree contract', () => {
         await expect(contract.connect(owner).breedTree(1, 2))
             .to.emit(contract, 'TreeMinted')
             .withArgs(owner.address, 3);
+        expect(await contract.connect(owner).breedCount(1))
+            .to.equal(1);
     });
     it('Should revert if breeding limit reached', async () => {
         const {contract, owner} = await deployTokenFixture();
