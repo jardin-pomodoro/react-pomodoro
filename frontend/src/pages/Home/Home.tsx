@@ -1,84 +1,13 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { Button, Modal } from '@mantine/core';
+import { Modal } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { useEffect, useState } from 'react';
 import { HeaderMenu } from '../../components/common/header';
-import { Animation, Timer } from '../../components';
+import { SmartContractService } from '../../services';
 import { useNftStore } from '../../stores';
+import { HomeCenter } from './HomeCenter';
 import { HomeModal } from './HomeModal';
-
-function cumputeTimestamp(minuteToAdd: number): number {
-  const SEC_IN_A_MINUTE = 60;
-  const timestamp = new Date().getTime() / 1000; // time in js is with miliseconds
-  return timestamp + minuteToAdd * SEC_IN_A_MINUTE;
-}
-
-enum State {
-  IDLE,
-  Growing,
-  Ready,
-}
-
-export function HomeCenter({
-  state,
-  openModal,
-  returnToIdle,
-  finishGrowing,
-}: {
-  state: State;
-  openModal: () => void;
-  returnToIdle: () => void;
-  finishGrowing: () => void;
-}) {
-  if (state === State.Growing) {
-    return (
-      <>
-        <Timer
-          onGrowingFinish={finishGrowing}
-          expiryTimestamp={cumputeTimestamp(0.5)}
-        />
-        <Animation />
-      </>
-    );
-  }
-  if (state === State.Ready) {
-    return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginBottom: '1rem',
-        }}
-      >
-        <Button onClick={returnToIdle}>collect trees</Button>
-      </div>
-    );
-  }
-  return (
-    <>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginBottom: '1rem',
-        }}
-      >
-        <Button onClick={openModal}>plant a tree</Button>
-      </div>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-        }}
-      >
-        <video style={{ width: '70vw' }} autoPlay loop muted>
-          <source src="/room.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
-    </>
-  );
-}
+import { State } from './HomeState';
 
 export function Home({ moneyCount }: { moneyCount: number | undefined }) {
   const harvestATree = useNftStore((store) => store.harvestATree);
@@ -89,21 +18,26 @@ export function Home({ moneyCount }: { moneyCount: number | undefined }) {
     store.loadImage,
   ]);
 
-  useEffect(() => {
-    loadImage();
-  }, [loadImage]);
-
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
   const finshGrowing = () => setState(State.Ready);
   const startGrowing = () => setState(State.Growing);
-  const returnToIdle = () => {
-    harvestATree();
-    showNotification({
-      message: 'You collected your trees',
+
+  useEffect(() => {
+    loadImage();
+    // listen event for plan tree and harvest tree
+    SmartContractService.listenToEvent('TreePlanted', (event) => {
+      console.log(event);
+      startGrowing();
     });
-    setState(State.IDLE);
-  };
+    SmartContractService.listenToEvent('TreeCollected', (event) => {
+      console.log(event);
+      showNotification({
+        message: 'You collected your trees',
+      });
+      setState(State.IDLE);
+    });
+  }, [loadImage]);
 
   return (
     <>
@@ -116,17 +50,13 @@ export function Home({ moneyCount }: { moneyCount: number | undefined }) {
         moneyCount={moneyCount}
       />
       <Modal centered size="xl" opened={isModalOpen} onClose={closeModal}>
-        <HomeModal
-          nfts={trees}
-          startGrowing={startGrowing}
-          closeModal={closeModal}
-        />
+        <HomeModal nfts={trees} closeModal={closeModal} />
       </Modal>
       <HomeCenter
         state={state}
         openModal={openModal}
         finishGrowing={finshGrowing}
-        returnToIdle={returnToIdle}
+        harvestATree={harvestATree}
       />
     </>
   );
