@@ -13,10 +13,10 @@ export const initWeb3Onboard = init({
   wallets: [injectedModule()],
   chains: [
     {
-      id: utils.hexValue(80001),
+      id: utils.hexValue(137),
       token: 'Matic',
-      label: 'matic-mumbai',
-      rpcUrl: 'https://matic-mumbai.chainstacklabs.com',
+      label: 'polygon',
+      rpcUrl: 'https://polygon-rpc.com',
     },
   ],
   accountCenter: {
@@ -42,9 +42,7 @@ export const initWeb3Onboard = init({
           // message: `Your transaction is pending, click <a href="https://rinkeby.etherscan.io/tx/${transaction.hash}" rel="noopener noreferrer" target="_blank">here</a> for more info.`,
           // or you could use onClick for when someone clicks on the notification itself
           onClick: () =>
-            window.open(
-              `https://mumbai.polygonscan.com/tx/${transaction.hash}`
-            ),
+            window.open(`https://polygonscan.com/tx/${transaction.hash}`),
         };
       }
     },
