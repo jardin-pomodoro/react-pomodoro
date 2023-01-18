@@ -24,7 +24,7 @@ export function HomeCenter({
       <>
         <Timer
           onGrowingFinish={finishGrowing}
-          expiryTimestamp={cumputeTimestamp(0.5)}
+          expiryTimestamp={cumputeTimestamp(0.25)}
         />
         <Animation />
       </>

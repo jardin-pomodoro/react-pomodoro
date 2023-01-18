@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Modal } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { HeaderMenu } from '../../components/common/header';
 import { SmartContractService } from '../../services';
 import { useNftStore } from '../../stores';
@@ -23,6 +23,14 @@ export function Home({ moneyCount }: { moneyCount: number | undefined }) {
   const closeModal = () => setModalOpen(false);
   const finshGrowing = () => setState(State.Ready);
   const startGrowing = () => setState(State.Growing);
+  const returnToIdle = useCallback(() => {
+    console.log('return to idle, state: ', state);
+    if (state === State.IDLE) return;
+    showNotification({
+      message: 'Vous avez planté un arbre !',
+    });
+    setState(State.IDLE);
+  }, [state]);
 
   useEffect(() => {
     loadImage();
@@ -38,6 +46,7 @@ export function Home({ moneyCount }: { moneyCount: number | undefined }) {
       if (state === State.Ready) {
         console.log(event);
       }
+      returnToIdle();
       setState(State.IDLE);
     });
   }, []);
