@@ -160,6 +160,10 @@ export function App() {
           getMoneyCount();
         }, 1000);
       });
+      SmartContractService.listenToEvent('TreeCollected', (event) => {
+        console.log('TreeCollected', event);
+        getMoneyCount();
+      });
     }
   }, [wallet]);
 
