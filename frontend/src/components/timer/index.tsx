@@ -9,10 +9,7 @@ export function Timer({
 }) {
   const { seconds, minutes, hours } = useTimer({
     expiryTimestamp: new Date(expiryTimestamp * 1000),
-    onExpire: () => {
-      onGrowingFinish();
-      console.log('collect');
-    },
+    onExpire: () => onGrowingFinish(),
   });
   return (
     <h2 style={{ textAlign: 'center' }}>{`${hours}.${minutes}.${seconds}`}</h2>

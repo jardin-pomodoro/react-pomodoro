@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { SimpleGrid, Image, Button } from '@mantine/core';
+import { SimpleGrid, Image, Button, Badge } from '@mantine/core';
 import { useState } from 'react';
 import { Nft } from '../../core';
 import { useNftStore } from '../../stores';
@@ -28,6 +28,7 @@ export function NftCard({ id, url, isSelected, onClick, fert }: NftCardProps) {
     border: '2px solid #8ba6e9',
     backgroundColor: isSelected ? '#8ba6e9' : 'white',
   };
+
   return (
     <div style={wapperStyle}>
       <Image
@@ -37,7 +38,20 @@ export function NftCard({ id, url, isSelected, onClick, fert }: NftCardProps) {
         alt="nft tree"
         withPlaceholder
       />
-      <div style={{ textAlign: 'center', margin: '4px 0' }}>{fert ?? 0}</div>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          margin: '4px 0',
+        }}
+      >
+        <Badge color="indigo.7" size="xs" variant="light">
+          NFT: {id}
+        </Badge>
+        <Badge color="teal.7" size="xs" variant="light">
+          Graines: {fert ?? 0}
+        </Badge>
+      </div>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Modal } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
@@ -25,19 +26,21 @@ export function Home({ moneyCount }: { moneyCount: number | undefined }) {
 
   useEffect(() => {
     loadImage();
-    // listen event for plan tree and harvest tree
+  }, [loadImage]);
+
+  useEffect(() => {
     SmartContractService.listenToEvent('TreePlanted', (event) => {
       console.log(event);
       startGrowing();
     });
     SmartContractService.listenToEvent('TreeCollected', (event) => {
-      console.log(event);
-      showNotification({
-        message: 'You collected your trees',
-      });
+      console.log('tree collected');
+      if (state === State.Ready) {
+        console.log(event);
+      }
       setState(State.IDLE);
     });
-  }, [loadImage]);
+  }, []);
 
   return (
     <>
