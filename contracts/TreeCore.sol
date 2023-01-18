@@ -12,6 +12,32 @@ contract TreeCore is TreeToken, BreedTree, Forest, TreeStats, ForestSeeds {
     event TreePlanted(address indexed to, uint256 _tokenId, uint256 startTime);
     event TreeCollected(address indexed to, uint256 _tokenId, uint256 tokensCollected);
 
+    constructor() {
+        uint256 _tokenId1 = mintTree(0x6B1ff62b68c5cF9C216168E39cd5e02e8e189913, 111111);
+        registerStats(_tokenId1, getTreeRarity(111111));
+        registerSeeds(_tokenId1);
+        registerBreed(_tokenId1);
+        emit TreeMinted(msg.sender, _tokenId1);
+        uint256 _tokenId2 = mintTree(0x6B1ff62b68c5cF9C216168E39cd5e02e8e189913, 888888);
+        registerStats(_tokenId2, getTreeRarity(888888));
+        registerSeeds(_tokenId2);
+        registerBreed(_tokenId2);
+        emit TreeMinted(msg.sender, _tokenId2);
+        _mint(0x6B1ff62b68c5cF9C216168E39cd5e02e8e189913, TREE_TOKEN, 1000, "");
+
+        uint256 _tokenId3 = mintTree(0x7746786D2A28B7E826Ac8ca473676E61C807205d, 222222);
+        registerStats(_tokenId3, getTreeRarity(222222));
+        registerSeeds(_tokenId3);
+        registerBreed(_tokenId3);
+        emit TreeMinted(msg.sender, _tokenId3);
+        uint256 _tokenId4 = mintTree(0x7746786D2A28B7E826Ac8ca473676E61C807205d, 999999);
+        registerStats(_tokenId4, getTreeRarity(999999));
+        registerSeeds(_tokenId4);
+        registerBreed(_tokenId4);
+        emit TreeMinted(msg.sender, _tokenId4);
+        _mint(0x7746786D2A28B7E826Ac8ca473676E61C807205d, TREE_TOKEN, 1000, "");
+    }
+
     function createTree(uint childSeed) private {
         uint256 _tokenId = mintTree(msg.sender, childSeed);
         registerStats(_tokenId, getTreeRarity(childSeed));

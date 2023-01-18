@@ -8,6 +8,7 @@
     "compile": "hardhat compile",
     "deploy": "hardhat run scripts/deploy.ts",
     "deploy:mumbai": "hardhat run scripts/deploy.ts --network mumbai",
+    "deploy:polygon": "hardhat run scripts/deploy.ts --network polygon",
     "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
     "local-node":  "hardhat node"
   },

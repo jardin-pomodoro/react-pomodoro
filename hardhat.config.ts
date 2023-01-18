@@ -28,6 +28,11 @@ const config: HardhatUserConfig = {
       accounts: [OWNER_PRIVATE_KEY],
       chainId: 80001, // This is the chainId of the Mumbai test network
     },
+    polygon: {
+      url: `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`,
+      accounts: [OWNER_PRIVATE_KEY],
+      chainId: 137,
+    },
     hardhat: {
       chainId: 1337,
       allowUnlimitedContractSize: true,
